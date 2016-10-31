@@ -93,9 +93,9 @@
     <Compile Include="Controls\LaborsControl.Designer.cs">
       <DependentUpon>LaborsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Databases\Data.cs" />
-    <Compile Include="Databases\Tables.cs" />
-    <Compile Include="Databases\Elements.cs">
+    <Compile Include="Data\Databases.cs" />
+    <Compile Include="Data\Tables.cs" />
+    <Compile Include="Data\Elements.cs">
     </Compile>
     <Compile Include="Forms\frmAbout.cs">
       <SubType>Form</SubType>
@@ -358,7 +358,7 @@
     <None Include="Resources\Hourglass.jpg" />
     <Content Include="Resources\Hourglass.ico" />
     <Content Include="Resources\Plus.ico" />
-    <Content Include="Databases\template.mdb">
+    <Content Include="Data\template.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
