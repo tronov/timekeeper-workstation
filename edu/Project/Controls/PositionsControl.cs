@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project.Controls
 {
@@ -80,7 +80,7 @@ namespace Project.Controls
                     {
                         ctrl.AutoCompleteMode = AutoCompleteMode.Append;
                         ctrl.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                        strings = (from position in Data.Tables.Positions
+                        strings = (from position in Databases.Tables.Positions
                                    select position.Title).ToList();
                         foreach (string str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;
@@ -92,7 +92,7 @@ namespace Project.Controls
                     {
                         ctrl.AutoCompleteMode = AutoCompleteMode.Append;
                         ctrl.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                        strings = (from position in Data.Tables.Positions
+                        strings = (from position in Databases.Tables.Positions
                                    select position.Draw).ToList();
                         foreach (string str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;
@@ -104,7 +104,7 @@ namespace Project.Controls
                     {
                         ctrl.AutoCompleteMode = AutoCompleteMode.Append;
                         ctrl.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                        strings = (from position in Data.Tables.Positions
+                        strings = (from position in Databases.Tables.Positions
                                    select position.Matherial).ToList();
                         foreach (string str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;

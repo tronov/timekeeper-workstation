@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project
 {
@@ -106,7 +106,7 @@ namespace Project
                  Convert.ToSingle(this.tbRank6.Text)
                  );
                 if (this._Profession == null)
-                    Data.Tables.Professions.Insert(profession);
+                    Databases.Tables.Professions.Insert(profession);
                 else this._Profession.Update(profession);
 
                 this.Close();

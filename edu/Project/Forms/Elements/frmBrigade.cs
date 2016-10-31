@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project.Forms.Elements
 {
@@ -32,7 +32,7 @@ namespace Project.Forms.Elements
             {
                 Brigade brigade = new Brigade(this._Area.Id, Convert.ToByte(mtbCode.Text), tbTitle.Text);
                 if (this._Brigade == null)
-                    Data.Tables.Brigades.Insert(brigade);
+                    Databases.Tables.Brigades.Insert(brigade);
                 else
                     this._Brigade.Update(brigade);
                 this.DialogResult = DialogResult.OK;

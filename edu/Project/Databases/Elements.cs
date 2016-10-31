@@ -2,7 +2,7 @@
 using System.Data.OleDb;
 using System.Linq;
 
-namespace Project.Databases
+namespace Project.Data
 {
     public interface ITableRow
     {
@@ -130,7 +130,7 @@ namespace Project.Databases
             {
                 BrigadePersons brigadePersons = new BrigadePersons();
                 brigadePersons.Clear();
-                var items = Data.Tables.BrigadePersons._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
                 foreach (var item in items) brigadePersons._Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
@@ -140,7 +140,7 @@ namespace Project.Databases
             get
             {
                 Executors executors = new Executors();
-                var items = Data.Tables.Executors._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Executors._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
                 foreach (var item in items) executors._Items.Add(item.Key, item.Value);
                 return executors;
             }
@@ -150,7 +150,7 @@ namespace Project.Databases
             get
             {
                 PersonProfessions personeProfessions = new PersonProfessions();
-                var items = Data.Tables.PersonProfessions._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
                 foreach (var item in items) personeProfessions._Items.Add(item.Key, item.Value);
                 return personeProfessions;
             }
@@ -171,7 +171,7 @@ namespace Project.Databases
 
         public override void Update(Person newItem)
         {
-            Data.Tables.Persons.Update(this, newItem);
+            Databases.Tables.Persons.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -187,7 +187,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.Persons.Delete(this);
+                Databases.Tables.Persons.Delete(this);
         }
 
         public bool Equals(Person other)
@@ -294,7 +294,7 @@ namespace Project.Databases
             get
             {
                 PersonProfessions personProfessions = new PersonProfessions();
-                var items = Data.Tables.PersonProfessions._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
                 foreach (var item in items) personProfessions._Items.Add(item.Key, item.Value);
                 return personProfessions;
             }
@@ -304,7 +304,7 @@ namespace Project.Databases
             get
             {
                 Executors executors = new Executors();
-                var items = Data.Tables.Executors._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Executors._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
                 foreach (var item in items) executors._Items.Add(item.Key, item.Value);
                 return executors;
             }
@@ -327,7 +327,7 @@ namespace Project.Databases
 
         public override void Update(Profession newItem)
         {
-            Data.Tables.Professions.Update(this, newItem);
+            Databases.Tables.Professions.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -340,7 +340,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.Professions.Delete(this);
+                Databases.Tables.Professions.Delete(this);
         }
 
         public bool Equals(Profession other)
@@ -428,7 +428,7 @@ namespace Project.Databases
             get
             {
                 Executors executors = new Executors();
-                var items = Data.Tables.Executors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Executors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
                 foreach (var item in items) executors._Items.Add(item.Key, item.Value);
                 return executors;
             }
@@ -438,7 +438,7 @@ namespace Project.Databases
             get
             {
                 Labors labors = new Labors();
-                var items = Data.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
                 foreach (var item in items) labors._Items.Add(item.Key, item.Value);
                 return labors;
             }
@@ -448,7 +448,7 @@ namespace Project.Databases
             get
             {
                 Positions positions = new Positions();
-                var items = Data.Tables.Positions._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Positions._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
                 foreach (var item in items) positions._Items.Add(item.Key, item.Value);
                 return positions;
             }
@@ -456,7 +456,7 @@ namespace Project.Databases
 
         public void Update(Warranty newItem)
         {
-            Data.Tables.Warranties.Update(this, newItem);
+            Databases.Tables.Warranties.Update(this, newItem);
         }
         public void Delete()
         {
@@ -464,7 +464,7 @@ namespace Project.Databases
                 position.Delete();
             foreach (Executor executor in this.Executors)
                 executor.Delete();
-            Data.Tables.Warranties.Delete(this);
+            Databases.Tables.Warranties.Delete(this);
         }
 
         public bool Equals(Warranty other)
@@ -538,7 +538,7 @@ namespace Project.Databases
             get
             {
                 Brigades brigades = new Brigades();
-                var items = Data.Tables.Brigades._Items
+                var items = Databases.Tables.Brigades._Items
                  .Where(r => r.Value.AreaId.Equals(this.Id))
                  .ToArray();
                 foreach (var item in items) brigades._Items.Add(item.Key, item.Value);
@@ -550,7 +550,7 @@ namespace Project.Databases
             get
             {
                 Warranties warranties = new Warranties();
-                var items = Data.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
                 foreach (var item in items) warranties._Items.Add(item.Key, item.Value);
                 return warranties;
             }
@@ -571,7 +571,7 @@ namespace Project.Databases
 
         public override void Update(Area newItem)
         {
-            Data.Tables.Areas.Update(this, newItem);
+            Databases.Tables.Areas.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -584,7 +584,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.Areas.Delete(this);
+                Databases.Tables.Areas.Delete(this);
         }
 
         public bool Equals(Area other)
@@ -667,11 +667,11 @@ namespace Project.Databases
 
         public void Update(Position newItem)
         {
-            Data.Tables.Positions.Update(this, newItem);
+            Databases.Tables.Positions.Update(this, newItem);
         }
         public void Delete()
         {
-            Data.Tables.Positions.Delete(this);
+            Databases.Tables.Positions.Delete(this);
         }
 
         public bool Equals(Position other)
@@ -744,14 +744,14 @@ namespace Project.Databases
         {
             get
             {
-                return Data.Tables.Persons[this._PersonId];
+                return Databases.Tables.Persons[this._PersonId];
             }
         }
         public Profession Profession
         {
             get
             {
-                return Data.Tables.Professions[this._ProfessionId];
+                return Databases.Tables.Professions[this._ProfessionId];
             }
         }
         public Labors Labors
@@ -759,7 +759,7 @@ namespace Project.Databases
             get
             {
                 Labors labors = new Labors();
-                var items = Data.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
                 foreach (var item in items) labors._Items.Add(item.Key, item.Value);
                 return labors;
             }
@@ -767,13 +767,13 @@ namespace Project.Databases
 
         public void Update(Executor newItem)
         {
-            Data.Tables.Executors.Update(this, newItem);
+            Databases.Tables.Executors.Update(this, newItem);
         }
         public void Delete()
         {
             foreach (Labor labor in this.Labors)
                 labor.Delete();
-            Data.Tables.Executors.Delete(this);
+            Databases.Tables.Executors.Delete(this);
         }
 
         public bool Equals(Executor other)
@@ -833,11 +833,11 @@ namespace Project.Databases
 
         public void Update(Labor newItem)
         {
-            Data.Tables.Labors.Update(this, newItem);
+            Databases.Tables.Labors.Update(this, newItem);
         }
         public void Delete()
         {
-            Data.Tables.Labors.Delete(this);
+            Databases.Tables.Labors.Delete(this);
         }
 
         public bool Equals(Labor other)
@@ -906,14 +906,14 @@ namespace Project.Databases
         public int AreaId { get { return this._AreaId; } }
         public byte Code { get { return this._Code; } }
         public string Title { get { return this._Title; } }
-        public Area Area { get { return Data.Tables.Areas[this.AreaId]; } }
+        public Area Area { get { return Databases.Tables.Areas[this.AreaId]; } }
         public BrigadePersons BrigadePersons
         {
             get
             {
                 BrigadePersons brigadePersons = new BrigadePersons();
                 brigadePersons.Clear();
-                var items = Data.Tables.BrigadePersons._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
                 foreach (var item in items) brigadePersons._Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
@@ -923,7 +923,7 @@ namespace Project.Databases
             get
             {
                 Warranties warranties = new Warranties();
-                var items = Data.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
+                var items = Databases.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
                 foreach (var item in items) warranties._Items.Add(item.Key, item.Value);
                 return warranties;
             }
@@ -944,7 +944,7 @@ namespace Project.Databases
 
         public override void Update(Brigade newItem)
         {
-            Data.Tables.Brigades.Update(this, newItem);
+            Databases.Tables.Brigades.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -957,7 +957,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.Brigades.Delete(this);
+                Databases.Tables.Brigades.Delete(this);
         }
 
         public bool Equals(Brigade other)
@@ -1030,14 +1030,14 @@ namespace Project.Databases
         {
             get
             {
-                return Data.Tables.Brigades[this.BrigadeId];
+                return Databases.Tables.Brigades[this.BrigadeId];
             }
         }
         public Person Person
         {
             get
             {
-                return Data.Tables.Persons[this._PersonId];
+                return Databases.Tables.Persons[this._PersonId];
             }
         }
 
@@ -1057,7 +1057,7 @@ namespace Project.Databases
 
         public override void Update(BrigadePerson newItem)
         {
-            Data.Tables.BrigadePersons.Update(this, newItem);
+            Databases.Tables.BrigadePersons.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -1068,7 +1068,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.BrigadePersons.Delete(this);
+                Databases.Tables.BrigadePersons.Delete(this);
         }
 
         public bool Equals(BrigadePerson other)
@@ -1142,14 +1142,14 @@ namespace Project.Databases
         {
             get
             {
-                return Data.Tables.Persons[this.PersonId];
+                return Databases.Tables.Persons[this.PersonId];
             }
         }
         public Profession Profession
         {
             get
             {
-                return Data.Tables.Professions[this._ProfessionId];
+                return Databases.Tables.Professions[this._ProfessionId];
             }
         }
 
@@ -1168,7 +1168,7 @@ namespace Project.Databases
 
         public override void Update(PersonProfession newItem)
         {
-            Data.Tables.PersonProfessions.Update(this, newItem);
+            Databases.Tables.PersonProfessions.Update(this, newItem);
         }
         public override void Delete()
         {
@@ -1179,7 +1179,7 @@ namespace Project.Databases
                 this.Update(item);
             }
             else
-                Data.Tables.PersonProfessions.Delete(this);
+                Databases.Tables.PersonProfessions.Delete(this);
         }
 
         public bool Equals(PersonProfession other)

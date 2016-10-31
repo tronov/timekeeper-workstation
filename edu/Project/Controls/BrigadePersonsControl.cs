@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Tables;
 
 namespace Project.Controls
@@ -91,11 +91,11 @@ namespace Project.Controls
         {
             if (this.BrigadeId != 0)
             {
-                Brigade brigade = Data.Tables.Brigades[BrigadeId];
+                Brigade brigade = Databases.Tables.Brigades[BrigadeId];
                 frmPersons form = new frmPersons();
 
-                form.ctrlPersons.Deletions = (from person in Data.Tables.Persons.Active
-                                              from brigadePerson in Data.Tables.BrigadePersons.Active
+                form.ctrlPersons.Deletions = (from person in Databases.Tables.Persons.Active
+                                              from brigadePerson in Databases.Tables.BrigadePersons.Active
                                               where person.Equals(brigadePerson.Person)
                                               select person).ToList();
 
@@ -104,7 +104,7 @@ namespace Project.Controls
                 if (form.SelectedPersonId != 0)
                 {
                     BrigadePerson brigadePerson = new BrigadePerson(this.BrigadeId, form.SelectedPersonId);
-                    Data.Tables.BrigadePersons.Insert(brigadePerson);
+                    Databases.Tables.BrigadePersons.Insert(brigadePerson);
                 }
                 Init();
             }
@@ -117,7 +117,7 @@ namespace Project.Controls
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    BrigadePerson brigadePerson = Data.Tables.BrigadePersons[this.CurrentId];
+                    BrigadePerson brigadePerson = Databases.Tables.BrigadePersons[this.CurrentId];
                     brigadePerson.Delete();
                     Init();
                 }
@@ -127,7 +127,7 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = (from brigadePerson in Data.Tables.BrigadePersons.Active.Except(this.Deletions.AsEnumerable())
+            this.dgvItems.DataSource = (from brigadePerson in Databases.Tables.BrigadePersons.Active.Except(this.Deletions.AsEnumerable())
                                         where
                                         (brigadePerson.BrigadeId == this.BrigadeId) &&
                                         brigadePerson.Person.Code.ToString().Contains(this.GetFilter("PersonCode")) &&

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Elements;
 
 namespace Project.Controls
@@ -87,7 +87,7 @@ namespace Project.Controls
         {
             if (this.CurrentId != 0)
             {
-                Warranty warranty = Data.Tables.Warranties[this.CurrentId];
+                Warranty warranty = Databases.Tables.Warranties[this.CurrentId];
                 frmWarranty form = new frmWarranty(warranty);
                 if (form.ShowDialog(this) == DialogResult.OK)
                     Init();
@@ -101,7 +101,7 @@ namespace Project.Controls
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    Warranty warranty = Data.Tables.Warranties[this.CurrentId];
+                    Warranty warranty = Databases.Tables.Warranties[this.CurrentId];
                     warranty.Delete();
                     Init();
                 }
@@ -113,7 +113,7 @@ namespace Project.Controls
         {
             System.Collections.Generic.List<Warranty> Source;
             if (this._Includes != null) Source = this._Includes;
-            else Source = Data.Tables.Warranties.ToList();
+            else Source = Databases.Tables.Warranties.ToList();
 
             this.dgvItems.DataSource = (from warranty in Source
                                         where
@@ -121,16 +121,16 @@ namespace Project.Controls
                                         warranty.Order.ToString().Contains(this.GetFilter("Order")) &&
                                         warranty.WarrantyDate.ToString().Contains(this.GetFilter("WarrantyDate")) &&
                                         warranty.Percent.ToString().Contains(this.GetFilter("Percent")) &&
-                                        Data.Tables.Areas[warranty.AreaId].Code.ToString().Contains(this.GetFilter("AreaCode")) &&
-                                        Data.Tables.Brigades[warranty.BrigadeId].Code.ToString().Contains(this.GetFilter("BrigadeCode"))
+                                        Databases.Tables.Areas[warranty.AreaId].Code.ToString().Contains(this.GetFilter("AreaCode")) &&
+                                        Databases.Tables.Brigades[warranty.BrigadeId].Code.ToString().Contains(this.GetFilter("BrigadeCode"))
                                         select new
                                         {
                                             Id = warranty.Id,
                                             Customer = warranty.Customer,
                                             Order = warranty.Order,
                                             WarrantyDate = warranty.WarrantyDate.ToShortDateString(),
-                                            AreaCode = Data.Tables.Areas[warranty.AreaId].Code,
-                                            BrigadeCode = Data.Tables.Brigades[warranty.BrigadeId].Code,
+                                            AreaCode = Databases.Tables.Areas[warranty.AreaId].Code,
+                                            BrigadeCode = Databases.Tables.Brigades[warranty.BrigadeId].Code,
                                             Percent = warranty.Percent
                                         }).ToList();
 

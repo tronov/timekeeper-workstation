@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
 
-namespace Project.Databases
+namespace Project.Data
 {
     public abstract class Table<T> : IEnumerable<T>
      where T : ITableRow
@@ -90,7 +90,7 @@ namespace Project.Databases
             }
 
             Command.CommandText = comText;
-            Command.Connection = Data.Connection;
+            Command.Connection = Databases.Connection;
             Command.Connection.Open();
             Command.ExecuteNonQuery();
             Command.Parameters.Clear();
@@ -124,7 +124,7 @@ namespace Project.Databases
 
 
             Command.CommandText = String.Format("UPDATE {0} SET {1} WHERE [Id] = ?;", TableName, comItems);
-            Command.Connection = Data.Connection;
+            Command.Connection = Databases.Connection;
             Command.Connection.Open();
             Command.ExecuteNonQuery();
             Command.Parameters.Clear();
@@ -141,7 +141,7 @@ namespace Project.Databases
                 OleDbParameter pId = new OleDbParameter("Id", OleDbType.Integer);
                 pId.Value = id;
 
-                Command.Connection = Data.Connection;
+                Command.Connection = Databases.Connection;
                 Command.CommandText = String.Format("DELETE * FROM [{0}] WHERE [Id] = ?;", TableName);
                 Command.Parameters.Add(pId);
 
@@ -187,7 +187,7 @@ namespace Project.Databases
             get
             {
                 Persons persons = new Persons();
-                var _Items = Data.Tables.Persons._Items
+                var _Items = Databases.Tables.Persons._Items
                  .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
                  .ToArray();
                 foreach (var item in _Items)
@@ -198,8 +198,8 @@ namespace Project.Databases
 
         internal void Optimize()
         {
-            Person[] persons = Data.Tables.Persons
-             .Except(Data.Tables.Persons.Active)
+            Person[] persons = Databases.Tables.Persons
+             .Except(Databases.Tables.Persons.Active)
              .Where(r => r.Executors.Count().Equals(0))
              .ToArray();
 
@@ -230,7 +230,7 @@ namespace Project.Databases
             get
             {
                 Professions professions = new Professions();
-                var _Items = Data.Tables.Professions._Items
+                var _Items = Databases.Tables.Professions._Items
                  .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
                  .ToArray();
                 foreach (var item in _Items)
@@ -241,8 +241,8 @@ namespace Project.Databases
 
         internal void Optimize()
         {
-            Profession[] professions = Data.Tables.Professions
-             .Except(Data.Tables.Professions.Active)
+            Profession[] professions = Databases.Tables.Professions
+             .Except(Databases.Tables.Professions.Active)
              .ToArray();
 
             foreach (Profession profession in professions)
@@ -280,7 +280,7 @@ namespace Project.Databases
             get
             {
                 Areas areas = new Areas();
-                var temp = Data.Tables.Areas._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
+                var temp = Databases.Tables.Areas._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
                 foreach (var area in temp) areas._Items.Add(area.Key, area.Value);
                 return areas;
             }
@@ -288,13 +288,13 @@ namespace Project.Databases
 
         internal void Optimize()
         {
-            Area[] areas = Data.Tables.Areas
-             .Except(Data.Tables.Areas.Active)
+            Area[] areas = Databases.Tables.Areas
+             .Except(Databases.Tables.Areas.Active)
              .Where(r => r.Warranties.Count().Equals(0))
              .ToArray();
 
             foreach (Area area in areas)
-                Data.Tables.Areas.Delete(area);
+                Databases.Tables.Areas.Delete(area);
         }
     }
 
@@ -354,7 +354,7 @@ namespace Project.Databases
             get
             {
                 Brigades brigades = new Brigades();
-                var _Items = Data.Tables.Brigades._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
+                var _Items = Databases.Tables.Brigades._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
                 foreach (var item in _Items) brigades._Items.Add(item.Key, item.Value);
                 return brigades;
             }
@@ -362,13 +362,13 @@ namespace Project.Databases
 
         internal void Optimize()
         {
-            Brigade[] brigades = Data.Tables.Brigades
-             .Except(Data.Tables.Brigades.Active)
+            Brigade[] brigades = Databases.Tables.Brigades
+             .Except(Databases.Tables.Brigades.Active)
              .Where(r => r.Warranties.Count().Equals(0))
              .ToArray();
 
             foreach (Brigade brigade in brigades)
-                Data.Tables.Brigades.Delete(brigade);
+                Databases.Tables.Brigades.Delete(brigade);
         }
     }
 
@@ -389,7 +389,7 @@ namespace Project.Databases
             get
             {
                 BrigadePersons brigadePersons = new BrigadePersons();
-                var _Items = Data.Tables.BrigadePersons._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
+                var _Items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
                 foreach (var item in _Items) brigadePersons._Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
@@ -414,7 +414,7 @@ namespace Project.Databases
             get
             {
                 PersonProfessions personProfessions = new PersonProfessions();
-                var _Items = Data.Tables.PersonProfessions._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
+                var _Items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
                 foreach (var item in _Items) personProfessions._Items.Add(item.Key, item.Value);
                 return personProfessions;
             }

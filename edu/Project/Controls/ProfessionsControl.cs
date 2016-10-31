@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project
 {
@@ -92,7 +92,7 @@ namespace Project
         {
             if (this.CurrentId != 0)
             {
-                Profession profession = Data.Tables.Professions[this.CurrentId];
+                Profession profession = Databases.Tables.Professions[this.CurrentId];
                 frmProfession form = new frmProfession(profession);
                 form.ShowDialog(this);
                 Init();
@@ -106,7 +106,7 @@ namespace Project
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    Profession profession = Data.Tables.Professions[this.CurrentId];
+                    Profession profession = Databases.Tables.Professions[this.CurrentId];
                     profession.Delete();
                     Init();
                 }
@@ -116,7 +116,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = Data.Tables.Professions.Where(r =>
+            this.dgvItems.DataSource = Databases.Tables.Professions.Where(r =>
               r.Code.ToString().Contains(this.GetFilter("Code")) &&
               r.Title.ToUpper().Contains(this.GetFilter("Title").ToUpper()) &&
               r.Rank1.ToString().Contains(this.GetFilter("Rank1")) &&

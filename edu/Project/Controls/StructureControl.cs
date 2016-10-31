@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Elements;
 
 namespace Project.Controls
@@ -86,7 +86,7 @@ namespace Project.Controls
         {
             if (this.SelectedAreaId != 0)
             {
-                Area area = Data.Tables.Areas[this.SelectedAreaId];
+                Area area = Databases.Tables.Areas[this.SelectedAreaId];
                 frmArea form = new frmArea(area);
                 form.ShowDialog(this);
                 Init();
@@ -100,7 +100,7 @@ namespace Project.Controls
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    Area area = Data.Tables.Areas[this.SelectedAreaId];
+                    Area area = Databases.Tables.Areas[this.SelectedAreaId];
                     area.Delete();
                     Init();
                 }
@@ -112,7 +112,7 @@ namespace Project.Controls
         {
             if (this.SelectedAreaId != 0)
             {
-                Area area = Data.Tables.Areas[this.SelectedAreaId];
+                Area area = Databases.Tables.Areas[this.SelectedAreaId];
                 frmBrigade form = new frmBrigade(area);
                 form.ShowDialog(this);
                 Init();
@@ -124,7 +124,7 @@ namespace Project.Controls
         {
             if (this.SelectedBrigadeId != 0)
             {
-                Brigade brigade = Data.Tables.Brigades[this.SelectedBrigadeId];
+                Brigade brigade = Databases.Tables.Brigades[this.SelectedBrigadeId];
                 frmBrigade form = new frmBrigade(brigade);
                 form.ShowDialog(this);
                 Init();
@@ -138,7 +138,7 @@ namespace Project.Controls
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    Data.Tables.Brigades[this.SelectedBrigadeId].Delete();
+                    Databases.Tables.Brigades[this.SelectedBrigadeId].Delete();
                     Init();
                 }
             }
@@ -148,7 +148,7 @@ namespace Project.Controls
         public virtual void Init()
         {
             if (tvStructure.Nodes.Count != 0) tvStructure.Nodes.Clear();
-            Areas areas = Data.Tables.Areas.Active;
+            Areas areas = Databases.Tables.Areas.Active;
 
             foreach (Area area in areas.OrderBy(r => r.Code))
             {

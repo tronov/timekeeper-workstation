@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project
 {
@@ -60,7 +60,7 @@ namespace Project
         {
             if (_PersonId != 0)
             {
-                Person person = Data.Tables.Persons[_PersonId];
+                Person person = Databases.Tables.Persons[_PersonId];
                 frmPersonProfession form = new frmPersonProfession(person);
                 form.ShowDialog(this);
                 Init();
@@ -72,7 +72,7 @@ namespace Project
         {
             if (this.CurrentId != 0)
             {
-                PersonProfession personProfession = Data.Tables.PersonProfessions[this.CurrentId];
+                PersonProfession personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
                 frmPersonProfession form = new frmPersonProfession(personProfession);
                 form.ShowDialog(this);
                 Init();
@@ -86,7 +86,7 @@ namespace Project
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    PersonProfession personProfession = Data.Tables.PersonProfessions[this.CurrentId];
+                    PersonProfession personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
                     personProfession.Delete();
                     Init();
                 }
@@ -96,7 +96,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = (from personProfession in Data.Tables.PersonProfessions
+            this.dgvItems.DataSource = (from personProfession in Databases.Tables.PersonProfessions
                                         where
                                         personProfession.PersonId.Equals(_PersonId) &&
                                         personProfession.Profession.Code.ToString().Contains(this.GetFilter("ProfessionCode")) &&

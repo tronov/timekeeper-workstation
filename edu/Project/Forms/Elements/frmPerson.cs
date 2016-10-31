@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project
 {
@@ -84,7 +84,7 @@ namespace Project
                 string middleName = tbMiddleName.Text.Trim();
                 string lastName = tbLastName.Text.Trim();
 
-                if (!Data.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && this._Person == null)
+                if (!Databases.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && this._Person == null)
                 {
 
                     (new ToolTip()).Show("Указанный табельный номер уже присвоен другому сотруднику.", this, bSave.Location, 2000);
@@ -126,7 +126,7 @@ namespace Project
                 string lastName = tbLastName.Text;
 
                 Person person = new Person(code, firstName, middleName, lastName);
-                if (this._Person == null) Data.Tables.Persons.Insert(person);
+                if (this._Person == null) Databases.Tables.Persons.Insert(person);
                 else this._Person.Update(person);
 
                 this.DialogResult = DialogResult.OK;

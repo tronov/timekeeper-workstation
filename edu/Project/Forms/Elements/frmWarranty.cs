@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Project.Controls;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Tables;
 
 namespace Project.Forms.Elements
@@ -143,7 +143,7 @@ namespace Project.Forms.Elements
 
             this.tbCustomer.Text = warranty.Customer;
             this.mtbOrder.Text = warranty.Order.ToString("D4");
-            Brigade brigade = Data.Tables.Brigades[warranty.BrigadeId];
+            Brigade brigade = Databases.Tables.Brigades[warranty.BrigadeId];
             this.bBrigade.Tag = brigade;
             this.bBrigade.Text = String.Format("{0} / {1}", brigade.Area.Code.ToString("D2"), brigade.Code.ToString("D2"));
 
@@ -164,7 +164,7 @@ namespace Project.Forms.Elements
                 PersonLastName.Value = executor.Person.LastName;
                 PersonFirstName.Value = executor.Person.FirstName;
                 PersonMiddleName.Value = executor.Person.MiddleName;
-                ProfessionCode.Tag = Data.Tables.PersonProfessions.First(r => r.Profession.Code == executor.Profession.Code);
+                ProfessionCode.Tag = Databases.Tables.PersonProfessions.First(r => r.Profession.Code == executor.Profession.Code);
                 ProfessionCode.Value = executor.Profession.Code;
                 Rank.Value = executor.Rank;
 
@@ -211,7 +211,7 @@ namespace Project.Forms.Elements
             f.ShowDialog();
             if (f.ctrlStructure.SelectedBrigadeId != 0)
             {
-                Brigade brigade = Data.Tables.Brigades[f.ctrlStructure.SelectedBrigadeId];
+                Brigade brigade = Databases.Tables.Brigades[f.ctrlStructure.SelectedBrigadeId];
                 bBrigade.Text = String.Format("{0} / {1}", brigade.Area.Code.ToString("D2"), brigade.Code.ToString("D2"));
 
                 if (bBrigade.Tag != null)
@@ -242,7 +242,7 @@ namespace Project.Forms.Elements
 
                 if (this._WarrantyId == 0)
                 {
-                    Data.Tables.Warranties.Insert(warranty);
+                    Databases.Tables.Warranties.Insert(warranty);
                     this._Warranty = warranty;
                 }
                 else
@@ -268,12 +268,12 @@ namespace Project.Forms.Elements
 
                         if (executorId < 0)
                         {
-                            Data.Tables.Executors.Insert(executor);
+                            Databases.Tables.Executors.Insert(executor);
                             executors.Add(executor);
                         }
                         else if (executorId > 0)
                         {
-                            Data.Tables.Executors[executorId].Update(executor);
+                            Databases.Tables.Executors[executorId].Update(executor);
                             executors.Add(executor);
                         }
                     }
@@ -291,12 +291,12 @@ namespace Project.Forms.Elements
 
                         if (laborId < 0)
                         {
-                            Data.Tables.Labors.Insert(labor);
+                            Databases.Tables.Labors.Insert(labor);
                             labors.Add(labor);
                         }
                         else if (laborId > 0)
                         {
-                            Data.Tables.Labors[laborId].Update(labor);
+                            Databases.Tables.Labors[laborId].Update(labor);
                             labors.Add(labor);
                         }
                     }
@@ -320,12 +320,12 @@ namespace Project.Forms.Elements
 
                         if (positionId < 0)
                         {
-                            Data.Tables.Positions.Insert(position);
+                            Databases.Tables.Positions.Insert(position);
                             positions.Add(position);
                         }
                         else if (positionId > 0)
                         {
-                            Data.Tables.Positions[positionId].Update(position);
+                            Databases.Tables.Positions[positionId].Update(position);
                             positions.Add(position);
                         }
 

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 
 namespace Project
 {
@@ -74,7 +74,7 @@ namespace Project
         {
             if (this.CurrentId != 0)
             {
-                Person person = Data.Tables.Persons[this.CurrentId];
+                Person person = Databases.Tables.Persons[this.CurrentId];
                 frmPerson form = new frmPerson(person);
                 form.ShowDialog(this);
                 Init();
@@ -88,7 +88,7 @@ namespace Project
             {
                 if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
                 {
-                    Person person = Data.Tables.Persons[this.CurrentId];
+                    Person person = Databases.Tables.Persons[this.CurrentId];
                     person.Delete();
                     Init();
                 }
@@ -98,7 +98,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = Data.Tables.Persons.Except(Deletions.AsEnumerable()).Where(r =>
+            this.dgvItems.DataSource = Databases.Tables.Persons.Except(Deletions.AsEnumerable()).Where(r =>
               r.Code.ToString().Contains(this.GetFilter("Code")) &&
               r.FirstName.ToUpper().Contains(this.GetFilter("FirstName").ToUpper()) &&
               r.MiddleName.ToUpper().Contains(this.GetFilter("MiddleName").ToUpper()) &&

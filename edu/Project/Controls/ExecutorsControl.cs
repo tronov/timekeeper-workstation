@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Tables;
 
 namespace Project.Controls
@@ -51,14 +51,14 @@ namespace Project.Controls
                         }
                         foreach (short deletionCode in deletionsCodes)
                         {
-                            deletions.AddRange(Data.Tables.BrigadePersons.Active.Where(r => r.Person.Code == deletionCode).AsEnumerable());
+                            deletions.AddRange(Databases.Tables.BrigadePersons.Active.Where(r => r.Person.Code == deletionCode).AsEnumerable());
                         }
                         fbp.ctrlBrigadePersons.Deletions = deletions;
                         fbp.ShowDialog();
 
                         if (fbp.ctrlBrigadePersons.SelectedId != 0)
                         {
-                            BrigadePerson brigadePerson = Data.Tables.BrigadePersons[fbp.ctrlBrigadePersons.SelectedId];
+                            BrigadePerson brigadePerson = Databases.Tables.BrigadePersons[fbp.ctrlBrigadePersons.SelectedId];
                             DataGridViewButtonCell button = (DataGridViewButtonCell)cell;
                             button.Value = brigadePerson.Person.Code.ToString();
                             button.Tag = brigadePerson.Person;
@@ -76,7 +76,7 @@ namespace Project.Controls
                             ppf.ShowDialog();
                             if (ppf.SelectedId != 0)
                             {
-                                PersonProfession pp = Data.Tables.PersonProfessions[ppf.SelectedId];
+                                PersonProfession pp = Databases.Tables.PersonProfessions[ppf.SelectedId];
                                 DataGridViewButtonCell b = (DataGridViewButtonCell)cell;
                                 b.Tag = pp;
                                 b.Value = pp.Profession.Code.ToString();

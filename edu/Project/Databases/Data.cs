@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using JRO;
 
-namespace Project.Databases
+namespace Project.Data
 {
-    public static class Data
+    public static class Databases
     {
         private static DirectoryInfo _DataDirectory = new DirectoryInfo(@".\Databases");
 
@@ -124,7 +124,7 @@ namespace Project.Databases
             Tables.Clear();
         }
 
-        static Data()
+        static Databases()
         {
             Init();
 

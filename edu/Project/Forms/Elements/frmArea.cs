@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using System.Linq;
 
 namespace Project.Forms.Elements
@@ -31,12 +31,12 @@ namespace Project.Forms.Elements
                 (new ToolTip()).Show("Шифр 00 не допускается", this, this.mtbCode.Location, 2000);
                 return false;
             }
-            else if (!Data.Tables.Areas.Active.Where(r => r.Code == code).Count().Equals(0))
+            else if (!Databases.Tables.Areas.Active.Where(r => r.Code == code).Count().Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким шифром уже существует.", this, this.mtbCode.Location, 2000);
                 return false;
             }
-            else if (!Data.Tables.Areas.Active.Where(r => r.Title.Equals(title)).Count().Equals(0))
+            else if (!Databases.Tables.Areas.Active.Where(r => r.Title.Equals(title)).Count().Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким названием уже существует.", this, this.mtbCode.Location, 2000);
                 return false;
@@ -49,7 +49,7 @@ namespace Project.Forms.Elements
             if (Check())
             {
                 Area area = new Area(System.Convert.ToByte(mtbCode.Text), tbTitle.Text.Trim());
-                if (this._Area == null) Data.Tables.Areas.Insert(area);
+                if (this._Area == null) Databases.Tables.Areas.Insert(area);
                 else this._Area.Update(area);
                 this.DialogResult = DialogResult.OK;
                 this.Close();

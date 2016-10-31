@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Tables;
 
 namespace Project.Forms.Elements
@@ -91,7 +91,7 @@ namespace Project.Forms.Elements
                         DateTime date = (DateTime)dgvTable.Columns[cell.ColumnIndex].Tag;
                         float hours = 0F;
                         float money = 0F;
-                        List<Warranty> warranties = (from warranty in Data.Tables.Warranties
+                        List<Warranty> warranties = (from warranty in Databases.Tables.Warranties
                                                      from executor in warranty.Executors
                                                      from labor in warranty.Labors
                                                      where
@@ -161,7 +161,7 @@ namespace Project.Forms.Elements
             f.ShowDialog();
             if (f.ctrlStructure.SelectedBrigadeId != 0)
             {
-                Brigade brigade = Data.Tables.Brigades[f.ctrlStructure.SelectedBrigadeId];
+                Brigade brigade = Databases.Tables.Brigades[f.ctrlStructure.SelectedBrigadeId];
                 bBrigade.Text = String.Format("{0} / {1}", brigade.Area.Code.ToString("D2"), brigade.Code.ToString("D2"));
                 bBrigade.Tag = brigade;
             }

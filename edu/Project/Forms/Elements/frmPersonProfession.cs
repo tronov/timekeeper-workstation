@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Project.Databases;
+using Project.Data;
 using Project.Forms.Tables;
 
 namespace Project
@@ -42,7 +42,7 @@ namespace Project
             f.ShowDialog(this);
             if (f.professionsControl.CurrentId != 0)
             {
-                Profession p = Data.Tables.Professions[f.professionsControl.CurrentId];
+                Profession p = Databases.Tables.Professions[f.professionsControl.CurrentId];
                 bProfessionCode.Text = p.Code.ToString();
                 bProfessionCode.Tag = p;
                 tbProfessionTitle.Text = p.Title;
@@ -59,7 +59,7 @@ namespace Project
                 PersonProfession personProfession = new PersonProfession(PersonId, ProfessionId, Rank);
 
                 if (this._PersonProfession == null)
-                    Data.Tables.PersonProfessions.Insert(personProfession);
+                    Databases.Tables.PersonProfessions.Insert(personProfession);
                 else this._PersonProfession.Update(personProfession);
 
                 this.Close();
