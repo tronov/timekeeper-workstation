@@ -63,19 +63,29 @@ namespace Project.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap j0435235 {
+        internal static System.Drawing.Bitmap Hourglass {
             get {
-                object obj = ResourceManager.GetObject("j0435235", resourceCulture);
+                object obj = ResourceManager.GetObject("Hourglass", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon HourglassIcon {
+            get {
+                object obj = ResourceManager.GetObject("HourglassIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap p456 {
+        internal static System.Drawing.Bitmap Splash {
             get {
-                object obj = ResourceManager.GetObject("p456", resourceCulture);
+                object obj = ResourceManager.GetObject("Splash", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

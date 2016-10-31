@@ -2,11 +2,11 @@
 
 namespace Project.Forms.Tables
 {
- public partial class frmWarranties : Form
- {
-  public frmWarranties()
-  {
-   InitializeComponent();
-  }
- }
+    public partial class frmWarranties : Form
+    {
+        public frmWarranties()
+        {
+            InitializeComponent();
+        }
+    }
 }

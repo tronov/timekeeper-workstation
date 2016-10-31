@@ -28,21 +28,21 @@
   /// </summary>
   private void InitializeComponent()
   {
-   this.SuspendLayout();
-   // 
-   // frmSplash
-   // 
-   this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-   this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-   this.BackgroundImage = global::Project.Properties.Resources.j0435235;
-   this.ClientSize = new System.Drawing.Size(480, 300);
-   this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-   this.Name = "frmSplash";
-   this.ShowIcon = false;
-   this.ShowInTaskbar = false;
-   this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-   this.TopMost = true;
-   this.ResumeLayout(false);
+            this.SuspendLayout();
+            // 
+            // frmSplash
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::Project.Properties.Resources.Splash;
+            this.ClientSize = new System.Drawing.Size(480, 300);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "frmSplash";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.TopMost = true;
+            this.ResumeLayout(false);
 
   }
 
