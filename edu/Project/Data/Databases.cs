@@ -10,7 +10,7 @@ namespace Project.Data
 {
     public static class Databases
     {
-        private static DirectoryInfo _DataDirectory = new DirectoryInfo(@".\Databases");
+        private static DirectoryInfo _DataDirectory = new DirectoryInfo(@".\Data");
 
         private static OleDbConnectionStringBuilder _ConnectionStringBuilder =
          new OleDbConnectionStringBuilder("Provider=Microsoft.Jet.OLEDB.4.0;");
@@ -60,6 +60,13 @@ namespace Project.Data
 
         private static void Init()
         {
+            // Проверить существование директории данных
+            // Если не существует - создать
+            if (!_DataDirectory.Exists)
+            {
+                _DataDirectory.Create();
+            }
+
             int currentYear = DateTime.Now.Year;
 
             // Получить список путей к каждому из *.mdb файлов в каталоге данных
