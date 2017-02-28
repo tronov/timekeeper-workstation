@@ -14,27 +14,27 @@ namespace Project.Forms
 
         private void ShowChild(Type type)
         {
-            int frmId = -1;
-            for (int i = 0; i < this.MdiChildren.Length; i++)
+            var frmId = -1;
+            for (var i = 0; i < MdiChildren.Length; i++)
             {
-                if (this.MdiChildren[i].GetType().Equals(type))
+                if (MdiChildren[i].GetType() == type)
                 {
                     frmId = i;
                 }
             }
             if (frmId == -1)
             {
-                Form form = (Form)Activator.CreateInstance(type);
+                var form = (Form)Activator.CreateInstance(type);
                 form.MdiParent = this;
                 form.WindowState = FormWindowState.Maximized;
                 form.Show();
             }
-            else this.MdiChildren[frmId].Focus();
+            else MdiChildren[frmId].Focus();
         }
 
         private void mainMenuExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void miProfessions_Click(object sender, EventArgs e)
@@ -64,18 +64,18 @@ namespace Project.Forms
 
         private void miAbout_Click(object sender, EventArgs e)
         {
-            frmAbout form = new frmAbout();
+            var form = new frmAbout();
             form.ShowDialog(this);
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            frmSplash splash = new frmSplash();
+            var splash = new frmSplash();
             splash.Show();
             System.Threading.Thread.Sleep(2000);
             splash.Close();
-            this.TopMost = true;
-            this.TopMost = false;
+            TopMost = true;
+            TopMost = false;
         }
     }
 }

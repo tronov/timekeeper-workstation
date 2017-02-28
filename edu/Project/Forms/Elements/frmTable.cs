@@ -190,9 +190,9 @@ namespace Project.Forms.Elements
                 {
                     dgvTable.ClearSelection();
                     cell.Selected = true;
-                    Rectangle r = dgvTable.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
-                    Point location = new Point(r.Location.X + e.Location.X, r.Location.Y + e.Location.Y);
-                    this.cmsSelect.Show(dgvTable, location);
+                    var r = dgvTable.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                    var location = new Point(r.Location.X + e.Location.X, r.Location.Y + e.Location.Y);
+                    cmsSelect.Show(dgvTable, location);
                 }
             }
         }
@@ -201,7 +201,7 @@ namespace Project.Forms.Elements
         {
             frmWarranties form = new frmWarranties();
             form.ctrlWarranties.scMain.Panel2Collapsed = true;
-            form.ctrlWarranties.Includes = (List<Warranty>)dgvTable.SelectedCells[0].Tag;
+            form.ctrlWarranties.Includes = dgvTable.SelectedCells[0].Tag as List<Warranty>;
             form.ShowDialog();
             Calculate();
         }

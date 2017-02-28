@@ -9,22 +9,16 @@ namespace Project.Controls
 {
     public partial class BrigadePersonsControl : TableControl
     {
-        private DataGridViewColumn _Id = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _PersonCode = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _PersonFirstName = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _PersonMiddleName = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _PersonLastName = new DataGridViewTextBoxColumn();
-
-        private int _BrigadeId = 0;
-        private List<BrigadePerson> _Deletions = new List<BrigadePerson>();
+        private int _brigadeId = 0;
+        private List<BrigadePerson> _deletions = new List<BrigadePerson>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int BrigadeId
         {
-            get { return this._BrigadeId; }
+            get { return _brigadeId; }
             set
             {
-                this._BrigadeId = value;
+                this._brigadeId = value;
                 Init();
             }
         }
@@ -32,10 +26,10 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<BrigadePerson> Deletions
         {
-            get { return this._Deletions; }
+            get { return _deletions; }
             set
             {
-                this._Deletions = value;
+                _deletions = value;
                 Init();
             }
         }
@@ -44,44 +38,58 @@ namespace Project.Controls
         {
             InitializeComponent();
 
-            this.gbFilter.Text = "Фильтр персонала";
-            this.gbItems.Text = "Персонал подразделения";
-            this.gbOperations.Text = "Операции с персоналом";
+            gbFilter.Text = "Фильтр персонала";
+            gbItems.Text = "Персонал подразделения";
+            gbOperations.Text = "Операции с персоналом";
 
-            this._Id.Name = "Id";
-            this._Id.Visible = false;
+            var id = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                Visible = false
+            };
 
-            this._PersonCode.Name = "PersonCode";
-            this._PersonCode.HeaderText = "Таб. №";
+            var personCode = new DataGridViewTextBoxColumn
+            {
+                Name = "PersonCode",
+                HeaderText = "Таб. №"
+            };
 
-            this._PersonLastName.Name = "PersonLastName";
-            this._PersonLastName.HeaderText = "Фамилия";
+            var personLastName = new DataGridViewTextBoxColumn
+            {
+                Name = "PersonLastName",
+                HeaderText = "Фамилия"
+            };
 
-            this._PersonFirstName.Name = "PersonFirstName";
-            this._PersonFirstName.HeaderText = "Имя";
+            var personFirstName = new DataGridViewTextBoxColumn
+            {
+                Name = "PersonFirstName",
+                HeaderText = "Имя"
+            };
 
-            this._PersonMiddleName.Name = "PersonMiddleName";
-            this._PersonMiddleName.HeaderText = "Отчество";
-            this._PersonMiddleName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            var personMiddleName = new DataGridViewTextBoxColumn
+            {
+                Name = "PersonMiddleName",
+                HeaderText = "Отчество",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
+
+            dgvItems.Columns.Add(id);
+            dgvItems.Columns.Add(personCode);
+            dgvItems.Columns.Add(personLastName);
+            dgvItems.Columns.Add(personFirstName);
+            dgvItems.Columns.Add(personMiddleName);
 
 
-            this.dgvItems.Columns.Add(this._Id);
-            this.dgvItems.Columns.Add(this._PersonCode);
-            this.dgvItems.Columns.Add(this._PersonLastName);
-            this.dgvItems.Columns.Add(this._PersonFirstName);
-            this.dgvItems.Columns.Add(this._PersonMiddleName);
+            dgvFilter.Columns.Add(personCode.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(personLastName.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(personFirstName.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(personMiddleName.Clone() as DataGridViewColumn);
+            dgvFilter.Rows.Add();
 
-
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._PersonCode.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._PersonLastName.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._PersonFirstName.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._PersonMiddleName.Clone());
-            this.dgvFilter.Rows.Add();
-
-            this.bNew.Text = "Добавить";
-            this.bDelete.Text = "Исключить";
-            this.bDelete.Location = this.bEdit.Location;
-            this.bEdit.Visible = false;
+            bNew.Text = "Добавить";
+            bDelete.Text = "Исключить";
+            bDelete.Location = bEdit.Location;
+            bEdit.Visible = false;
 
             Init();
         }
@@ -89,61 +97,62 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            if (this.BrigadeId != 0)
+            if (BrigadeId == 0) return;
+            var form = new frmPersons
             {
-                Brigade brigade = Databases.Tables.Brigades[BrigadeId];
-                frmPersons form = new frmPersons();
-
-                form.ctrlPersons.Deletions = (from person in Databases.Tables.Persons.Active
-                                              from brigadePerson in Databases.Tables.BrigadePersons.Active
-                                              where person.Equals(brigadePerson.Person)
-                                              select person).ToList();
-
-                form.CatalogMode = CatalogMode.Select;
-                form.ShowDialog();
-                if (form.SelectedPersonId != 0)
+                ctrlPersons =
                 {
-                    BrigadePerson brigadePerson = new BrigadePerson(this.BrigadeId, form.SelectedPersonId);
-                    Databases.Tables.BrigadePersons.Insert(brigadePerson);
-                }
-                Init();
+                    Deletions = (from person in Databases.Tables.Persons.Active
+                        from brigadePerson in Databases.Tables.BrigadePersons.Active
+                        where person.Equals(brigadePerson.Person)
+                        select person).ToList()
+                },
+                CatalogMode = CatalogMode.Select
+            };
+
+
+            form.ShowDialog();
+            if (form.SelectedPersonId != 0)
+            {
+                var brigadePerson = new BrigadePerson(BrigadeId, form.SelectedPersonId);
+                Databases.Tables.BrigadePersons.Insert(brigadePerson);
             }
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    BrigadePerson brigadePerson = Databases.Tables.BrigadePersons[this.CurrentId];
-                    brigadePerson.Delete();
-                    Init();
-                }
-            }
+            if (CurrentId == 0) return;
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            var brigadePerson = Databases.Tables.BrigadePersons[CurrentId];
+            brigadePerson.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = (from brigadePerson in Databases.Tables.BrigadePersons.Active.Except(this.Deletions.AsEnumerable())
+            dgvItems.DataSource = (from brigadePerson in Databases.Tables.BrigadePersons.Active.Except(Deletions.AsEnumerable())
                                         where
-                                        (brigadePerson.BrigadeId == this.BrigadeId) &&
-                                        brigadePerson.Person.Code.ToString().Contains(this.GetFilter("PersonCode")) &&
-                                        brigadePerson.Person.FirstName.ToUpper().Contains(this.GetFilter("PersonFirstName").ToUpper()) &&
-                                        brigadePerson.Person.MiddleName.ToUpper().Contains(this.GetFilter("PersonMiddleName").ToUpper()) &&
-                                        brigadePerson.Person.LastName.ToUpper().Contains(this.GetFilter("PersonLastName").ToUpper())
+                                        (brigadePerson.BrigadeId == BrigadeId) &&
+                                        brigadePerson.Person.Code.ToString().Contains(GetFilter("PersonCode")) &&
+                                        brigadePerson.Person.FirstName.ToUpper().Contains(GetFilter("PersonFirstName").ToUpper()) &&
+                                        brigadePerson.Person.MiddleName.ToUpper().Contains(GetFilter("PersonMiddleName").ToUpper()) &&
+                                        brigadePerson.Person.LastName.ToUpper().Contains(GetFilter("PersonLastName").ToUpper())
                                         select new
                                         {
-                                            Id = brigadePerson.Id,
+                                            brigadePerson.Id,
                                             PersonCode = brigadePerson.Person.Code,
                                             PersonFirstName = brigadePerson.Person.FirstName,
                                             PersonMiddleName = brigadePerson.Person.MiddleName,
                                             PersonLastName = brigadePerson.Person.LastName
                                         }).ToList();
 
-            foreach (DataGridViewColumn column in this.dgvItems.Columns)
+            foreach (DataGridViewColumn column in dgvItems.Columns)
             {
                 column.DataPropertyName = column.Name;
             }

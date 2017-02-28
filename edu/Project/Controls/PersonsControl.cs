@@ -8,20 +8,16 @@ namespace Project
 {
     public partial class PersonsControl : TableControl
     {
-        private DataGridViewColumn _Id = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Code = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _FirstName = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _MiddleName = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _LastName = new DataGridViewTextBoxColumn();
-        private List<Person> _Deletions = new List<Person>();
+
+        private List<Person> _deletions = new List<Person>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Person> Deletions
         {
-            get { return this._Deletions; }
+            get { return _deletions; }
             set
             {
-                this._Deletions = value;
+                _deletions = value;
                 Init();
             }
         }
@@ -30,33 +26,48 @@ namespace Project
         {
             InitializeComponent();
 
-            this._Id.Name = "Id";
-            this._Id.Visible = false;
+            var id = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                Visible = false
+            };
 
-            this._Code.Name = "Code";
-            this._Code.HeaderText = "Таб. №";
+            var code = new DataGridViewTextBoxColumn
+            {
+                Name = "Code",
+                HeaderText = "Таб. №"
+            };
 
-            this._LastName.Name = "LastName";
-            this._LastName.HeaderText = "Фамилия";
+            var lastName = new DataGridViewTextBoxColumn
+            {
+                Name = "LastName",
+                HeaderText = "Фамилия"
+            };
+            var firstName = new DataGridViewTextBoxColumn
+            {
+                Name = "FirstName",
+                HeaderText = "Имя"
+            };
 
-            this._FirstName.Name = "FirstName";
-            this._FirstName.HeaderText = "Имя";
+            var middleName = new DataGridViewTextBoxColumn
+            {
+                Name = "MiddleName",
+                HeaderText = "Отчество",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
 
-            this._MiddleName.Name = "MiddleName";
-            this._MiddleName.HeaderText = "Отчество";
-            this._MiddleName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            this.dgvItems.Columns.Add(this._Id);
-            this.dgvItems.Columns.Add(this._Code);
-            this.dgvItems.Columns.Add(this._LastName);
-            this.dgvItems.Columns.Add(this._FirstName);
-            this.dgvItems.Columns.Add(this._MiddleName);
+            dgvItems.Columns.Add(id);
+            dgvItems.Columns.Add(code);
+            dgvItems.Columns.Add(lastName);
+            dgvItems.Columns.Add(firstName);
+            dgvItems.Columns.Add(middleName);
 
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Code.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._LastName.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._FirstName.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._MiddleName.Clone());
-            this.dgvFilter.Rows.Add();
+            dgvFilter.Columns.Add(code.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(lastName.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(firstName.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(middleName.Clone() as DataGridViewColumn);
+            dgvFilter.Rows.Add();
 
             Init();
         }
@@ -64,7 +75,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            frmPerson form = new frmPerson();
+            var form = new frmPerson();
             form.ShowDialog(this);
             Init();
         }
@@ -72,40 +83,39 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Edit()
         {
-            if (this.CurrentId != 0)
-            {
-                Person person = Databases.Tables.Persons[this.CurrentId];
-                frmPerson form = new frmPerson(person);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (CurrentId == 0) return;
+
+            var person = Databases.Tables.Persons[this.CurrentId];
+            var form = new frmPerson(person);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    Person person = Databases.Tables.Persons[this.CurrentId];
-                    person.Delete();
-                    Init();
-                }
-            }
+            if (this.CurrentId == 0) return;
+
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            var person = Databases.Tables.Persons[CurrentId];
+            person.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = Databases.Tables.Persons.Except(Deletions.AsEnumerable()).Where(r =>
-              r.Code.ToString().Contains(this.GetFilter("Code")) &&
-              r.FirstName.ToUpper().Contains(this.GetFilter("FirstName").ToUpper()) &&
-              r.MiddleName.ToUpper().Contains(this.GetFilter("MiddleName").ToUpper()) &&
-              r.LastName.ToUpper().Contains(this.GetFilter("LastName").ToUpper())
+            dgvItems.DataSource = Databases.Tables.Persons.Except(Deletions.AsEnumerable()).Where(r =>
+              r.Code.ToString().Contains(GetFilter("Code")) &&
+              r.FirstName.ToUpper().Contains(GetFilter("FirstName").ToUpper()) &&
+              r.MiddleName.ToUpper().Contains(GetFilter("MiddleName").ToUpper()) &&
+              r.LastName.ToUpper().Contains(GetFilter("LastName").ToUpper())
               ).ToList();
 
-            foreach (DataGridViewColumn column in this.dgvItems.Columns)
+            foreach (DataGridViewColumn column in dgvItems.Columns)
             {
                 column.DataPropertyName = column.Name;
             }

@@ -7,50 +7,57 @@ namespace Project
 {
     public partial class PersonProfessionsControl : TableControl
     {
-        private int _PersonId = 0;
+        private int _personId = 0;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PersonId
         {
-            get { return this._PersonId; }
+            get { return _personId; }
             set
             {
-                this._PersonId = value;
+                _personId = value;
                 Init();
             }
         }
-
-        private DataGridViewColumn _Id = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _ProfessionCode = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _ProfessionTitle = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank = new DataGridViewTextBoxColumn();
 
         public PersonProfessionsControl()
         {
             InitializeComponent();
 
-            this._Id.Name = "Id";
-            this._Id.Visible = false;
+            DataGridViewColumn id = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                Visible = false
+            };
 
-            this._ProfessionCode.Name = "ProfessionCode";
-            this._ProfessionCode.HeaderText = "Шифр профессии";
+            DataGridViewColumn professionCode = new DataGridViewTextBoxColumn
+            {
+                Name = "ProfessionCode",
+                HeaderText = "Шифр профессии"
+            };
 
-            this._ProfessionTitle.Name = "ProfessionTitle";
-            this._ProfessionTitle.HeaderText = "Наименование профессии";
-            this._ProfessionTitle.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            DataGridViewColumn professionTitle = new DataGridViewTextBoxColumn
+            {
+                Name = "ProfessionTitle",
+                HeaderText = "Наименование профессии",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
 
-            this._Rank.Name = "Rank";
-            this._Rank.HeaderText = "Разряд";
+            DataGridViewColumn rank = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank",
+                HeaderText = "Разряд"
+            };
 
-            this.dgvItems.Columns.Add(this._Id);
-            this.dgvItems.Columns.Add(this._ProfessionCode);
-            this.dgvItems.Columns.Add(this._ProfessionTitle);
-            this.dgvItems.Columns.Add(this._Rank);
+            dgvItems.Columns.Add(id);
+            dgvItems.Columns.Add(professionCode);
+            dgvItems.Columns.Add(professionTitle);
+            dgvItems.Columns.Add(rank);
 
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._ProfessionCode.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._ProfessionTitle.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank.Clone());
-            this.dgvFilter.Rows.Add();
+            dgvFilter.Columns.Add(professionCode.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(professionTitle.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank.Clone() as DataGridViewColumn);
+            dgvFilter.Rows.Add();
 
             Init();
         }
@@ -58,47 +65,41 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            if (_PersonId != 0)
-            {
-                Person person = Databases.Tables.Persons[_PersonId];
-                frmPersonProfession form = new frmPersonProfession(person);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (_personId == 0) return;
+            var person = Databases.Tables.Persons[_personId];
+            var form = new frmPersonProfession(person);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Edit()
         {
-            if (this.CurrentId != 0)
-            {
-                PersonProfession personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
-                frmPersonProfession form = new frmPersonProfession(personProfession);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (this.CurrentId == 0) return;
+            var personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
+            var form = new frmPersonProfession(personProfession);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    PersonProfession personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
-                    personProfession.Delete();
-                    Init();
-                }
-            }
+            if (this.CurrentId == 0) return;
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+            var personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
+            personProfession.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = (from personProfession in Databases.Tables.PersonProfessions
+            dgvItems.DataSource = (from personProfession in Databases.Tables.PersonProfessions
                                         where
-                                        personProfession.PersonId.Equals(_PersonId) &&
+                                        personProfession.PersonId.Equals(_personId) &&
                                         personProfession.Profession.Code.ToString().Contains(this.GetFilter("ProfessionCode")) &&
                                         personProfession.Profession.Title.ToUpper().Contains(this.GetFilter("ProfessionTitle").ToUpper()) &&
                                         personProfession.Rank.ToString().Contains(this.GetFilter("Rank"))
@@ -110,7 +111,7 @@ namespace Project
                                             Rank = personProfession.Rank
                                         }).ToList();
 
-            foreach (DataGridViewColumn column in this.dgvItems.Columns)
+            foreach (DataGridViewColumn column in dgvItems.Columns)
             {
                 column.DataPropertyName = column.Name;
             }

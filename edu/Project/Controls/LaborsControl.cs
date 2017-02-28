@@ -12,29 +12,33 @@ namespace Project.Controls
 
         private void dgvLabors_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            if (dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex].Name == "Hours")
-            {
-                DataGridViewTextBoxEditingControl cell = (DataGridViewTextBoxEditingControl)e.Control;
-                cell.KeyPress += new KeyPressEventHandler(hours_KeyPress);
-            }
+            if (dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex].Name != "Hours") return;
+
+            var cell = (DataGridViewTextBoxEditingControl)e.Control;
+            cell.KeyPress += hours_KeyPress;
         }
 
-        void hours_KeyPress(object sender, KeyPressEventArgs e)
+        private static void hours_KeyPress(object sender, KeyPressEventArgs e)
         {
-            string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            DataGridViewTextBoxEditingControl ctrl = (DataGridViewTextBoxEditingControl)sender;
+            var ctrl = sender as DataGridViewTextBoxEditingControl;
 
-            if (ctrl.Text.Contains(separator) && (e.KeyChar != (char)Keys.Back) && ctrl.SelectionLength == 0)
-            {
-                if (ctrl.Text.Substring(ctrl.Text.IndexOf(separator)).Length > 1) e.Handled = true;
-            }
+            // to avoid NRE
+            if (ctrl == null) return;
 
-            if (!Char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != '.') && (e.KeyChar != ',')) e.Handled = true;
+            if (ctrl.Text.Contains(separator) &&
+                (e.KeyChar != (char) Keys.Back) &&
+                ctrl.SelectionLength == 0 &&
+                ctrl.Text.Substring(ctrl.Text.IndexOf(separator, StringComparison.Ordinal)).Length > 1)
+                e.Handled = true;
+
+            if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != '.') && (e.KeyChar != ','))
+                e.Handled = true;
 
             if (e.KeyChar == '.' || e.KeyChar == ',')
             {
-                if (!ctrl.Text.Contains(separator) && !(ctrl.Text.Length == 0))
+                if (!ctrl.Text.Contains(separator) && ctrl.Text.Length != 0)
                 {
                     ctrl.Text += separator;
                     ctrl.SelectionStart = ctrl.Text.Length;
@@ -46,7 +50,10 @@ namespace Project.Controls
 
         private void dgvItems_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            DataGridViewRow row = ((DataGridView)sender).CurrentRow;
+            var row = (sender as DataGridView)?.CurrentRow;
+
+            if (row == null) return;
+
             foreach (DataGridViewCell cell in row.Cells)
                 if (cell.Value == null) e.Cancel = true;
             if (row.Cells["LaborId"].Value == null) e.Cancel = false;

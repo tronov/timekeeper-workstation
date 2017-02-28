@@ -19,64 +19,49 @@ namespace Project
         public virtual void Delete() { }
         public virtual void Init() { }
 
-        private CatalogMode _CatalogMode;
-        private int _SelectedId = 0;
+        private CatalogMode _catalogMode;
 
         /// <summary>
         /// Context menu for selected row
         /// </summary>
-        private ContextMenuStrip cms = new ContextMenuStrip();
+        private ContextMenuStrip _cms = new ContextMenuStrip();
 
         /// <summary>
         /// Возвращает идентификатор строки выделенной в текущий момент
         /// </summary>
-        public int CurrentId
-        {
-            get
-            {
-                if (!this.dgvItems.SelectedRows.Count.Equals(0))
-                    return (int)this.dgvItems.SelectedRows[0].Cells["Id"].Value;
-                else return 0;
-            }
-        }
+        public int CurrentId => dgvItems.SelectedRows.Count.Equals(0)
+            ? 0
+            : (int) dgvItems.SelectedRows[0].Cells["Id"].Value;
 
         /// <summary>
         /// Возвращает идентификатор выбранной строки
         /// </summary>
-        public int SelectedId
-        {
-            get
-            {
-                return this._SelectedId;
-            }
-        }
+        public int SelectedId { get; private set; }
 
         /// <summary>
         /// Возвращает или задает режим просмотра справочника
         /// </summary>
         public CatalogMode CatalogMode
         {
-            get
-            {
-                return this._CatalogMode;
-            }
+            get { return _catalogMode; }
             set
             {
-                this._CatalogMode = value;
+                _catalogMode = value;
 
                 switch (value)
                 {
                     case CatalogMode.Select:
                         scMain.Panel2Collapsed = true;
-                        cms = cmsSelect;
-                        dgvItems.MouseDoubleClick += new MouseEventHandler(dgvItems_MouseDoubleClick);
+                        _cms = cmsSelect;
+                        dgvItems.MouseDoubleClick += dgvItems_MouseDoubleClick;
                         break;
                     case CatalogMode.View:
                         scMain.Panel2Collapsed = false;
-                        cms = cmsView;
-                        dgvItems.MouseDoubleClick -= new MouseEventHandler(dgvItems_MouseDoubleClick);
+                        _cms = cmsView;
+                        dgvItems.MouseDoubleClick -= dgvItems_MouseDoubleClick;
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
             }
         }
@@ -99,12 +84,11 @@ namespace Project
         {
             try
             {
-                DataGridViewCell cell = dgvFilter.Rows[0].Cells[columnName];
-                return cell.Value == null ? String.Empty : cell.Value.ToString().Trim();
+                return dgvFilter.Rows[0].Cells[columnName].Value.ToString().Trim();
             }
             catch
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -116,13 +100,11 @@ namespace Project
 
         private void dgvItems_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
-            {
-                DataGridView grid = (DataGridView)sender;
-                DataGridViewRow row = grid.Rows[e.RowIndex];
-                row.ContextMenuStrip = cms;
-                row.Selected = true;
-            }
+            if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
+            var grid = (DataGridView)sender;
+            var row = grid.Rows[e.RowIndex];
+            row.ContextMenuStrip = _cms;
+            row.Selected = true;
         }
 
         private void dgvItems_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
@@ -133,9 +115,8 @@ namespace Project
 
         private void miSelect_Click(object sender, EventArgs e)
         {
-            if (this.CurrentId != 0)
-                this._SelectedId = this.CurrentId;
-            this.FindForm().Close();
+            if (CurrentId != 0) SelectedId = CurrentId;
+            FindForm()?.Close();
         }
 
         private void bNew_Click(object sender, EventArgs e) { New(); }
@@ -152,16 +133,20 @@ namespace Project
 
         private void dgvItems_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
-            dgvFilter.Columns[e.Column.Name].Width = dgvItems.Columns[e.Column.Name].Width;
+            var dataGridViewColumn = dgvFilter.Columns[e.Column.Name];
+            if (dataGridViewColumn == null) return;
+
+            var dgvItemsColumn = dgvItems.Columns[e.Column.Name];
+            if (dgvItemsColumn == null) return;
+
+            dataGridViewColumn.Width = dgvItemsColumn.Width;
         }
 
-        void dgvItems_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void dgvItems_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (this.CurrentId != 0)
-            {
-                this._SelectedId = this.CurrentId;
-                this.FindForm().Close();
-            }
+            if (CurrentId == 0) return;
+            SelectedId = CurrentId;
+            FindForm()?.Close();
         }
     }
 }

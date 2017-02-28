@@ -7,74 +7,95 @@ namespace Project
 {
     public partial class ProfessionsControl : TableControl
     {
-        private DataGridViewColumn _Id = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Code = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Title = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank1 = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank2 = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank3 = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank4 = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank5 = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Rank6 = new DataGridViewTextBoxColumn();
+
 
         public ProfessionsControl()
         {
             InitializeComponent();
 
-            this._Id.Name = "Id";
-            this._Id.Visible = false;
 
-            this._Code.Name = "Code";
-            this._Code.Width = 70;
-            this._Code.HeaderText = "Шифр";
 
-            this._Title.Name = "Title";
-            this._Title.HeaderText = "Наименование";
-            this._Title.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            var id = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                Visible = false
+            };
 
-            this._Rank1.Name = "Rank1";
-            this._Rank1.Width = 80;
-            this._Rank1.HeaderText = "1 разряд";
+            var code = new DataGridViewTextBoxColumn
+            {
+                Name = "Code",
+                Width = 70,
+                HeaderText = "Шифр"
+            };
 
-            this._Rank2.Name = "Rank2";
-            this._Rank2.Width = 80;
-            this._Rank2.HeaderText = "2 разряд";
+            var title = new DataGridViewTextBoxColumn
+            {
+                Name = "Title",
+                HeaderText = "Наименование",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
 
-            this._Rank3.Name = "Rank3";
-            this._Rank3.Width = 80;
-            this._Rank3.HeaderText = "3 разряд";
+            var rank1 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank1",
+                Width = 80,
+                HeaderText = "1 разряд"
+            };
 
-            this._Rank4.Name = "Rank4";
-            this._Rank4.Width = 80;
-            this._Rank4.HeaderText = "4 разряд";
+            var rank2 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank2",
+                Width = 80,
+                HeaderText = "2 разряд"
+            };
 
-            this._Rank5.Name = "Rank5";
-            this._Rank5.Width = 80;
-            this._Rank5.HeaderText = "5 разряд";
+            var rank3 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank3",
+                Width = 80,
+                HeaderText = "3 разряд"
+            };
 
-            this._Rank6.Name = "Rank6";
-            this._Rank6.Width = 80;
-            this._Rank6.HeaderText = "6 разряд";
+            var rank4 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank4",
+                Width = 80,
+                HeaderText = "4 разряд"
+            };
 
-            this.dgvItems.Columns.Add(this._Id);
-            this.dgvItems.Columns.Add(this._Code);
-            this.dgvItems.Columns.Add(this._Title);
-            this.dgvItems.Columns.Add(this._Rank1);
-            this.dgvItems.Columns.Add(this._Rank2);
-            this.dgvItems.Columns.Add(this._Rank3);
-            this.dgvItems.Columns.Add(this._Rank4);
-            this.dgvItems.Columns.Add(this._Rank5);
-            this.dgvItems.Columns.Add(this._Rank6);
+            var rank5 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank5",
+                Width = 80,
+                HeaderText = "5 разряд"
+            };
 
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Code.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Title.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank1.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank2.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank3.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank4.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank5.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Rank6.Clone());
-            this.dgvFilter.Rows.Add();
+            var rank6 = new DataGridViewTextBoxColumn
+            {
+                Name = "Rank6",
+                Width = 80,
+                HeaderText = "6 разряд"
+            };
+
+            dgvItems.Columns.Add(id);
+            dgvItems.Columns.Add(code);
+            dgvItems.Columns.Add(title);
+            dgvItems.Columns.Add(rank1);
+            dgvItems.Columns.Add(rank2);
+            dgvItems.Columns.Add(rank3);
+            dgvItems.Columns.Add(rank4);
+            dgvItems.Columns.Add(rank5);
+            dgvItems.Columns.Add(rank6);
+
+            dgvFilter.Columns.Add(code.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(title.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank1.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank2.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank3.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank4.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank5.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(rank6.Clone() as DataGridViewColumn);
+            dgvFilter.Rows.Add();
 
             Init();
         }
@@ -82,7 +103,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            frmProfession form = new frmProfession();
+            var form = new frmProfession();
             form.ShowDialog(this);
             Init();
         }
@@ -90,44 +111,43 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Edit()
         {
-            if (this.CurrentId != 0)
-            {
-                Profession profession = Databases.Tables.Professions[this.CurrentId];
-                frmProfession form = new frmProfession(profession);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (CurrentId == 0) return;
+
+            var profession = Databases.Tables.Professions[this.CurrentId];
+            var form = new frmProfession(profession);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    Profession profession = Databases.Tables.Professions[this.CurrentId];
-                    profession.Delete();
-                    Init();
-                }
-            }
+            if (CurrentId == 0) return;
+
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            var profession = Databases.Tables.Professions[this.CurrentId];
+            profession.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            this.dgvItems.DataSource = Databases.Tables.Professions.Where(r =>
-              r.Code.ToString().Contains(this.GetFilter("Code")) &&
-              r.Title.ToUpper().Contains(this.GetFilter("Title").ToUpper()) &&
-              r.Rank1.ToString().Contains(this.GetFilter("Rank1")) &&
-              r.Rank2.ToString().Contains(this.GetFilter("Rank2")) &&
-              r.Rank3.ToString().Contains(this.GetFilter("Rank3")) &&
-              r.Rank4.ToString().Contains(this.GetFilter("Rank4")) &&
-              r.Rank5.ToString().Contains(this.GetFilter("Rank5")) &&
-              r.Rank6.ToString().Contains(this.GetFilter("Rank6"))
+            dgvItems.DataSource = Databases.Tables.Professions.Where(r =>
+              r.Code.ToString().Contains(GetFilter("Code")) &&
+              r.Title.ToUpper().Contains(GetFilter("Title").ToUpper()) &&
+              r.Rank1.ToString().Contains(GetFilter("Rank1")) &&
+              r.Rank2.ToString().Contains(GetFilter("Rank2")) &&
+              r.Rank3.ToString().Contains(GetFilter("Rank3")) &&
+              r.Rank4.ToString().Contains(GetFilter("Rank4")) &&
+              r.Rank5.ToString().Contains(GetFilter("Rank5")) &&
+              r.Rank6.ToString().Contains(GetFilter("Rank6"))
               ).ToList();
 
-            foreach (DataGridViewColumn column in this.dgvItems.Columns)
+            foreach (DataGridViewColumn column in dgvItems.Columns)
             {
                 column.DataPropertyName = column.Name;
             }

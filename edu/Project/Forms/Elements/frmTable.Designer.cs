@@ -90,7 +90,7 @@
             this.dtpMonth.CustomFormat = "MMMM yyyy";
             this.dtpMonth.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpMonth.Location = new System.Drawing.Point(227, 11);
-            this.dtpMonth.MaxDate = new System.DateTime(2012, 6, 5, 13, 29, 36, 417);
+            this.dtpMonth.MaxDate = System.DateTime.Now;
             this.dtpMonth.Name = "dtpMonth";
             this.dtpMonth.ShowUpDown = true;
             this.dtpMonth.Size = new System.Drawing.Size(103, 20);

@@ -15,26 +15,24 @@ namespace Project.Controls
 
         private void dgvItems_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            DataGridViewRow row = dgvItems.Rows[e.RowIndex];
+            var row = dgvItems.Rows[e.RowIndex];
 
-            bool title = row.Cells["Title"].Value != null ? true : false;
-            bool draw = row.Cells["Draw"].Value != null ? true : false;
-            bool matherial = row.Cells["Matherial"].Value != null ? true : false;
-            bool number = row.Cells["Number"].Value != null ? true : false;
-            bool mass = row.Cells["Mass"].Value != null ? true : false;
-            bool norm = row.Cells["Norm"].Value != null ? true : false;
+            var title = row.Cells["Title"].Value != null;
+            var draw = row.Cells["Draw"].Value != null;
+            var matherial = row.Cells["Matherial"].Value != null;
+            var number = row.Cells["Number"].Value != null;
+            var mass = row.Cells["Mass"].Value != null;
+            var norm = row.Cells["Norm"].Value != null;
 
             if (title && draw && matherial && number && mass && norm) e.Cancel = false;
             else if (title || draw || matherial || number || mass || norm) e.Cancel = true;
-
-            //if (row.Cells["PositionId"].Value == null) e.Cancel = false;
         }
 
-        void floatCell_KeyPress(object sender, KeyPressEventArgs e)
+        private static void floatCell_KeyPress(object sender, KeyPressEventArgs e)
         {
-            string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            DataGridViewTextBoxEditingControl ctrl = (DataGridViewTextBoxEditingControl)sender;
+            var ctrl = (DataGridViewTextBoxEditingControl)sender;
 
             if (ctrl.Text.Contains(separator) && (e.KeyChar != (char)Keys.Back) && ctrl.SelectionLength == 0)
             {
@@ -55,12 +53,12 @@ namespace Project.Controls
             if (e.KeyChar == '0' && ctrl.Text.Equals("0")) e.Handled = true;
         }
 
-        void intCell_KeyPress(object sender, KeyPressEventArgs e)
+        private static void intCell_KeyPress(object sender, KeyPressEventArgs e)
         {
-            DataGridViewTextBoxEditingControl ctrl = (DataGridViewTextBoxEditingControl)sender;
+            var ctrl = (DataGridViewTextBoxEditingControl)sender;
 
             if (
-             (!Char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back)) ||
+             (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back)) ||
              (ctrl.Text.Length == 0 && e.KeyChar == '0')
              )
                 e.Handled = true;
@@ -68,11 +66,11 @@ namespace Project.Controls
 
         private void dgvItems_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            DataGridViewColumn column = dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex];
-            AutoCompleteStringCollection acsCollection = new AutoCompleteStringCollection();
-            List<string> strings = new List<string>();
+            var column = dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex];
+            var acsCollection = new AutoCompleteStringCollection();
+            List<string> strings;
 
-            DataGridViewTextBoxEditingControl ctrl = (DataGridViewTextBoxEditingControl)e.Control;
+            var ctrl = (DataGridViewTextBoxEditingControl)e.Control;
 
             switch (column.Name)
             {
@@ -82,10 +80,10 @@ namespace Project.Controls
                         ctrl.AutoCompleteSource = AutoCompleteSource.CustomSource;
                         strings = (from position in Databases.Tables.Positions
                                    select position.Title).ToList();
-                        foreach (string str in strings) acsCollection.Add(str);
+                        foreach (var str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;
-                        ctrl.KeyPress -= new KeyPressEventHandler(floatCell_KeyPress);
-                        ctrl.KeyPress -= new KeyPressEventHandler(intCell_KeyPress);
+                        ctrl.KeyPress -= floatCell_KeyPress;
+                        ctrl.KeyPress -= intCell_KeyPress;
                     }
                     break;
                 case "Draw":
@@ -106,27 +104,26 @@ namespace Project.Controls
                         ctrl.AutoCompleteSource = AutoCompleteSource.CustomSource;
                         strings = (from position in Databases.Tables.Positions
                                    select position.Matherial).ToList();
-                        foreach (string str in strings) acsCollection.Add(str);
+                        foreach (var str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;
-                        ctrl.KeyPress -= new KeyPressEventHandler(floatCell_KeyPress);
-                        ctrl.KeyPress -= new KeyPressEventHandler(intCell_KeyPress);
+                        ctrl.KeyPress -= floatCell_KeyPress;
+                        ctrl.KeyPress -= intCell_KeyPress;
                     }
                     break;
                 case "Number":
                     {
-                        ctrl.KeyPress -= new KeyPressEventHandler(floatCell_KeyPress);
-                        ctrl.KeyPress += new KeyPressEventHandler(intCell_KeyPress);
+                        ctrl.KeyPress -= floatCell_KeyPress;
+                        ctrl.KeyPress += intCell_KeyPress;
                     }
                     break;
                 case "Mass":
                 case "Norm":
                 case "Price":
                     {
-                        ctrl.KeyPress -= new KeyPressEventHandler(intCell_KeyPress);
-                        ctrl.KeyPress += new KeyPressEventHandler(floatCell_KeyPress);
+                        ctrl.KeyPress -= intCell_KeyPress;
+                        ctrl.KeyPress += floatCell_KeyPress;
                     }
                     break;
-                default: break;
             }
         }
     }

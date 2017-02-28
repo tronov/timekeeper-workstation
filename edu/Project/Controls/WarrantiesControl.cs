@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Project.Data;
@@ -8,22 +9,15 @@ namespace Project.Controls
 {
     public partial class WarrantiesControl : TableControl
     {
-        private DataGridViewColumn _Id = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Customer = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Order = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _Percent = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _WarrantyDate = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _AreaCode = new DataGridViewTextBoxColumn();
-        private DataGridViewColumn _BrigadeCode = new DataGridViewTextBoxColumn();
 
-        private System.Collections.Generic.List<Warranty> _Includes;
+        private List<Warranty> _Includes;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public System.Collections.Generic.List<Warranty> Includes
+        public List<Warranty> Includes
         {
             set
             {
-                this._Includes = value;
+                _Includes = value;
                 Init();
             }
         }
@@ -32,43 +26,64 @@ namespace Project.Controls
         {
             InitializeComponent();
 
-            this._Id.Name = "Id";
-            this._Id.Visible = false;
+            var id = new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                Visible = false
+            };
 
-            this._Customer.Name = "Customer";
-            this._Customer.HeaderText = "Заказчик";
-            this._Customer.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            var customer = new DataGridViewTextBoxColumn
+            {
+                Name = "Customer",
+                HeaderText = "Заказчик",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
 
-            this._Order.Name = "Order";
-            this._Order.HeaderText = "Заказ";
+            var order = new DataGridViewTextBoxColumn
+            {
+                Name = "Order",
+                HeaderText = "Заказ"
+            };
 
-            this._WarrantyDate.Name = "WarrantyDate";
-            this._WarrantyDate.HeaderText = "Дата документа";
+            var warrantyDate = new DataGridViewTextBoxColumn
+            {
+                Name = "WarrantyDate",
+                HeaderText = "Дата документа"
+            };
 
-            this._AreaCode.Name = "AreaCode";
-            this._AreaCode.HeaderText = "Шифр участка";
+            var areaCode = new DataGridViewTextBoxColumn
+            {
+                Name = "AreaCode",
+                HeaderText = "Шифр участка"
+            };
 
-            this._BrigadeCode.Name = "BrigadeCode";
-            this._BrigadeCode.HeaderText = "Шифр бригады";
+            var brigadeCode = new DataGridViewTextBoxColumn
+            {
+                Name = "BrigadeCode",
+                HeaderText = "Шифр бригады"
+            };
 
-            this._Percent.Name = "Percent";
-            this._Percent.HeaderText = "Процент";
+            var percent = new DataGridViewTextBoxColumn
+            {
+                Name = "Percent",
+                HeaderText = "Процент"
+            };
 
-            this.dgvItems.Columns.Add(this._Id);
-            this.dgvItems.Columns.Add(this._Customer);
-            this.dgvItems.Columns.Add(this._Order);
-            this.dgvItems.Columns.Add(this._WarrantyDate);
-            this.dgvItems.Columns.Add(this._AreaCode);
-            this.dgvItems.Columns.Add(this._BrigadeCode);
-            this.dgvItems.Columns.Add(this._Percent);
+            dgvItems.Columns.Add(id);
+            dgvItems.Columns.Add(customer);
+            dgvItems.Columns.Add(order);
+            dgvItems.Columns.Add(warrantyDate);
+            dgvItems.Columns.Add(areaCode);
+            dgvItems.Columns.Add(brigadeCode);
+            dgvItems.Columns.Add(percent);
 
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Customer.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Order.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._WarrantyDate.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._AreaCode.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._BrigadeCode.Clone());
-            this.dgvFilter.Columns.Add((DataGridViewColumn)this._Percent.Clone());
-            this.dgvFilter.Rows.Add();
+            dgvFilter.Columns.Add(customer.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(order.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(warrantyDate.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(areaCode.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(brigadeCode.Clone() as DataGridViewColumn);
+            dgvFilter.Columns.Add(percent.Clone() as DataGridViewColumn);
+            dgvFilter.Rows.Add();
 
             Init();
 
@@ -77,7 +92,7 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            frmWarranty form = new frmWarranty();
+            var form = new frmWarranty();
             if (form.ShowDialog(this) == DialogResult.OK)
                 Init();
         }
@@ -85,56 +100,53 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Edit()
         {
-            if (this.CurrentId != 0)
-            {
-                Warranty warranty = Databases.Tables.Warranties[this.CurrentId];
-                frmWarranty form = new frmWarranty(warranty);
-                if (form.ShowDialog(this) == DialogResult.OK)
-                    Init();
-            }
+            if (CurrentId == 0) return;
+
+            var warranty = Databases.Tables.Warranties[CurrentId];
+            var form = new frmWarranty(warranty);
+            if (form.ShowDialog(this) == DialogResult.OK)
+                Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    Warranty warranty = Databases.Tables.Warranties[this.CurrentId];
-                    warranty.Delete();
-                    Init();
-                }
-            }
+            if (CurrentId == 0) return;
+
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            var warranty = Databases.Tables.Warranties[CurrentId];
+            warranty.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            System.Collections.Generic.List<Warranty> Source;
-            if (this._Includes != null) Source = this._Includes;
-            else Source = Databases.Tables.Warranties.ToList();
+            var Source = _Includes ?? Databases.Tables.Warranties.ToList();
 
-            this.dgvItems.DataSource = (from warranty in Source
+            dgvItems.DataSource = (from warranty in Source
                                         where
-                                        warranty.Customer.ToUpper().Contains(this.GetFilter("Customer").ToUpper()) &&
-                                        warranty.Order.ToString().Contains(this.GetFilter("Order")) &&
-                                        warranty.WarrantyDate.ToString().Contains(this.GetFilter("WarrantyDate")) &&
-                                        warranty.Percent.ToString().Contains(this.GetFilter("Percent")) &&
-                                        Databases.Tables.Areas[warranty.AreaId].Code.ToString().Contains(this.GetFilter("AreaCode")) &&
-                                        Databases.Tables.Brigades[warranty.BrigadeId].Code.ToString().Contains(this.GetFilter("BrigadeCode"))
+                                        warranty.Customer.ToUpper().Contains(GetFilter("Customer").ToUpper()) &&
+                                        warranty.Order.ToString().Contains(GetFilter("Order")) &&
+                                        warranty.WarrantyDate.ToString().Contains(GetFilter("WarrantyDate")) &&
+                                        warranty.Percent.ToString().Contains(GetFilter("Percent")) &&
+                                        Databases.Tables.Areas[warranty.AreaId].Code.ToString().Contains(GetFilter("AreaCode")) &&
+                                        Databases.Tables.Brigades[warranty.BrigadeId].Code.ToString().Contains(GetFilter("BrigadeCode"))
                                         select new
                                         {
-                                            Id = warranty.Id,
-                                            Customer = warranty.Customer,
-                                            Order = warranty.Order,
+                                            warranty.Id,
+                                            warranty.Customer,
+                                            warranty.Order,
                                             WarrantyDate = warranty.WarrantyDate.ToShortDateString(),
                                             AreaCode = Databases.Tables.Areas[warranty.AreaId].Code,
                                             BrigadeCode = Databases.Tables.Brigades[warranty.BrigadeId].Code,
-                                            Percent = warranty.Percent
+                                            warranty.Percent
                                         }).ToList();
 
-            foreach (DataGridViewColumn column in this.dgvItems.Columns)
+            foreach (DataGridViewColumn column in dgvItems.Columns)
             {
                 column.DataPropertyName = column.Name;
             }

@@ -12,55 +12,33 @@ namespace Project.Controls
         private CatalogMode _CatalogMode;
         private ContextMenuStrip _cmArea = new ContextMenuStrip();
         private ContextMenuStrip _cmBrigade = new ContextMenuStrip();
-        private int _SelectedAreaId = 0;
-        private int _SelectedBrigadeId = 0;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedAreaId
-        {
-            get
-            {
-                return this._SelectedAreaId;
-            }
-            private set
-            {
-                this._SelectedAreaId = value;
-            }
-        }
+        public int SelectedAreaId { get; private set; } = 0;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedBrigadeId
-        {
-            get
-            {
-                return this._SelectedBrigadeId;
-            }
-            private set
-            {
-                this._SelectedBrigadeId = value;
-            }
-        }
+        public int SelectedBrigadeId { get; private set; } = 0;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CatalogMode CatalogMode
         {
-            get { return this._CatalogMode; }
+            get { return _CatalogMode; }
             set
             {
-                this._CatalogMode = value;
+                _CatalogMode = value;
                 if (value == CatalogMode.Select)
                 {
-                    this.scMain.Panel2Collapsed = true;
-                    this.Height = this.scMain.Panel1.Height;
-                    this._cmArea = new ContextMenuStrip();
-                    this._cmBrigade = this.cmBrigadeSelect;
+                    scMain.Panel2Collapsed = true;
+                    Height = scMain.Panel1.Height;
+                    _cmArea = new ContextMenuStrip();
+                    _cmBrigade = this.cmBrigadeSelect;
 
                 }
                 if (value == CatalogMode.View)
                 {
-                    this.scMain.Panel2Collapsed = false;
-                    this._cmArea = cmAreaView;
-                    this._cmBrigade = cmBrigadeView;
+                    scMain.Panel2Collapsed = false;
+                    _cmArea = cmAreaView;
+                    _cmBrigade = cmBrigadeView;
                 }
                 Init();
             }
@@ -69,14 +47,14 @@ namespace Project.Controls
         public StructureControl()
         {
             InitializeComponent();
-            this.CatalogMode = CatalogMode.View;
+            CatalogMode = CatalogMode.View;
             Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void NewArea()
         {
-            frmArea form = new frmArea();
+            var form = new frmArea();
             form.ShowDialog(this);
             Init();
         }
@@ -84,129 +62,129 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void EditArea()
         {
-            if (this.SelectedAreaId != 0)
-            {
-                Area area = Databases.Tables.Areas[this.SelectedAreaId];
-                frmArea form = new frmArea(area);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (SelectedAreaId == 0) return;
+
+            var area = Databases.Tables.Areas[SelectedAreaId];
+            var form = new frmArea(area);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void DeleteArea()
         {
-            if (this.SelectedAreaId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    Area area = Databases.Tables.Areas[this.SelectedAreaId];
-                    area.Delete();
-                    Init();
-                }
-            }
+            if (SelectedAreaId == 0) return;
+
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            var area = Databases.Tables.Areas[this.SelectedAreaId];
+            area.Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void NewBrigade()
         {
-            if (this.SelectedAreaId != 0)
-            {
-                Area area = Databases.Tables.Areas[this.SelectedAreaId];
-                frmBrigade form = new frmBrigade(area);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (SelectedAreaId == 0) return;
+
+            var area = Databases.Tables.Areas[SelectedAreaId];
+            var form = new frmBrigade(area);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void EditBrigade()
         {
-            if (this.SelectedBrigadeId != 0)
-            {
-                Brigade brigade = Databases.Tables.Brigades[this.SelectedBrigadeId];
-                frmBrigade form = new frmBrigade(brigade);
-                form.ShowDialog(this);
-                Init();
-            }
+            if (SelectedBrigadeId == 0) return;
+
+            var brigade = Databases.Tables.Brigades[SelectedBrigadeId];
+            var form = new frmBrigade(brigade);
+            form.ShowDialog(this);
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void DeleteBrigade()
         {
-            if (this.SelectedBrigadeId != 0)
-            {
-                if (MessageBox.Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
-                {
-                    Databases.Tables.Brigades[this.SelectedBrigadeId].Delete();
-                    Init();
-                }
-            }
+            if (SelectedBrigadeId == 0) return;
+
+            if (!MessageBox
+                .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
+                .Equals(DialogResult.OK)) return;
+
+            Databases.Tables.Brigades[SelectedBrigadeId].Delete();
+            Init();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual void Init()
         {
             if (tvStructure.Nodes.Count != 0) tvStructure.Nodes.Clear();
-            Areas areas = Databases.Tables.Areas.Active;
 
-            foreach (Area area in areas.OrderBy(r => r.Code))
+            var areas = Databases.Tables.Areas.Active;
+
+            foreach (var area in areas.OrderBy(a => a.Code))
             {
-                TreeNode areaNode = new TreeNode();
-                areaNode.Text = String.Format("{0}  {1}", area.Code.ToString("D2"), area.Title);
-                areaNode.Tag = area;
-
-                this.tvStructure.Nodes.Add(areaNode);
-
-                foreach (Brigade brigade in area.Brigades)
+                var areaNode = new TreeNode
                 {
-                    if (brigade.IsActive)
+                    Text = $"{area.Code:D2}  {area.Title}",
+                    Tag = area
+                };
+
+                tvStructure.Nodes.Add(areaNode);
+
+                foreach (var brigade in area.Brigades)
+                {
+                    if (!brigade.IsActive) continue;
+
+                    var brigadeNode = new TreeNode
                     {
-                        TreeNode brigadeNode = new TreeNode();
-                        brigadeNode.Text = String.Format("{0}  {1}", brigade.Code.ToString("D2"), brigade.Title);
+                        Text = $"{brigade.Code:D2}  {brigade.Title}",
+                        Tag = brigade
+                    };
 
-                        brigadeNode.Tag = brigade;
-
-                        areaNode.Nodes.Add(brigadeNode);
-                    }
+                    areaNode.Nodes.Add(brigadeNode);
                 }
             }
-            this.tvStructure.ExpandAll();
+            tvStructure.ExpandAll();
         }
 
         private void tvStructure_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeView tv = (TreeView)sender;
-            tv.SelectedNode = e.Node;
-            TreeNode node = e.Node;
+            var tv = sender as TreeView;
+            if (tv == null) return;
 
-            if (e.Button.Equals(MouseButtons.Right))
+            tv.SelectedNode = e.Node;
+            var node = e.Node;
+
+            if (!e.Button.Equals(MouseButtons.Right)) return;
+
+            if (node.Tag is Area)
             {
-                if (node.Tag is Area)
-                {
-                    _cmArea.Show(tv, e.Location);
-                }
-                if (node.Tag is Brigade)
-                {
-                    _cmBrigade.Show(tv, e.Location);
-                }
+                _cmArea.Show(tv, e.Location);
+            }
+            else if (node.Tag is Brigade)
+            {
+                _cmBrigade.Show(tv, e.Location);
             }
         }
 
         private void miBrigadeSelect_Click(object sender, EventArgs e)
         {
-            this.SelectedBrigadeId = ((Brigade)tvStructure.SelectedNode.Tag).Id;
-            this.FindForm().Close();
+            var brigade = tvStructure.SelectedNode.Tag as Brigade;
+            if (brigade != null) SelectedBrigadeId = brigade.Id;
+            FindForm()?.Close();
         }
 
         private void tvStructure_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (this.CatalogMode == CatalogMode.Select && tvStructure.SelectedNode.Tag is Brigade)
-            {
-                this.SelectedBrigadeId = ((Brigade)tvStructure.SelectedNode.Tag).Id;
-                this.FindForm().Close();
-            }
+            if (CatalogMode != CatalogMode.Select || !(tvStructure.SelectedNode.Tag is Brigade)) return;
 
+            SelectedBrigadeId = ((Brigade)tvStructure.SelectedNode.Tag).Id;
+            FindForm()?.Close();
         }
 
         private void miBrigadeAdd_Click(object sender, EventArgs e)
@@ -249,7 +227,7 @@ namespace Project.Controls
 
         private void bAreaNew_Click(object sender, EventArgs e)
         {
-            frmArea form = new frmArea();
+            var form = new frmArea();
             if (form.ShowDialog() == DialogResult.OK)
                 Init();
         }
