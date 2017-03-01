@@ -6,55 +6,34 @@ using System.Linq;
 
 namespace Project.Data
 {
-    public abstract class Table<T> : IEnumerable<T>
-     where T : ITableRow
+    public abstract class Table<T> : IEnumerable<T> where T : ITableRow
     {
-        protected internal Dictionary<int, T> _Items = new Dictionary<int, T>();
+        protected internal Dictionary<int, T> Items = new Dictionary<int, T>();
 
-        protected internal OleDbDataReader reader;
+        protected internal OleDbDataReader Reader;
 
-        public bool IsEmpty
-        {
-            get { return this._Items.Count.Equals(0); }
-        }
+        public bool IsEmpty => Items.Count.Equals(0);
 
-        public T this[int id]
-        {
-            get { return this._Items[id]; }
-        }
+        public T this[int id] => Items[id];
 
-        public int GetIdByValue(T item)
-        {
-            foreach (var i in this._Items)
-                if (i.Value.Equals(item)) return i.Key;
-            return 0;
-        }
+        public int GetIdByValue(T item) => (from i in Items where i.Value.Equals(item) select i.Key).FirstOrDefault();
 
         public int NextId
         {
             get
             {
                 int id;
-                if (this._Items.Keys.Count != 0) id = this._Items.Keys.Max() + 1;
+                if (Items.Keys.Count != 0) id = Items.Keys.Max() + 1;
                 else id = 1;
                 return id;
             }
         }
 
-        internal void Clear()
-        {
-            this._Items.Clear();
-        }
+        internal void Clear() => Items.Clear();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this._Items.GetEnumerator();
-        }
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this._Items.Values.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 
+        public IEnumerator<T> GetEnumerator() => Items.Values.GetEnumerator();
 
         public string TableName;
 
@@ -64,17 +43,16 @@ namespace Project.Data
 
         public int Insert(T item)
         {
-            int id = this.NextId;
+            var id = NextId;
             item.Id = id;
-            OleDbParameter pId = new OleDbParameter("Id", OleDbType.Integer);
-            pId.Value = id;
+            var pId = new OleDbParameter("Id", OleDbType.Integer) {Value = id};
             Command.Parameters.Add(pId);
             string comParams = "", comVals = "";
             comParams += "([Id], ";
             comVals += "(?, ";
-            foreach (OleDbParameter parameter in Parameters)
+            foreach (var parameter in Parameters)
             {
-                comParams += String.Format("[{0}], ", parameter.ParameterName);
+                comParams += $"[{parameter.ParameterName}], ";
                 comVals += "?, ";
             }
             comParams = comParams.Remove(comParams.Length - 2);
@@ -82,8 +60,8 @@ namespace Project.Data
             comParams += ")";
             comVals += ")";
 
-            string comText = String.Format("INSERT INTO {0} {1} VALUES {2};", TableName, comParams, comVals);
-            foreach (OleDbParameter parameter in Parameters)
+            string comText = $"INSERT INTO {TableName} {comParams} VALUES {comVals};";
+            foreach (var parameter in Parameters)
             {
                 parameter.Value = item.GetType().GetProperty(parameter.ParameterName).GetValue(item, null);
                 Command.Parameters.Add(parameter);
@@ -96,75 +74,73 @@ namespace Project.Data
             Command.Parameters.Clear();
             Command.Connection.Close();
 
-            this._Items.Add(id, item);
+            Items.Add(id, item);
             return id;
         }
 
         public void Update(T item, T newItem)
         {
             newItem.Id = item.Id;
-            int id = GetIdByValue(item);
-            OleDbParameter pId = new OleDbParameter("Id", OleDbType.Integer);
-            pId.Value = id;
+            var id = GetIdByValue(item);
+            var pId = new OleDbParameter("Id", OleDbType.Integer) {Value = id};
 
 
-            string comItems = "";
+            var comItems = "";
 
-            //comItems += "(";
-            foreach (OleDbParameter parameter in Parameters)
+            foreach (var parameter in Parameters)
             {
-                comItems += String.Format(" [{0}] = ?, ", parameter.ParameterName);
+                comItems += $" [{parameter.ParameterName}] = ?, ";
                 parameter.Value = newItem.GetType().GetProperty(parameter.ParameterName).GetValue(newItem, null);
                 Command.Parameters.Add(parameter);
             }
             comItems = comItems.Remove(comItems.Length - 2);
-            //comItems += ")";
 
             Command.Parameters.Add(pId);
 
 
-            Command.CommandText = String.Format("UPDATE {0} SET {1} WHERE [Id] = ?;", TableName, comItems);
+            Command.CommandText = $"UPDATE {TableName} SET {comItems} WHERE [Id] = ?;";
             Command.Connection = Databases.Connection;
             Command.Connection.Open();
             Command.ExecuteNonQuery();
             Command.Parameters.Clear();
             Command.Connection.Close();
 
-            this._Items[id] = newItem;
+            Items[id] = newItem;
         }
 
         public void Delete(T item)
         {
-            int id = GetIdByValue(item);
-            if (id != 0)
-            {
-                OleDbParameter pId = new OleDbParameter("Id", OleDbType.Integer);
-                pId.Value = id;
+            var id = GetIdByValue(item);
+            if (id == 0) return;
 
-                Command.Connection = Databases.Connection;
-                Command.CommandText = String.Format("DELETE * FROM [{0}] WHERE [Id] = ?;", TableName);
-                Command.Parameters.Add(pId);
+            var pId = new OleDbParameter("Id", OleDbType.Integer) {Value = id};
 
-                Command.Connection.Open();
-                Command.ExecuteNonQuery();
-                Command.Parameters.Clear();
-                Command.Connection.Close();
+            Command.Connection = Databases.Connection;
+            Command.CommandText = $"DELETE * FROM [{TableName}] WHERE [Id] = ?;";
+            Command.Parameters.Add(pId);
 
-                this._Items.Remove(id);
-            }
+            Command.Connection.Open();
+            Command.ExecuteNonQuery();
+            Command.Parameters.Clear();
+            Command.Connection.Close();
+
+            Items.Remove(id);
         }
 
         public void Load(OleDbConnection connection)
         {
             Command.Connection = connection;
-            Command.CommandText = String.Format("SELECT * FROM {0};", TableName);
-            OleDbDataReader reader = Command.ExecuteReader();
+            Command.CommandText = $"SELECT * FROM {TableName};";
+            var reader = Command.ExecuteReader();
+
+            if (reader == null) return;
+
             while (reader.Read())
             {
-                int id = Convert.ToInt32(reader["Id"]);
-                T item = (T)Activator.CreateInstance(typeof(T), new object[] { reader });
+                var id = Convert.ToInt32(reader["Id"]);
+                var item = (T)Activator.CreateInstance(typeof(T), reader);
 
-                this._Items.Add(id, item);
+                Items.Add(id, item);
             }
         }
     }
@@ -186,24 +162,24 @@ namespace Project.Data
         {
             get
             {
-                Persons persons = new Persons();
-                var _Items = Databases.Tables.Persons._Items
-                 .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                 .ToArray();
-                foreach (var item in _Items)
-                    persons._Items.Add(item.Key, item.Value);
+                var persons = new Persons();
+                var items = Databases.Tables.Persons.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var item in items)
+                    persons.Items.Add(item.Key, item.Value);
                 return persons;
             }
         }
 
         internal void Optimize()
         {
-            Person[] persons = Databases.Tables.Persons
-             .Except(Databases.Tables.Persons.Active)
-             .Where(r => r.Executors.Count().Equals(0))
-             .ToArray();
+            var persons = Databases.Tables.Persons
+                .Except(Databases.Tables.Persons.Active)
+                .Where(r => r.Executors.Count().Equals(0))
+                .ToArray();
 
-            foreach (Person person in persons)
+            foreach (var person in persons)
                 person.Delete();
         }
     }
@@ -229,23 +205,23 @@ namespace Project.Data
         {
             get
             {
-                Professions professions = new Professions();
-                var _Items = Databases.Tables.Professions._Items
-                 .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                 .ToArray();
-                foreach (var item in _Items)
-                    professions._Items.Add(item.Key, item.Value);
+                var professions = new Professions();
+                var items = Databases.Tables.Professions.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var item in items)
+                    professions.Items.Add(item.Key, item.Value);
                 return professions;
             }
         }
 
         internal void Optimize()
         {
-            Profession[] professions = Databases.Tables.Professions
-             .Except(Databases.Tables.Professions.Active)
-             .ToArray();
+            var professions = Databases.Tables.Professions
+                .Except(Databases.Tables.Professions.Active)
+                .ToArray();
 
-            foreach (Profession profession in professions)
+            foreach (var profession in professions)
                 profession.Delete();
         }
     }
@@ -279,21 +255,23 @@ namespace Project.Data
         {
             get
             {
-                Areas areas = new Areas();
-                var temp = Databases.Tables.Areas._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
-                foreach (var area in temp) areas._Items.Add(area.Key, area.Value);
+                var areas = new Areas();
+                var temp = Databases.Tables.Areas.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var area in temp) areas.Items.Add(area.Key, area.Value);
                 return areas;
             }
         }
 
         internal void Optimize()
         {
-            Area[] areas = Databases.Tables.Areas
+            var areas = Databases.Tables.Areas
              .Except(Databases.Tables.Areas.Active)
              .Where(r => r.Warranties.Count().Equals(0))
              .ToArray();
 
-            foreach (Area area in areas)
+            foreach (var area in areas)
                 Databases.Tables.Areas.Delete(area);
         }
     }
@@ -353,21 +331,23 @@ namespace Project.Data
         {
             get
             {
-                Brigades brigades = new Brigades();
-                var _Items = Databases.Tables.Brigades._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
-                foreach (var item in _Items) brigades._Items.Add(item.Key, item.Value);
+                var brigades = new Brigades();
+                var items = Databases.Tables.Brigades.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var item in items) brigades.Items.Add(item.Key, item.Value);
                 return brigades;
             }
         }
 
         internal void Optimize()
         {
-            Brigade[] brigades = Databases.Tables.Brigades
-             .Except(Databases.Tables.Brigades.Active)
-             .Where(r => r.Warranties.Count().Equals(0))
-             .ToArray();
+            var brigades = Databases.Tables.Brigades
+                .Except(Databases.Tables.Brigades.Active)
+                .Where(r => r.Warranties.Count().Equals(0))
+                .ToArray();
 
-            foreach (Brigade brigade in brigades)
+            foreach (var brigade in brigades)
                 Databases.Tables.Brigades.Delete(brigade);
         }
     }
@@ -388,9 +368,11 @@ namespace Project.Data
         {
             get
             {
-                BrigadePersons brigadePersons = new BrigadePersons();
-                var _Items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
-                foreach (var item in _Items) brigadePersons._Items.Add(item.Key, item.Value);
+                var brigadePersons = new BrigadePersons();
+                var items = Databases.Tables.BrigadePersons.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
         }
@@ -413,9 +395,11 @@ namespace Project.Data
         {
             get
             {
-                PersonProfessions personProfessions = new PersonProfessions();
-                var _Items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0).ToArray();
-                foreach (var item in _Items) personProfessions._Items.Add(item.Key, item.Value);
+                var personProfessions = new PersonProfessions();
+                var items = Databases.Tables.PersonProfessions.Items
+                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
+                    .ToArray();
+                foreach (var item in items) personProfessions.Items.Add(item.Key, item.Value);
                 return personProfessions;
             }
         }
@@ -434,25 +418,16 @@ namespace Project.Data
         public Executors Executors = new Executors();
         public Labors Labors = new Labors();
 
-        public bool IsEmpty
-        {
-            get
-            {
-                if (
-                 Professions.IsEmpty &&
-                 Persons.IsEmpty &&
-                 PersonProfessions.IsEmpty &&
-                 Areas.IsEmpty &&
-                 Brigades.IsEmpty &&
-                 BrigadePersons.IsEmpty &&
-                 Warranties.IsEmpty &&
-                 Positions.IsEmpty &&
-                 Executors.IsEmpty &&
-                 Labors.IsEmpty)
-                    return true;
-                else return false;
-            }
-        }
+        public bool IsEmpty => Professions.IsEmpty &&
+                               Persons.IsEmpty &&
+                               PersonProfessions.IsEmpty &&
+                               Areas.IsEmpty &&
+                               Brigades.IsEmpty &&
+                               BrigadePersons.IsEmpty &&
+                               Warranties.IsEmpty &&
+                               Positions.IsEmpty &&
+                               Executors.IsEmpty &&
+                               Labors.IsEmpty;
 
         internal void Load(OleDbConnection connection)
         {

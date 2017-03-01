@@ -10,26 +10,18 @@ namespace Project.Data
 {
     public static class Databases
     {
-        private static DirectoryInfo _DataDirectory = new DirectoryInfo(@".\Data");
+        private static readonly DirectoryInfo _dataDirectory = new DirectoryInfo(@".\Data");
 
-        private static OleDbConnectionStringBuilder _ConnectionStringBuilder =
+        private static readonly OleDbConnectionStringBuilder _connectionStringBuilder =
          new OleDbConnectionStringBuilder("Provider=Microsoft.Jet.OLEDB.4.0;");
 
-        public static bool IsEmpty
-        {
-            get { return Tables.IsEmpty; }
-        }
+        public static bool IsEmpty => Tables.IsEmpty;
 
         public static Tables Tables = new Tables();
 
         internal static OleDbConnection Connection = new OleDbConnection();
 
-        private static List<string> _AvailableDatabases = new List<string>();
-
-        public static List<string> AvailableDatabases
-        {
-            get { return _AvailableDatabases; }
-        }
+        public static List<string> AvailableDatabases { get; } = new List<string>();
 
         /// <summary>
         /// Оптимизирует базу данных текущего года
@@ -43,10 +35,10 @@ namespace Project.Data
             Clear();
 
             // Сжатие базы данных
-            string tempPath = Path.Combine(_DataDirectory.FullName, "temp.mdb");
-            _ConnectionStringBuilder.DataSource = tempPath;
-            JRO.JetEngine jro = new JetEngine();
-            jro.CompactDatabase(Connection.ConnectionString, _ConnectionStringBuilder.ConnectionString);
+            var tempPath = Path.Combine(_dataDirectory.FullName, "temp.mdb");
+            _connectionStringBuilder.DataSource = tempPath;
+            var jet = new JetEngine();
+            jet.CompactDatabase(Connection.ConnectionString, _connectionStringBuilder.ConnectionString);
             File.Delete(Connection.DataSource);
             File.Copy(tempPath, Connection.DataSource);
             File.Delete(tempPath);
@@ -54,67 +46,66 @@ namespace Project.Data
 
         private static void ClearDocs()
         {
-            List<Warranty> docs = Tables.Warranties.ToList();
-            foreach (Warranty doc in docs) doc.Delete();
+            var docs = Tables.Warranties.ToList();
+            foreach (var doc in docs) doc.Delete();
         }
 
         private static void Init()
         {
             // Проверить существование директории данных
             // Если не существует - создать
-            if (!_DataDirectory.Exists)
+            if (!_dataDirectory.Exists)
             {
-                _DataDirectory.Create();
+                _dataDirectory.Create();
             }
 
-            int currentYear = DateTime.Now.Year;
+            var currentYear = DateTime.Now.Year;
 
             // Получить список путей к каждому из *.mdb файлов в каталоге данных
-            FileInfo[] files = _DataDirectory.GetFiles("*.mdb");
+            var files = _dataDirectory.GetFiles("*.mdb");
 
-            Regex reg = new Regex(@"^\d\d\d\d.mdb$");
+            var reg = new Regex(@"^\d\d\d\d.mdb$");
 
-            foreach (FileInfo file in files)
+            foreach (var file in files)
             {
-                if (reg.IsMatch(file.Name))
-                {
-                    string fName = file.Name.Remove(file.Name.Length - 4);
-                    int year = Convert.ToInt32(fName);
-                    if (year <= currentYear) _AvailableDatabases.Add(fName);
-                }
+                if (!reg.IsMatch(file.Name)) continue;
+
+                var fName = file.Name.Remove(file.Name.Length - 4);
+                var year = Convert.ToInt32(fName);
+                if (year <= currentYear) AvailableDatabases.Add(fName);
             }
 
-            if (_AvailableDatabases.Count != 0)
+            if (AvailableDatabases.Count != 0)
             {
-                int maxYear = _AvailableDatabases.Select(r => Convert.ToInt32(r)).Max();
+                var maxYear = AvailableDatabases.Select(r => Convert.ToInt32(r)).Max();
                 if (maxYear != currentYear)
                 {
-                    string ifPath = Path.Combine(_DataDirectory.FullName, maxYear.ToString() + ".mdb");
-                    string ofPath = Path.Combine(_DataDirectory.FullName, currentYear.ToString() + ".mdb");
+                    var ifPath = Path.Combine(_dataDirectory.FullName, maxYear + ".mdb");
+                    var ofPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
 
                     File.Copy(ifPath, ofPath);
-                    _AvailableDatabases.Add(currentYear.ToString());
-                    _ConnectionStringBuilder.DataSource = ofPath;
-                    Connection.ConnectionString = _ConnectionStringBuilder.ConnectionString;
+                    AvailableDatabases.Add(currentYear.ToString());
+                    _connectionStringBuilder.DataSource = ofPath;
+                    Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
 
                     ClearDocs();
                     Optimize();
                 }
                 else
                 {
-                    string fPath = Path.Combine(_DataDirectory.FullName, currentYear.ToString() + ".mdb");
-                    _ConnectionStringBuilder.DataSource = fPath;
-                    Connection.ConnectionString = _ConnectionStringBuilder.ConnectionString;
+                    var fPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
+                    _connectionStringBuilder.DataSource = fPath;
+                    Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
                 }
             }
             else
             {
-                string ifPath = Path.Combine(_DataDirectory.FullName, "template.mdb");
-                string ofPath = Path.Combine(_DataDirectory.FullName, currentYear.ToString() + ".mdb");
+                var ifPath = Path.Combine(_dataDirectory.FullName, "template.mdb");
+                var ofPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
                 File.Copy(ifPath, ofPath);
-                _AvailableDatabases.Add(currentYear.ToString());
-                _ConnectionStringBuilder.DataSource = ofPath;
-                Connection.ConnectionString = _ConnectionStringBuilder.ConnectionString;
+                AvailableDatabases.Add(currentYear.ToString());
+                _connectionStringBuilder.DataSource = ofPath;
+                Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
             }
 
         }

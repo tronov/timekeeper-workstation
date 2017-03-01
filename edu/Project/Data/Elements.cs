@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 
@@ -11,18 +12,7 @@ namespace Project.Data
 
     public abstract class TableRow : ITableRow
     {
-        protected int _Id;
-        public int Id
-        {
-            get
-            {
-                return this._Id;
-            }
-            set
-            {
-                this._Id = value;
-            }
-        }
+        public int Id { get; set; }
     }
 
     public interface IPeriodicTableRow<T> : ITableRow
@@ -38,43 +28,44 @@ namespace Project.Data
 
     public abstract class PeriodicTableRow<T> : TableRow, IPeriodicTableRow<T> where T : PeriodicTableRow<T>
     {
-        protected DateTime _Begin;
-        protected DateTime _End;
+        private DateTime _begin;
+        private DateTime _end;
+
+        protected PeriodicTableRow(DateTime begin, DateTime end)
+        {
+            _begin = begin;
+            _end = end;
+        }
 
         public DateTime Begin
         {
             get
             {
-                return this._Begin;
+                return _begin;
             }
             set
             {
-                T item = this.Clone();
-                item._Begin = value;
-                this.Update(item);
+                var item = Clone();
+                item._begin = value;
+                Update(item);
             }
         }
         public DateTime End
         {
             get
             {
-                return this._End;
+                return _end;
             }
             set
             {
-                T item = this.Clone();
-                item._End = value;
-                this.Update(item);
+                var item = Clone();
+                item._end = value;
+                Update(item);
             }
         }
 
-        public bool IsActive
-        {
-            get
-            {
-                return this.Begin.CompareTo(DateTime.Now) <= 0 && this.End.CompareTo(DateTime.Now) > 0;
-            }
-        }
+        public bool IsActive => Begin.CompareTo(DateTime.Now) <= 0 && End.CompareTo(DateTime.Now) > 0;
+
         public abstract bool IsUsed { get; }
         public abstract T Clone();
         public abstract void Update(T item);
@@ -84,54 +75,43 @@ namespace Project.Data
 
     public class Person : PeriodicTableRow<Person>, IEquatable<Person>
     {
-        public Person(OleDbDataReader reader)
+        public Person(IDataRecord record)
+            : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._Code = Convert.ToInt16(reader["Code"]);
-            this._FirstName = Convert.ToString(reader["FirstName"]);
-            this._MiddleName = Convert.ToString(reader["MiddleName"]);
-            this._LastName = Convert.ToString(reader["LastName"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public Person(short Code, string FirstName, string MiddleName, string LastName)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._FirstName = FirstName;
-            this._MiddleName = MiddleName;
-            this._LastName = LastName;
-            this._Begin = DateTime.Now.Date;
-            this._End = new DateTime(9000, 1, 1);
-        }
-        public Person(short Code, string FirstName, string MiddleName, string LastName, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._FirstName = FirstName;
-            this._MiddleName = MiddleName;
-            this._LastName = LastName;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(record["Id"]);
+            Code = Convert.ToInt16(record["Code"]);
+            FirstName = Convert.ToString(record["FirstName"]);
+            MiddleName = Convert.ToString(record["MiddleName"]);
+            LastName = Convert.ToString(record["LastName"]);
         }
 
-        private short _Code;
-        private string _FirstName;
-        private string _MiddleName;
-        private string _LastName;
+        public Person(short code, string firstName, string middleName, string lastName)
+            : this(code, firstName, middleName, lastName, DateTime.Now.Date, new DateTime(9000, 1, 1)) { }
 
-        public short Code { get { return this._Code; } }
-        public string FirstName { get { return this._FirstName; } }
-        public string MiddleName { get { return this._MiddleName; } }
-        public string LastName { get { return this._LastName; } }
+
+        public Person(short code, string firstName, string middleName, string lastName, DateTime begin, DateTime end)
+            : base(begin, end)
+        {
+            Id = 0;
+            Code = code;
+            FirstName = firstName;
+            MiddleName = middleName;
+            LastName = lastName;
+        }
+
+        public short Code { get; }
+        public string FirstName { get; }
+        public string MiddleName { get; }
+        public string LastName { get; }
+
         public BrigadePersons BrigadePersons
         {
             get
             {
-                BrigadePersons brigadePersons = new BrigadePersons();
+                var brigadePersons = new BrigadePersons();
                 brigadePersons.Clear();
-                var items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
-                foreach (var item in items) brigadePersons._Items.Add(item.Key, item.Value);
+                var items = Databases.Tables.BrigadePersons.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
+                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
         }
@@ -139,9 +119,9 @@ namespace Project.Data
         {
             get
             {
-                Executors executors = new Executors();
-                var items = Databases.Tables.Executors._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
-                foreach (var item in items) executors._Items.Add(item.Key, item.Value);
+                var executors = new Executors();
+                var items = Databases.Tables.Executors.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
+                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
                 return executors;
             }
         }
@@ -149,42 +129,36 @@ namespace Project.Data
         {
             get
             {
-                PersonProfessions personeProfessions = new PersonProfessions();
-                var items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.PersonId.Equals(this.Id)).ToArray();
-                foreach (var item in items) personeProfessions._Items.Add(item.Key, item.Value);
+                var personeProfessions = new PersonProfessions();
+                var items = Databases.Tables.PersonProfessions.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
+                foreach (var item in items) personeProfessions.Items.Add(item.Key, item.Value);
                 return personeProfessions;
             }
         }
 
-        public override bool IsUsed
-        {
-            get
-            {
-                return !this.Executors.Count().Equals(0);
-            }
-        }
+        public override bool IsUsed => !Executors.Count().Equals(0);
 
         public override Person Clone()
         {
-            return new Person(this.Code, this.FirstName, this.MiddleName, this.LastName, this.Begin, this.End);
+            return new Person(Code, FirstName, MiddleName, LastName, Begin, End);
         }
 
         public override void Update(Person newItem)
         {
             Databases.Tables.Persons.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            foreach (BrigadePerson brigadePerson in this.BrigadePersons)
+            foreach (var brigadePerson in BrigadePersons)
                 brigadePerson.Delete();
-            foreach (PersonProfession personProfession in this.PersonProfessions)
+            foreach (var personProfession in PersonProfessions)
                 personProfession.Delete();
 
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                Person item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new Person(Code, FirstName, MiddleName, LastName, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.Persons.Delete(this);
@@ -192,152 +166,124 @@ namespace Project.Data
 
         public bool Equals(Person other)
         {
-            if (
-             this._Code.Equals(other._Code) &&
-             this._FirstName.Equals(other._FirstName) &&
-             this._MiddleName.Equals(other._MiddleName) &&
-             this._LastName.Equals(other._LastName) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End)
-             )
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return Code.Equals(other.Code) &&
+                   FirstName.Equals(other.FirstName) &&
+                   MiddleName.Equals(other.MiddleName) &&
+                   LastName.Equals(other.LastName) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
             if (obj == null) return base.Equals(obj);
 
             if (!(obj is Person))
                 throw new InvalidCastException("The 'obj' argument is not a Person object.");
-            else
-                return Equals(obj as Person);
+            return Equals((Person) obj);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.Code.GetHashCode().ToString() +
-             this.FirstName.GetHashCode().ToString() +
-             this.MiddleName.GetHashCode().ToString() +
-             this.LastName.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                Code.GetHashCode() +
+                FirstName.GetHashCode() +
+                MiddleName.GetHashCode() +
+                LastName.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Profession : PeriodicTableRow<Profession>, IEquatable<Profession>
     {
-        public Profession(OleDbDataReader reader)
+        public Profession(IDataRecord record)
+            : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._Code = Convert.ToInt16(reader["Code"]);
-            this._Title = Convert.ToString(reader["Title"]);
-            this._Rank1 = Convert.ToSingle(reader["Rank1"]);
-            this._Rank2 = Convert.ToSingle(reader["Rank2"]);
-            this._Rank3 = Convert.ToSingle(reader["Rank3"]);
-            this._Rank4 = Convert.ToSingle(reader["Rank4"]);
-            this._Rank5 = Convert.ToSingle(reader["Rank5"]);
-            this._Rank6 = Convert.ToSingle(reader["Rank6"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public Profession(short Code, string Title, float Rank1, float Rank2, float Rank3, float Rank4, float Rank5, float Rank6)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._Title = Title;
-            this._Rank1 = Rank1;
-            this._Rank2 = Rank2;
-            this._Rank3 = Rank3;
-            this._Rank4 = Rank4;
-            this._Rank5 = Rank5;
-            this._Rank6 = Rank6;
-            this._Begin = DateTime.Now.Date;
-            this._End = new DateTime(9000, 1, 1);
-        }
-        public Profession(short Code, string Title, float Rank1, float Rank2, float Rank3, float Rank4, float Rank5, float Rank6, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._Title = Title;
-            this._Rank1 = Rank1;
-            this._Rank2 = Rank2;
-            this._Rank3 = Rank3;
-            this._Rank4 = Rank4;
-            this._Rank5 = Rank5;
-            this._Rank6 = Rank6;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(record["Id"]);
+            Code = Convert.ToInt16(record["Code"]);
+            Title = Convert.ToString(record["Title"]);
+            Rank1 = Convert.ToSingle(record["Rank1"]);
+            Rank2 = Convert.ToSingle(record["Rank2"]);
+            Rank3 = Convert.ToSingle(record["Rank3"]);
+            Rank4 = Convert.ToSingle(record["Rank4"]);
+            Rank5 = Convert.ToSingle(record["Rank5"]);
+            Rank6 = Convert.ToSingle(record["Rank6"]);
         }
 
-        private short _Code;
-        private string _Title;
-        private float _Rank1;
-        private float _Rank2;
-        private float _Rank3;
-        private float _Rank4;
-        private float _Rank5;
-        private float _Rank6;
+        public Profession(short code, string title, float rank1, float rank2, float rank3, float rank4, float rank5, float rank6)
+            : this(code, title, rank1, rank2, rank3, rank4, rank5, rank6, DateTime.Now.Date, new DateTime(9000, 1, 1)) { }
+
+        public Profession(short code, string title, float rank1, float rank2, float rank3, float rank4, float rank5, float rank6, DateTime begin, DateTime end)
+            : base(begin, end)
+        {
+            Id = 0;
+            Code = code;
+            Title = title;
+            Rank1 = rank1;
+            Rank2 = rank2;
+            Rank3 = rank3;
+            Rank4 = rank4;
+            Rank5 = rank5;
+            Rank6 = rank6;
+        }
 
 
-        public short Code { get { return this._Code; } }
-        public string Title { get { return this._Title; } }
-        public float Rank1 { get { return this._Rank1; } }
-        public float Rank2 { get { return this._Rank2; } }
-        public float Rank3 { get { return this._Rank3; } }
-        public float Rank4 { get { return this._Rank4; } }
-        public float Rank5 { get { return this._Rank5; } }
-        public float Rank6 { get { return this._Rank6; } }
+        public short Code { get; }
+        public string Title { get; }
+        public float Rank1 { get; }
+        public float Rank2 { get; }
+        public float Rank3 { get; }
+        public float Rank4 { get; }
+        public float Rank5 { get; }
+        public float Rank6 { get; }
+
         public PersonProfessions PersonProfessions
         {
             get
             {
-                PersonProfessions personProfessions = new PersonProfessions();
-                var items = Databases.Tables.PersonProfessions._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
-                foreach (var item in items) personProfessions._Items.Add(item.Key, item.Value);
+                var personProfessions = new PersonProfessions();
+                var items = Databases.Tables.PersonProfessions.Items.Where(r => r.Value.ProfessionId.Equals(Id)).ToArray();
+                foreach (var item in items) personProfessions.Items.Add(item.Key, item.Value);
                 return personProfessions;
             }
         }
+
         public Executors Executors
         {
             get
             {
-                Executors executors = new Executors();
-                var items = Databases.Tables.Executors._Items.Where(r => r.Value.ProfessionId.Equals(this.Id)).ToArray();
-                foreach (var item in items) executors._Items.Add(item.Key, item.Value);
+                var executors = new Executors();
+                var items = Databases.Tables.Executors.Items.Where(r => r.Value.ProfessionId.Equals(Id)).ToArray();
+                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
                 return executors;
             }
         }
 
-        public override bool IsUsed
-        {
-            get
-            {
-                return !this.Executors.Count().Equals(0);
-            }
-        }
+        public override bool IsUsed => !Executors.Count().Equals(0);
 
         public override Profession Clone()
         {
-            return new Profession(this.Code, this.Title,
-             this.Rank1, this.Rank2, this.Rank3, this.Rank4, this.Rank5, this.Rank6,
-             this.Begin, this.End);
+            return new Profession(Code, Title, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Begin, End);
         }
 
         public override void Update(Profession newItem)
         {
             Databases.Tables.Professions.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            foreach (PersonProfession personProfession in this.PersonProfessions)
+            foreach (var personProfession in PersonProfessions)
                 personProfession.Delete();
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                Profession item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new Profession(Code, Title, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.Professions.Delete(this);
@@ -345,111 +291,107 @@ namespace Project.Data
 
         public bool Equals(Profession other)
         {
-            if (
-             this._Code.Equals(other._Code) &&
-             this._Title.Equals(other._Title) &&
-             this._Rank1.Equals(other._Rank1) &&
-             this._Rank2.Equals(other._Rank2) &&
-             this._Rank3.Equals(other._Rank3) &&
-             this._Rank4.Equals(other._Rank4) &&
-             this._Rank5.Equals(other._Rank5) &&
-             this._Rank6.Equals(other._Rank6) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End)
-             )
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return Code.Equals(other.Code) &&
+                   Title.Equals(other.Title) &&
+                   Rank1.Equals(other.Rank1) &&
+                   Rank2.Equals(other.Rank2) &&
+                   Rank3.Equals(other.Rank3) &&
+                   Rank4.Equals(other.Rank4) &&
+                   Rank5.Equals(other.Rank5) &&
+                   Rank6.Equals(other.Rank6) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Profession))
                 throw new InvalidCastException("The 'obj' argument is not a Profession object...");
-            else
-                return Equals(obj as Profession);
+            return Equals(obj as Profession);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.Code.GetHashCode().ToString() +
-             this.Title.GetHashCode().ToString() +
-             this.Rank1.GetHashCode().ToString() +
-             this.Rank2.GetHashCode().ToString() +
-             this.Rank3.GetHashCode().ToString() +
-             this.Rank4.GetHashCode().ToString() +
-             this.Rank5.GetHashCode().ToString() +
-             this.Rank6.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                Code.GetHashCode() +
+                Title.GetHashCode() +
+                Rank1.GetHashCode() +
+                Rank2.GetHashCode() +
+                Rank3.GetHashCode() +
+                Rank4.GetHashCode() +
+                Rank5.GetHashCode() +
+                Rank6.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Warranty : TableRow, IEquatable<Warranty>
     {
-        public Warranty(OleDbDataReader reader)
+        public Warranty(IDataRecord record)
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._Customer = Convert.ToString(reader["Customer"]);
-            this._Order = Convert.ToInt16(reader["Order"]);
-            this._Percent = Convert.ToSingle(reader["Percent"]);
-            this._WarrantyDate = Convert.ToDateTime(reader["WarrantyDate"]);
-            this._AreaId = Convert.ToInt32(reader["AreaId"]);
-            this._BrigadeId = Convert.ToInt32(reader["BrigadeId"]);
-        }
-        public Warranty(string Customer, short Order, float Percent, DateTime WarrantyDate, int AreaId, int BrigadeId)
-        {
-            this._Id = 0;
-            this._Customer = Customer;
-            this._Order = Order;
-            this._Percent = Percent;
-            this._WarrantyDate = WarrantyDate;
-            this._AreaId = AreaId;
-            this._BrigadeId = BrigadeId;
+            Id = Convert.ToInt32(record["Id"]);
+            Customer = Convert.ToString(record["Customer"]);
+            Order = Convert.ToInt16(record["Order"]);
+            Percent = Convert.ToSingle(record["Percent"]);
+            WarrantyDate = Convert.ToDateTime(record["WarrantyDate"]);
+            AreaId = Convert.ToInt32(record["AreaId"]);
+            BrigadeId = Convert.ToInt32(record["BrigadeId"]);
         }
 
-        private string _Customer;
-        private short _Order;
-        private float _Percent;
-        private DateTime _WarrantyDate;
-        private int _AreaId;
-        private int _BrigadeId;
+        public Warranty(string customer, short order, float percent, DateTime warrantyDate, int areaId, int brigadeId)
+        {
+            Id = 0;
+            Customer = customer;
+            Order = order;
+            Percent = percent;
+            WarrantyDate = warrantyDate;
+            AreaId = areaId;
+            BrigadeId = brigadeId;
+        }
 
-        public string Customer { get { return this._Customer; } }
-        public short Order { get { return this._Order; } }
-        public float Percent { get { return this._Percent; } }
-        public DateTime WarrantyDate { get { return this._WarrantyDate; } }
-        public int AreaId { get { return this._AreaId; } }
-        public int BrigadeId { get { return this._BrigadeId; } }
+        public string Customer { get; }
+        public short Order { get; }
+        public float Percent { get; }
+        public DateTime WarrantyDate { get; }
+        public int AreaId { get; }
+        public int BrigadeId { get; }
+
         public Executors Executors
         {
             get
             {
-                Executors executors = new Executors();
-                var items = Databases.Tables.Executors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
-                foreach (var item in items) executors._Items.Add(item.Key, item.Value);
+                var executors = new Executors();
+                var items = Databases.Tables.Executors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
+                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
                 return executors;
             }
         }
+
         public Labors Labors
         {
             get
             {
-                Labors labors = new Labors();
-                var items = Databases.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
-                foreach (var item in items) labors._Items.Add(item.Key, item.Value);
+                var labors = new Labors();
+                var items = Databases.Tables.Labors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
+                foreach (var item in items) labors.Items.Add(item.Key, item.Value);
                 return labors;
             }
         }
+
         public Positions Positions
         {
             get
             {
-                Positions positions = new Positions();
-                var items = Databases.Tables.Positions._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
-                foreach (var item in items) positions._Items.Add(item.Key, item.Value);
+                var positions = new Positions();
+                var items = Databases.Tables.Positions.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
+                foreach (var item in items) positions.Items.Add(item.Key, item.Value);
                 return positions;
             }
         }
@@ -458,130 +400,116 @@ namespace Project.Data
         {
             Databases.Tables.Warranties.Update(this, newItem);
         }
+
         public void Delete()
         {
-            foreach (Position position in this.Positions)
+            foreach (var position in Positions)
                 position.Delete();
-            foreach (Executor executor in this.Executors)
+            foreach (var executor in Executors)
                 executor.Delete();
             Databases.Tables.Warranties.Delete(this);
         }
 
         public bool Equals(Warranty other)
         {
-            if (this._Customer.Equals(other._Customer) &&
-             this._Order.Equals(other._Order) &&
-             this._Percent.Equals(other._Percent) &&
-             this._WarrantyDate.Equals(other._WarrantyDate) &&
-             this._AreaId.Equals(other._AreaId) &&
-             this._BrigadeId.Equals(other._BrigadeId))
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return Customer.Equals(other.Customer) &&
+                   Order.Equals(other.Order) &&
+                   Percent.Equals(other.Percent) &&
+                   WarrantyDate.Equals(other.WarrantyDate) &&
+                   AreaId.Equals(other.AreaId) &&
+                   BrigadeId.Equals(other.BrigadeId);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Warranty))
                 throw new InvalidCastException("The 'obj' argument is not a Warranty object.");
-            else
-                return Equals(obj as Warranty);
+
+            return Equals((Warranty) obj);
         }
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.Customer.GetHashCode().ToString() +
-             this.Order.GetHashCode().ToString() +
-             this.Percent.GetHashCode().ToString() +
-             this.WarrantyDate.GetHashCode().ToString() +
-             this.AreaId.GetHashCode().ToString() +
-             this.BrigadeId.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                Customer.GetHashCode() +
+                Order.GetHashCode() +
+                Percent.GetHashCode() +
+                WarrantyDate.GetHashCode() +
+                AreaId.GetHashCode() +
+                BrigadeId.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Area : PeriodicTableRow<Area>, IEquatable<Area>
     {
-        public Area(OleDbDataReader reader)
+        public Area(IDataRecord record) : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._Code = Convert.ToByte(reader["Code"]);
-            this._Title = Convert.ToString(reader["Title"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public Area(byte Code, string Title)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._Title = Title;
-            this._Begin = DateTime.Now.Date;
-            this._End = new DateTime(9000, 1, 1);
-        }
-        public Area(byte Code, string Title, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._Code = Code;
-            this._Title = Title;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(record["Id"]);
+            Code = Convert.ToByte(record["Code"]);
+            Title = Convert.ToString(record["Title"]);
         }
 
-        private byte _Code;
-        private string _Title;
+        public Area(byte code, string title) : this(code, title, DateTime.Now.Date, new DateTime(9000, 1, 1)) { }
 
-        public byte Code { get { return this._Code; } }
-        public string Title { get { return this._Title; } }
+        public Area(byte code, string title, DateTime begin, DateTime end) : base(begin, end)
+        {
+            Id = 0;
+            Code = code;
+            Title = title;
+        }
+
+        public byte Code { get; }
+        public string Title { get; }
+
         public Brigades Brigades
         {
             get
             {
-                Brigades brigades = new Brigades();
-                var items = Databases.Tables.Brigades._Items
-                 .Where(r => r.Value.AreaId.Equals(this.Id))
-                 .ToArray();
-                foreach (var item in items) brigades._Items.Add(item.Key, item.Value);
+                var brigades = new Brigades();
+                var items = Databases.Tables.Brigades.Items
+                    .Where(r => r.Value.AreaId.Equals(Id))
+                    .ToArray();
+                foreach (var item in items) brigades.Items.Add(item.Key, item.Value);
                 return brigades;
             }
         }
+
         public Warranties Warranties
         {
             get
             {
-                Warranties warranties = new Warranties();
-                var items = Databases.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
-                foreach (var item in items) warranties._Items.Add(item.Key, item.Value);
+                var warranties = new Warranties();
+                var items = Databases.Tables.Warranties.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
+                foreach (var item in items) warranties.Items.Add(item.Key, item.Value);
                 return warranties;
             }
         }
 
-        public override bool IsUsed
-        {
-            get
-            {
-                return !this.Warranties.Count().Equals(0);
-            }
-        }
+        public override bool IsUsed => !Warranties.Count().Equals(0);
 
         public override Area Clone()
         {
-            return new Area(this.Code, this.Title, this.Begin, this.End);
+            return new Area(Code, Title, Begin, End);
         }
 
         public override void Update(Area newItem)
         {
             Databases.Tables.Areas.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            foreach (Brigade brigade in this.Brigades)
+            foreach (var brigade in Brigades)
                 brigade.Delete();
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                Area item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new Area(Code, Title, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.Areas.Delete(this);
@@ -589,86 +517,76 @@ namespace Project.Data
 
         public bool Equals(Area other)
         {
-            if (
-             this._Code.Equals(other._Code) &&
-             this._Title.Equals(other._Title) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End)
-             )
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return Code.Equals(other.Code) &&
+                   Title.Equals(other.Title) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Area))
-                throw new InvalidCastException("The 'obj' argument is not a Area object.");
-            else
-                return Equals(obj as Area);
+                throw new InvalidCastException("The 'obj' argument is not an Area object.");
+            return Equals((Area) obj);
         }
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.Code.GetHashCode().ToString() +
-             this.Title.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                Code.GetHashCode() +
+                Title.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Position : TableRow, IEquatable<Position>
     {
-        public Position(OleDbDataReader reader)
+        public Position(IDataRecord record)
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._WarrantyId = Convert.ToInt32(reader["WarrantyId"]);
-            this._Title = Convert.ToString(reader["Title"]);
-            this._Draw = Convert.ToString(reader["Draw"]);
-            this._Matherial = Convert.ToString(reader["Matherial"]);
-            this._Number = Convert.ToInt32(reader["Number"]);
-            this._Mass = Convert.ToSingle(reader["Mass"]);
-            this._Norm = Convert.ToSingle(reader["Norm"]);
-            this._Price = Convert.ToSingle(reader["Price"]);
-        }
-        public Position(int WarrantyId, string Title, string Draw, string Matherial, int Number, float Mass, float Norm, float Price)
-        {
-            this._Id = 0;
-            this._WarrantyId = WarrantyId;
-            this._Title = Title;
-            this._Draw = Draw;
-            this._Matherial = Matherial;
-            this._Number = Number;
-            this._Mass = Mass;
-            this._Norm = Norm;
-            this._Price = Price;
+            Id = Convert.ToInt32(record["Id"]);
+            WarrantyId = Convert.ToInt32(record["WarrantyId"]);
+            Title = Convert.ToString(record["Title"]);
+            Draw = Convert.ToString(record["Draw"]);
+            Matherial = Convert.ToString(record["Matherial"]);
+            Number = Convert.ToInt32(record["Number"]);
+            Mass = Convert.ToSingle(record["Mass"]);
+            Norm = Convert.ToSingle(record["Norm"]);
+            Price = Convert.ToSingle(record["Price"]);
         }
 
-        private int _WarrantyId;
-        private string _Title;
-        private string _Draw;
-        private string _Matherial;
-        private int _Number;
-        private float _Mass;
-        private float _Norm;
-        private float _Price;
+        public Position(int warrantyId, string title, string draw, string matherial, int number, float mass, float norm, float price)
+        {
+            Id = 0;
+            WarrantyId = warrantyId;
+            Title = title;
+            Draw = draw;
+            Matherial = matherial;
+            Number = number;
+            Mass = mass;
+            Norm = norm;
+            Price = price;
+        }
 
-        public int WarrantyId { get { return this._WarrantyId; } }
-        public string Title { get { return this._Title; } }
-        public string Draw { get { return this._Draw; } }
-        public string Matherial { get { return this._Matherial; } }
-        public int Number { get { return this._Number; } }
-        public float Mass { get { return this._Mass; } }
-        public float Norm { get { return this._Norm; } }
-        public float Price { get { return this._Price; } }
+        public int WarrantyId { get; }
+        public string Title { get; }
+        public string Draw { get; }
+        public string Matherial { get; }
+        public int Number { get; }
+        public float Mass { get; }
+        public float Norm { get; }
+        public float Price { get; }
 
 
         public void Update(Position newItem)
         {
             Databases.Tables.Positions.Update(this, newItem);
         }
+
         public void Delete()
         {
             Databases.Tables.Positions.Delete(this);
@@ -676,91 +594,76 @@ namespace Project.Data
 
         public bool Equals(Position other)
         {
-            if (this._WarrantyId.Equals(other._WarrantyId) &&
-             this._Title.Equals(other._Title) &&
-             this._Draw.Equals(other._Draw) &&
-             this._Matherial.Equals(other._Matherial) &&
-             this._Number.Equals(other._Number) &&
-             this._Mass.Equals(other._Mass) &&
-             this._Norm.Equals(other._Norm) &&
-             this._Price.Equals(other._Price))
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return WarrantyId.Equals(other.WarrantyId) &&
+                   Title.Equals(other.Title) &&
+                   Draw.Equals(other.Draw) &&
+                   Matherial.Equals(other.Matherial) &&
+                   Number.Equals(other.Number) &&
+                   Mass.Equals(other.Mass) &&
+                   Norm.Equals(other.Norm) &&
+                   Price.Equals(other.Price);
         }
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Position))
                 throw new InvalidCastException("The 'obj' argument is not a Position object.");
-            else
-                return Equals(obj as Position);
+            return Equals((Position) obj);
         }
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.WarrantyId.GetHashCode().ToString() +
-             this.Title.GetHashCode().ToString() +
-             this.Draw.GetHashCode().ToString() +
-             this.Matherial.GetHashCode().ToString() +
-             this.Number.GetHashCode().ToString() +
-             this.Mass.GetHashCode().ToString() +
-             this.Norm.GetHashCode().ToString() +
-             this.Price.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                WarrantyId.GetHashCode() +
+                Title.GetHashCode() +
+                Draw.GetHashCode() +
+                Matherial.GetHashCode() +
+                Number.GetHashCode() +
+                Mass.GetHashCode() +
+                Norm.GetHashCode() +
+                Price.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Executor : TableRow, IEquatable<Executor>
     {
-        public Executor(OleDbDataReader reader)
+        public Executor(IDataRecord record)
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._WarrantyId = Convert.ToInt32(reader["WarrantyId"]);
-            this._PersonId = Convert.ToInt32(reader["PersonId"]);
-            this._ProfessionId = Convert.ToInt32(reader["ProfessionId"]);
-            this._Rank = Convert.ToByte(reader["Rank"]);
+            Id = Convert.ToInt32(record["Id"]);
+            WarrantyId = Convert.ToInt32(record["WarrantyId"]);
+            PersonId = Convert.ToInt32(record["PersonId"]);
+            ProfessionId = Convert.ToInt32(record["ProfessionId"]);
+            Rank = Convert.ToByte(record["Rank"]);
         }
-        public Executor(int WarrantyId, int PersonId, int ProfessionId, byte Rank)
+        public Executor(int warrantyId, int personId, int professionId, byte rank)
         {
-            this._Id = 0;
-            this._WarrantyId = WarrantyId;
-            this._PersonId = PersonId;
-            this._ProfessionId = ProfessionId;
-            this._Rank = Rank;
+            Id = 0;
+            WarrantyId = warrantyId;
+            PersonId = personId;
+            ProfessionId = professionId;
+            Rank = rank;
         }
 
-        private int _WarrantyId;
-        private int _PersonId;
-        private int _ProfessionId;
-        private byte _Rank;
+        public int WarrantyId { get; }
+        public int PersonId { get; }
+        public int ProfessionId { get; }
+        public byte Rank { get; }
 
-        public int WarrantyId { get { return this._WarrantyId; } }
-        public int PersonId { get { return this._PersonId; } }
-        public int ProfessionId { get { return this._ProfessionId; } }
-        public byte Rank { get { return this._Rank; } }
-        public Person Person
-        {
-            get
-            {
-                return Databases.Tables.Persons[this._PersonId];
-            }
-        }
-        public Profession Profession
-        {
-            get
-            {
-                return Databases.Tables.Professions[this._ProfessionId];
-            }
-        }
+        public Person Person => Databases.Tables.Persons[PersonId];
+
+        public Profession Profession => Databases.Tables.Professions[ProfessionId];
+
         public Labors Labors
         {
             get
             {
-                Labors labors = new Labors();
-                var items = Databases.Tables.Labors._Items.Where(r => r.Value.WarrantyId.Equals(this.Id)).ToArray();
-                foreach (var item in items) labors._Items.Add(item.Key, item.Value);
+                var labors = new Labors();
+                var items = Databases.Tables.Labors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
+                foreach (var item in items) labors.Items.Add(item.Key, item.Value);
                 return labors;
             }
         }
@@ -769,72 +672,71 @@ namespace Project.Data
         {
             Databases.Tables.Executors.Update(this, newItem);
         }
+
         public void Delete()
         {
-            foreach (Labor labor in this.Labors)
+            foreach (var labor in Labors)
                 labor.Delete();
             Databases.Tables.Executors.Delete(this);
         }
 
         public bool Equals(Executor other)
         {
-            if (this._WarrantyId.Equals(other._WarrantyId) &&
-             this._PersonId.Equals(other._PersonId) &&
-             this._ProfessionId.Equals(other._ProfessionId) &&
-             this._Rank.Equals(other._Rank))
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return WarrantyId.Equals(other.WarrantyId) &&
+                   PersonId.Equals(other.PersonId) &&
+                   ProfessionId.Equals(other.ProfessionId) &&
+                   Rank.Equals(other.Rank);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Executor))
                 throw new InvalidCastException("The 'obj' argument is not a Executor object.");
-            else
-                return Equals(obj as Executor);
+            return Equals((Executor) obj);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.WarrantyId.GetHashCode().ToString() +
-             this.PersonId.GetHashCode().ToString() +
-             this.ProfessionId.GetHashCode().ToString() +
-             this.Rank.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                WarrantyId.GetHashCode() +
+                PersonId.GetHashCode() +
+                ProfessionId.GetHashCode() +
+                Rank.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Labor : TableRow, IEquatable<Labor>
     {
-        public Labor(OleDbDataReader reader)
+        public Labor(IDataRecord reader)
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._WarrantyId = Convert.ToInt32(reader["WarrantyId"]);
-            this._LaborDate = Convert.ToDateTime(reader["LaborDate"]);
-            this._Hours = Convert.ToSingle(reader["Hours"]);
+            Id = Convert.ToInt32(reader["Id"]);
+            WarrantyId = Convert.ToInt32(reader["WarrantyId"]);
+            LaborDate = Convert.ToDateTime(reader["LaborDate"]);
+            Hours = Convert.ToSingle(reader["Hours"]);
         }
-        public Labor(int WarrantyId, DateTime LaborDate, float Hours)
+        public Labor(int warrantyId, DateTime laborDate, float hours)
         {
-            this._Id = 0;
-            this._WarrantyId = WarrantyId;
-            this._LaborDate = LaborDate;
-            this._Hours = Hours;
+            Id = 0;
+            WarrantyId = warrantyId;
+            LaborDate = laborDate;
+            Hours = hours;
         }
 
-        private int _WarrantyId;
-        private DateTime _LaborDate;
-        private float _Hours;
-
-        public int WarrantyId { get { return this._WarrantyId; } }
-        public DateTime LaborDate { get { return this._LaborDate; } }
-        public float Hours { get { return this._Hours; } }
+        public int WarrantyId { get; }
+        public DateTime LaborDate { get; }
+        public float Hours { get; }
 
         public void Update(Labor newItem)
         {
             Databases.Tables.Labors.Update(this, newItem);
         }
+
         public void Delete()
         {
             Databases.Tables.Labors.Delete(this);
@@ -842,119 +744,110 @@ namespace Project.Data
 
         public bool Equals(Labor other)
         {
-            if (this._WarrantyId.Equals(other._WarrantyId) &&
-             this._LaborDate.Equals(other._LaborDate) &&
-             this._Hours.Equals(other._Hours)
-             )
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return WarrantyId.Equals(other.WarrantyId) &&
+                   LaborDate.Equals(other.LaborDate) &&
+                   Hours.Equals(other.Hours);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Labor))
                 throw new InvalidCastException("The 'obj' argument is not a Labor object.");
-            else
-                return Equals(obj as Labor);
+            return Equals((Labor) obj);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.WarrantyId.GetHashCode().ToString() +
-             this.LaborDate.GetHashCode().ToString() +
-             this.Hours.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                WarrantyId.GetHashCode() +
+                LaborDate.GetHashCode() +
+                Hours.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class Brigade : PeriodicTableRow<Brigade>, IEquatable<Brigade>
     {
-        public Brigade(OleDbDataReader reader)
+        public Brigade(IDataRecord record)
+            : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._AreaId = Convert.ToInt32(reader["AreaId"]);
-            this._Code = Convert.ToByte(reader["Code"]);
-            this._Title = Convert.ToString(reader["Title"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public Brigade(int AreaId, byte Code, string Title)
-        {
-            this._Id = 0;
-            this._AreaId = AreaId;
-            this._Code = Code;
-            this._Title = Title;
-            this._Begin = DateTime.Now.Date;
-            this._End = new DateTime(9000, 1, 1);
-        }
-        public Brigade(int AreaId, byte Code, string Title, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._AreaId = AreaId;
-            this._Code = Code;
-            this._Title = Title;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(record["Id"]);
+            AreaId = Convert.ToInt32(record["AreaId"]);
+            Code = Convert.ToByte(record["Code"]);
+            Title = Convert.ToString(record["Title"]);
         }
 
-        private int _AreaId;
-        private byte _Code;
-        private string _Title;
+        public Brigade(int areaId, byte code, string title)
+            : this(areaId, code, title, DateTime.Now.Date, new DateTime(9000, 1, 1))
+        {
+            Id = 0;
+            AreaId = areaId;
+            Code = code;
+            Title = title;
+        }
 
-        public int AreaId { get { return this._AreaId; } }
-        public byte Code { get { return this._Code; } }
-        public string Title { get { return this._Title; } }
-        public Area Area { get { return Databases.Tables.Areas[this.AreaId]; } }
+        public Brigade(int areaId, byte code, string title, DateTime begin, DateTime end)
+            : base(begin, end)
+        {
+            Id = 0;
+            AreaId = areaId;
+            Code = code;
+            Title = title;
+        }
+
+        public int AreaId { get; }
+        public byte Code { get; }
+        public string Title { get; }
+        public Area Area => Databases.Tables.Areas[AreaId];
+
         public BrigadePersons BrigadePersons
         {
             get
             {
-                BrigadePersons brigadePersons = new BrigadePersons();
+                var brigadePersons = new BrigadePersons();
                 brigadePersons.Clear();
-                var items = Databases.Tables.BrigadePersons._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
-                foreach (var item in items) brigadePersons._Items.Add(item.Key, item.Value);
+                var items = Databases.Tables.BrigadePersons.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
+                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
                 return brigadePersons;
             }
         }
+
         public Warranties Warranties
         {
             get
             {
-                Warranties warranties = new Warranties();
-                var items = Databases.Tables.Warranties._Items.Where(r => r.Value.BrigadeId.Equals(this.Id)).ToArray();
-                foreach (var item in items) warranties._Items.Add(item.Key, item.Value);
+                var warranties = new Warranties();
+                var items = Databases.Tables.Warranties.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
+                foreach (var item in items) warranties.Items.Add(item.Key, item.Value);
                 return warranties;
             }
         }
 
-        public override bool IsUsed
-        {
-            get
-            {
-                return !this.Warranties.Count().Equals(0);
-            }
-        }
+        public override bool IsUsed => !Warranties.Count().Equals(0);
 
         public override Brigade Clone()
         {
-            return new Brigade(this.AreaId, this.Code, this.Title, this.Begin, this.End);
+            return new Brigade(AreaId, Code, Title, Begin, End);
         }
 
         public override void Update(Brigade newItem)
         {
             Databases.Tables.Brigades.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            foreach (BrigadePerson brigadePerson in this.BrigadePersons)
+            foreach (var brigadePerson in BrigadePersons)
                 brigadePerson.Delete();
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                Brigade item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new Brigade(AreaId, Code, Title, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.Brigades.Delete(this);
@@ -962,34 +855,33 @@ namespace Project.Data
 
         public bool Equals(Brigade other)
         {
-            if (
-             this._Code.Equals(other._Code) &&
-             this._Title.Equals(other._Title) &&
-             this._AreaId.Equals(other._AreaId) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End)
-             )
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return Code.Equals(other.Code) &&
+                   Title.Equals(other.Title) &&
+                   AreaId.Equals(other.AreaId) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is Brigade))
                 throw new InvalidCastException("The 'obj' argument is not a Brigade object.");
-            else
-                return Equals(obj as Brigade);
+            return Equals(obj as Brigade);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.AreaId.GetHashCode().ToString() +
-             this.Code.GetHashCode().ToString() +
-             this.Title.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                AreaId.GetHashCode() +
+                Code.GetHashCode() +
+                Title.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
@@ -997,75 +889,54 @@ namespace Project.Data
     public class BrigadePerson : PeriodicTableRow<BrigadePerson>, IEquatable<BrigadePerson>
     {
         public BrigadePerson(OleDbDataReader reader)
+            : base(Convert.ToDateTime(reader["Begin"]), Convert.ToDateTime(reader["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._BrigadeId = Convert.ToInt32(reader["BrigadeId"]);
-            this._PersonId = Convert.ToInt32(reader["PersonId"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public BrigadePerson(int BrigadeId, int PersonId)
-        {
-            this._Id = 0;
-            this._BrigadeId = BrigadeId;
-            this._PersonId = PersonId;
-            this._Begin = DateTime.Now.Date;
-            this._End = new DateTime(9000, 1, 1);
-        }
-        public BrigadePerson(int BrigadeId, int PersonId, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._BrigadeId = BrigadeId;
-            this._PersonId = PersonId;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(reader["Id"]);
+            BrigadeId = Convert.ToInt32(reader["BrigadeId"]);
+            PersonId = Convert.ToInt32(reader["PersonId"]);
         }
 
-        private int _BrigadeId;
-        private int _PersonId;
-
-        public int BrigadeId { get { return this._BrigadeId; } }
-        public int PersonId { get { return this._PersonId; } }
-        public Brigade Brigade
+        public BrigadePerson(int brigadeId, int personId)
+            : this(brigadeId, personId, DateTime.Now.Date, new DateTime(9000, 1, 1))
         {
-            get
-            {
-                return Databases.Tables.Brigades[this.BrigadeId];
-            }
-        }
-        public Person Person
-        {
-            get
-            {
-                return Databases.Tables.Persons[this._PersonId];
-            }
+            Id = 0;
+            BrigadeId = brigadeId;
+            PersonId = personId;
         }
 
-        public override bool IsUsed
+        public BrigadePerson(int brigadeId, int personId, DateTime begin, DateTime end)
+            : base(begin, end)
         {
-            get
-            {
-                return (!this.Brigade.Warranties.Count().Equals(0)) || (!this.Person.Executors.Count().Equals(0));
-
-            }
+            Id = 0;
+            BrigadeId = brigadeId;
+            PersonId = personId;
         }
+
+        public int BrigadeId { get; }
+        public int PersonId { get; }
+
+        public Brigade Brigade => Databases.Tables.Brigades[BrigadeId];
+
+        public Person Person => Databases.Tables.Persons[PersonId];
+
+        public override bool IsUsed => (!Brigade.Warranties.Count().Equals(0)) || (!Person.Executors.Count().Equals(0));
 
         public override BrigadePerson Clone()
         {
-            return new BrigadePerson(this.BrigadeId, this.PersonId, this.Begin, this.End);
+            return new BrigadePerson(BrigadeId, PersonId, Begin, End);
         }
 
         public override void Update(BrigadePerson newItem)
         {
             Databases.Tables.BrigadePersons.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                BrigadePerson item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new BrigadePerson(BrigadeId, PersonId, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.BrigadePersons.Delete(this);
@@ -1073,110 +944,90 @@ namespace Project.Data
 
         public bool Equals(BrigadePerson other)
         {
-            if (this._BrigadeId.Equals(other._BrigadeId) &&
-             this._PersonId.Equals(other._PersonId) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End))
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return BrigadeId.Equals(other.BrigadeId) &&
+                   PersonId.Equals(other.PersonId) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is BrigadePerson))
                 throw new InvalidCastException("The 'obj' argument is not a BrigadePerson object.");
-            else
-                return Equals(obj as BrigadePerson);
+            return Equals(obj as BrigadePerson);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.BrigadeId.GetHashCode().ToString() +
-             this.PersonId.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                BrigadeId.GetHashCode() +
+                PersonId.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
 
     public class PersonProfession : PeriodicTableRow<PersonProfession>, IEquatable<PersonProfession>
     {
-        public PersonProfession(OleDbDataReader reader)
+        public PersonProfession(IDataRecord reader)
+            : base(Convert.ToDateTime(reader["Begin"]), Convert.ToDateTime(reader["End"]))
         {
-            this._Id = Convert.ToInt32(reader["Id"]);
-            this._PersonId = Convert.ToInt32(reader["PersonId"]);
-            this._ProfessionId = Convert.ToInt32(reader["ProfessionId"]);
-            this._Rank = Convert.ToByte(reader["Rank"]);
-            this._Begin = Convert.ToDateTime(reader["Begin"]);
-            this._End = Convert.ToDateTime(reader["End"]);
-        }
-        public PersonProfession(int PersonId, int ProfessionId, byte Rank)
-        {
-            this._Id = 0;
-            this._PersonId = PersonId;
-            this._ProfessionId = ProfessionId;
-            this._Rank = Rank;
-            this._Begin = Begin;
-            this._End = End;
-        }
-        public PersonProfession(int PersonId, int ProfessionId, byte Rank, DateTime Begin, DateTime End)
-        {
-            this._Id = 0;
-            this._PersonId = PersonId;
-            this._ProfessionId = ProfessionId;
-            this._Rank = Rank;
-            this._Begin = Begin;
-            this._End = End;
+            Id = Convert.ToInt32(reader["Id"]);
+            PersonId = Convert.ToInt32(reader["PersonId"]);
+            ProfessionId = Convert.ToInt32(reader["ProfessionId"]);
+            Rank = Convert.ToByte(reader["Rank"]);
         }
 
-        private int _PersonId;
-        private int _ProfessionId;
-        private byte _Rank;
-
-        public int PersonId { get { return this._PersonId; } }
-        public int ProfessionId { get { return this._ProfessionId; } }
-        public byte Rank { get { return this._Rank; } }
-        public Person Person
+        public PersonProfession(int personId, int professionId, byte rank)
+            : this(personId, professionId, rank, DateTime.Now.Date, new DateTime(9000, 1, 1))
         {
-            get
-            {
-                return Databases.Tables.Persons[this.PersonId];
-            }
-        }
-        public Profession Profession
-        {
-            get
-            {
-                return Databases.Tables.Professions[this._ProfessionId];
-            }
+            Id = 0;
+            PersonId = personId;
+            ProfessionId = professionId;
+            Rank = rank;
         }
 
-        public override bool IsUsed
+        public PersonProfession(int personId, int professionId, byte rank, DateTime begin, DateTime end)
+            : base(begin, end)
         {
-            get
-            {
-                return this.Person.IsUsed;
-            }
+            Id = 0;
+            PersonId = personId;
+            ProfessionId = professionId;
+            Rank = rank;
         }
+
+        public int PersonId { get; }
+        public int ProfessionId { get; }
+        public byte Rank { get; }
+
+        public Person Person => Databases.Tables.Persons[PersonId];
+
+        public Profession Profession => Databases.Tables.Professions[ProfessionId];
+
+        public override bool IsUsed => Person.IsUsed;
 
         public override PersonProfession Clone()
         {
-            return new PersonProfession(this.PersonId, this.ProfessionId, this.Rank, this.Begin, this.End);
+            return new PersonProfession(PersonId, ProfessionId, Rank, Begin, End);
         }
 
         public override void Update(PersonProfession newItem)
         {
             Databases.Tables.PersonProfessions.Update(this, newItem);
         }
+
         public override void Delete()
         {
-            if (this.IsUsed)
+            if (IsUsed)
             {
-                PersonProfession item = this.Clone();
-                item._End = DateTime.Now.Date;
-                this.Update(item);
+                var item = new PersonProfession(PersonId, ProfessionId, Rank, Begin, DateTime.Now.Date);
+                Update(item);
             }
             else
                 Databases.Tables.PersonProfessions.Delete(this);
@@ -1184,31 +1035,32 @@ namespace Project.Data
 
         public bool Equals(PersonProfession other)
         {
-            if (this._PersonId.Equals(other._PersonId) &&
-             this._ProfessionId.Equals(other._ProfessionId) &&
-             this._Rank.Equals(other._Rank) &&
-             this._Begin.Equals(other._Begin) &&
-             this._End.Equals(other._End))
-                return true;
-            else return false;
+            if (other == null) return false;
+
+            return PersonId.Equals(other.PersonId) &&
+                   ProfessionId.Equals(other.ProfessionId) &&
+                   Rank.Equals(other.Rank) &&
+                   Begin.Equals(other.Begin) &&
+                   End.Equals(other.End);
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            if (obj == null) return base.Equals(obj);
+            if (obj == null) return false;
 
             if (!(obj is PersonProfession))
                 throw new InvalidCastException("The 'obj' argument is not a PersonProfession object.");
-            else
-                return Equals(obj as PersonProfession);
+            return Equals((PersonProfession) obj);
         }
+
         public override int GetHashCode()
         {
-            string hash =
-             this.Id.GetHashCode().ToString() +
-             this.PersonId.GetHashCode().ToString() +
-             this.ProfessionId.GetHashCode().ToString() +
-             this.Begin.GetHashCode().ToString() +
-             this.End.GetHashCode().ToString();
+            var hash =
+                Id.GetHashCode() +
+                PersonId.GetHashCode() +
+                ProfessionId.GetHashCode() +
+                Begin.GetHashCode() +
+                End.GetHashCode();
             return hash.GetHashCode();
         }
     }
