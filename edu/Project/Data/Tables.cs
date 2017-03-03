@@ -8,7 +8,16 @@ namespace Project.Data
 {
     public abstract class Table<T> : IEnumerable<T> where T : ITableRow
     {
+        /// <summary>
+        /// Имя, которым таблица представлена в базе данных
+        /// </summary>
+        public string TableName;
+
         protected internal Dictionary<int, T> Items = new Dictionary<int, T>();
+
+        private readonly OleDbCommand _command = new OleDbCommand();
+
+        public List<OleDbParameter> Parameters = new List<OleDbParameter>();
 
         protected internal OleDbDataReader Reader;
 
@@ -18,16 +27,7 @@ namespace Project.Data
 
         public int GetIdByValue(T item) => (from i in Items where i.Value.Equals(item) select i.Key).FirstOrDefault();
 
-        public int NextId
-        {
-            get
-            {
-                int id;
-                if (Items.Keys.Count != 0) id = Items.Keys.Max() + 1;
-                else id = 1;
-                return id;
-            }
-        }
+        public int NextId => (Items.Keys.Count != 0) ? Items.Keys.Max() + 1 : 1;
 
         internal void Clear() => Items.Clear();
 
@@ -35,18 +35,12 @@ namespace Project.Data
 
         public IEnumerator<T> GetEnumerator() => Items.Values.GetEnumerator();
 
-        public string TableName;
-
-        public OleDbCommand Command = new OleDbCommand();
-
-        public List<OleDbParameter> Parameters = new List<OleDbParameter>();
-
         public int Insert(T item)
         {
             var id = NextId;
             item.Id = id;
             var pId = new OleDbParameter("Id", OleDbType.Integer) {Value = id};
-            Command.Parameters.Add(pId);
+            _command.Parameters.Add(pId);
             string comParams = "", comVals = "";
             comParams += "([Id], ";
             comVals += "(?, ";
@@ -64,15 +58,15 @@ namespace Project.Data
             foreach (var parameter in Parameters)
             {
                 parameter.Value = item.GetType().GetProperty(parameter.ParameterName).GetValue(item, null);
-                Command.Parameters.Add(parameter);
+                _command.Parameters.Add(parameter);
             }
 
-            Command.CommandText = comText;
-            Command.Connection = Databases.Connection;
-            Command.Connection.Open();
-            Command.ExecuteNonQuery();
-            Command.Parameters.Clear();
-            Command.Connection.Close();
+            _command.CommandText = comText;
+            _command.Connection = Databases.Connection;
+            _command.Connection.Open();
+            _command.ExecuteNonQuery();
+            _command.Parameters.Clear();
+            _command.Connection.Close();
 
             Items.Add(id, item);
             return id;
@@ -91,19 +85,19 @@ namespace Project.Data
             {
                 comItems += $" [{parameter.ParameterName}] = ?, ";
                 parameter.Value = newItem.GetType().GetProperty(parameter.ParameterName).GetValue(newItem, null);
-                Command.Parameters.Add(parameter);
+                _command.Parameters.Add(parameter);
             }
             comItems = comItems.Remove(comItems.Length - 2);
 
-            Command.Parameters.Add(pId);
+            _command.Parameters.Add(pId);
 
 
-            Command.CommandText = $"UPDATE {TableName} SET {comItems} WHERE [Id] = ?;";
-            Command.Connection = Databases.Connection;
-            Command.Connection.Open();
-            Command.ExecuteNonQuery();
-            Command.Parameters.Clear();
-            Command.Connection.Close();
+            _command.CommandText = $"UPDATE {TableName} SET {comItems} WHERE [Id] = ?;";
+            _command.Connection = Databases.Connection;
+            _command.Connection.Open();
+            _command.ExecuteNonQuery();
+            _command.Parameters.Clear();
+            _command.Connection.Close();
 
             Items[id] = newItem;
         }
@@ -115,23 +109,23 @@ namespace Project.Data
 
             var pId = new OleDbParameter("Id", OleDbType.Integer) {Value = id};
 
-            Command.Connection = Databases.Connection;
-            Command.CommandText = $"DELETE * FROM [{TableName}] WHERE [Id] = ?;";
-            Command.Parameters.Add(pId);
+            _command.Connection = Databases.Connection;
+            _command.CommandText = $"DELETE * FROM [{TableName}] WHERE [Id] = ?;";
+            _command.Parameters.Add(pId);
 
-            Command.Connection.Open();
-            Command.ExecuteNonQuery();
-            Command.Parameters.Clear();
-            Command.Connection.Close();
+            _command.Connection.Open();
+            _command.ExecuteNonQuery();
+            _command.Parameters.Clear();
+            _command.Connection.Close();
 
             Items.Remove(id);
         }
 
         public void Load(OleDbConnection connection)
         {
-            Command.Connection = connection;
-            Command.CommandText = $"SELECT * FROM {TableName};";
-            var reader = Command.ExecuteReader();
+            _command.Connection = connection;
+            _command.CommandText = $"SELECT * FROM {TableName};";
+            var reader = _command.ExecuteReader();
 
             if (reader == null) return;
 
