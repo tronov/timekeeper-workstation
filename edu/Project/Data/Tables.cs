@@ -6,12 +6,18 @@ using System.Linq;
 
 namespace Project.Data
 {
-    public abstract class Table<T> : IEnumerable<T> where T : ITableRow
+    public class Table<T> : IEnumerable<T> where T : TableRow<T>
     {
         /// <summary>
         /// Имя, которым таблица представлена в базе данных
         /// </summary>
-        public string TableName;
+        public string TableName { get; set; }
+
+        public Table(string tableName, IEnumerable<OleDbParameter> parameters)
+        {
+            TableName = tableName;
+            Parameters.AddRange(parameters);
+        }
 
         protected internal Dictionary<int, T> Items = new Dictionary<int, T>();
 
@@ -21,7 +27,26 @@ namespace Project.Data
 
         protected internal OleDbDataReader Reader;
 
+        public bool IsPeriodic => typeof(IPeriodicTableRow).IsAssignableFrom(typeof(T));
+
+        public bool IsOptimizable => typeof(IOptimizableTableRow).IsAssignableFrom(typeof(T));
+
         public bool IsEmpty => Items.Count.Equals(0);
+
+
+        public void Optimize()
+        {
+            if (!IsOptimizable) return;
+
+            foreach (var item in Items.Values)
+            {
+                var i = item as IOptimizableTableRow;
+                if (i == null) continue;
+                if (i.IsUsed) continue;
+                Delete(item);
+            }
+        }
+
 
         public T this[int id] => Items[id];
 
@@ -121,10 +146,17 @@ namespace Project.Data
             Items.Remove(id);
         }
 
+        /// <summary>
+        /// Загружает данные из базы данных в экземпляр таблицы.
+        /// Для таблиц с периодом времени загружаются только актуальные строки.
+        /// </summary>
+        /// <param name="connection"></param>
         public void Load(OleDbConnection connection)
         {
             _command.Connection = connection;
-            _command.CommandText = $"SELECT * FROM {TableName};";
+            _command.CommandText = IsPeriodic ?
+                $"SELECT * FROM {TableName} WHERE [Begin] < Date() AND [End] > Date();" :
+                $"SELECT * FROM {TableName};";
             var reader = _command.ExecuteReader();
 
             if (reader == null) return;
@@ -139,278 +171,102 @@ namespace Project.Data
         }
     }
 
-    public class Persons : Table<Person>
-    {
-        public Persons()
-        {
-            TableName = "Persons";
-            Parameters.Add(new OleDbParameter("Code", OleDbType.SmallInt));
-            Parameters.Add(new OleDbParameter("FirstName", OleDbType.VarWChar, sizeof(char) * 31));
-            Parameters.Add(new OleDbParameter("MiddleName", OleDbType.VarWChar, sizeof(char) * 31));
-            Parameters.Add(new OleDbParameter("LastName", OleDbType.VarWChar, sizeof(char) * 31));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public Persons Active
-        {
-            get
-            {
-                var persons = new Persons();
-                var items = Databases.Tables.Persons.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var item in items)
-                    persons.Items.Add(item.Key, item.Value);
-                return persons;
-            }
-        }
-
-        internal void Optimize()
-        {
-            var persons = Databases.Tables.Persons
-                .Except(Databases.Tables.Persons.Active)
-                .Where(r => r.Executors.Count().Equals(0))
-                .ToArray();
-
-            foreach (var person in persons)
-                person.Delete();
-        }
-    }
-
-    public class Professions : Table<Profession>
-    {
-        public Professions()
-        {
-            TableName = "Professions";
-            Parameters.Add(new OleDbParameter("Code", OleDbType.SmallInt));
-            Parameters.Add(new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 31));
-            Parameters.Add(new OleDbParameter("Rank1", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Rank2", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Rank3", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Rank4", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Rank5", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Rank6", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public Professions Active
-        {
-            get
-            {
-                var professions = new Professions();
-                var items = Databases.Tables.Professions.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var item in items)
-                    professions.Items.Add(item.Key, item.Value);
-                return professions;
-            }
-        }
-
-        internal void Optimize()
-        {
-            var professions = Databases.Tables.Professions
-                .Except(Databases.Tables.Professions.Active)
-                .ToArray();
-
-            foreach (var profession in professions)
-                profession.Delete();
-        }
-    }
-
-    public class Warranties : Table<Warranty>
-    {
-        public Warranties()
-        {
-            TableName = "Warranties";
-            Parameters.Add(new OleDbParameter("Customer", OleDbType.VarWChar, sizeof(char) * 50));
-            Parameters.Add(new OleDbParameter("Order", OleDbType.SmallInt));
-            Parameters.Add(new OleDbParameter("Percent", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("WarrantyDate", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("AreaId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("BrigadeId", OleDbType.Integer));
-        }
-    }
-
-    public class Areas : Table<Area>
-    {
-        public Areas()
-        {
-            TableName = "Areas";
-            Parameters.Add(new OleDbParameter("Code", OleDbType.SmallInt));
-            Parameters.Add(new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 50));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public Areas Active
-        {
-            get
-            {
-                var areas = new Areas();
-                var temp = Databases.Tables.Areas.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var area in temp) areas.Items.Add(area.Key, area.Value);
-                return areas;
-            }
-        }
-
-        internal void Optimize()
-        {
-            var areas = Databases.Tables.Areas
-             .Except(Databases.Tables.Areas.Active)
-             .Where(r => r.Warranties.Count().Equals(0))
-             .ToArray();
-
-            foreach (var area in areas)
-                Databases.Tables.Areas.Delete(area);
-        }
-    }
-
-    public class Positions : Table<Position>
-    {
-        public Positions()
-        {
-            TableName = "Positions";
-            Parameters.Add(new OleDbParameter("WarrantyId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 50));
-            Parameters.Add(new OleDbParameter("Draw", OleDbType.VarWChar, sizeof(char) * 50));
-            Parameters.Add(new OleDbParameter("Matherial", OleDbType.VarWChar, sizeof(char) * 50));
-            Parameters.Add(new OleDbParameter("Number", OleDbType.SmallInt));
-            Parameters.Add(new OleDbParameter("Mass", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Norm", OleDbType.Single));
-            Parameters.Add(new OleDbParameter("Price", OleDbType.Single));
-        }
-    }
-
-    public class Executors : Table<Executor>
-    {
-        public Executors()
-        {
-            TableName = "Executors";
-            Parameters.Add(new OleDbParameter("WarrantyId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("PersonId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("ProfessionId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("Rank", OleDbType.UnsignedTinyInt));
-        }
-    }
-
-    public class Labors : Table<Labor>
-    {
-        public Labors()
-        {
-            TableName = "Labors";
-            Parameters.Add(new OleDbParameter("WarrantyId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("LaborDate", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("Hours", OleDbType.Single));
-        }
-    }
-
-    public class Brigades : Table<Brigade>
-    {
-        public Brigades()
-        {
-            TableName = "Brigades";
-            Parameters.Add(new OleDbParameter("AreaId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("Code", OleDbType.UnsignedTinyInt));
-            Parameters.Add(new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 63));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public Brigades Active
-        {
-            get
-            {
-                var brigades = new Brigades();
-                var items = Databases.Tables.Brigades.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var item in items) brigades.Items.Add(item.Key, item.Value);
-                return brigades;
-            }
-        }
-
-        internal void Optimize()
-        {
-            var brigades = Databases.Tables.Brigades
-                .Except(Databases.Tables.Brigades.Active)
-                .Where(r => r.Warranties.Count().Equals(0))
-                .ToArray();
-
-            foreach (var brigade in brigades)
-                Databases.Tables.Brigades.Delete(brigade);
-        }
-    }
-
-    public class BrigadePersons : Table<BrigadePerson>
-    {
-        public BrigadePersons()
-        {
-            TableName = "BrigadePersons";
-
-            Parameters.Add(new OleDbParameter("BrigadeId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("PersonId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public BrigadePersons Active
-        {
-            get
-            {
-                var brigadePersons = new BrigadePersons();
-                var items = Databases.Tables.BrigadePersons.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
-                return brigadePersons;
-            }
-        }
-    }
-
-    public class PersonProfessions : Table<PersonProfession>
-    {
-        public PersonProfessions()
-        {
-            TableName = "PersonProfessions";
-
-            Parameters.Add(new OleDbParameter("PersonId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("ProfessionId", OleDbType.Integer));
-            Parameters.Add(new OleDbParameter("Rank", OleDbType.UnsignedTinyInt));
-            Parameters.Add(new OleDbParameter("Begin", OleDbType.DBDate));
-            Parameters.Add(new OleDbParameter("End", OleDbType.DBDate));
-        }
-
-        public PersonProfessions Active
-        {
-            get
-            {
-                var personProfessions = new PersonProfessions();
-                var items = Databases.Tables.PersonProfessions.Items
-                    .Where(r => r.Value.Begin.CompareTo(DateTime.Now) <= 0 && r.Value.End.CompareTo(DateTime.Now) > 0)
-                    .ToArray();
-                foreach (var item in items) personProfessions.Items.Add(item.Key, item.Value);
-                return personProfessions;
-            }
-        }
-    }
-
     public class Tables
     {
-        public Professions Professions = new Professions();
-        public Persons Persons = new Persons();
-        public PersonProfessions PersonProfessions = new PersonProfessions();
-        public Areas Areas = new Areas();
-        public Brigades Brigades = new Brigades();
-        public BrigadePersons BrigadePersons = new BrigadePersons();
-        public Warranties Warranties = new Warranties();
-        public Positions Positions = new Positions();
-        public Executors Executors = new Executors();
-        public Labors Labors = new Labors();
+        public Table<Profession> Professions = new Table<Profession>("Professions", new[]
+        {
+            new OleDbParameter("Code", OleDbType.SmallInt),
+            new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 31),
+            new OleDbParameter("Rank1", OleDbType.Single),
+            new OleDbParameter("Rank2", OleDbType.Single),
+            new OleDbParameter("Rank3", OleDbType.Single),
+            new OleDbParameter("Rank4", OleDbType.Single),
+            new OleDbParameter("Rank5", OleDbType.Single),
+            new OleDbParameter("Rank6", OleDbType.Single),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<Person> Persons = new Table<Person>("Persons", new[]
+        {
+            new OleDbParameter("Code", OleDbType.SmallInt),
+            new OleDbParameter("FirstName", OleDbType.VarWChar, sizeof(char) * 31),
+            new OleDbParameter("MiddleName", OleDbType.VarWChar, sizeof(char) * 31),
+            new OleDbParameter("LastName", OleDbType.VarWChar, sizeof(char) * 31),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<PersonProfession> PersonProfessions = new Table<PersonProfession>("PersonProfessions", new[]
+        {
+            new OleDbParameter("PersonId", OleDbType.Integer),
+            new OleDbParameter("ProfessionId", OleDbType.Integer),
+            new OleDbParameter("Rank", OleDbType.UnsignedTinyInt),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<Area> Areas = new Table<Area>("Areas", new []
+        {
+            new OleDbParameter("Code", OleDbType.SmallInt),
+            new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 50),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<Brigade> Brigades = new Table<Brigade>("Brigades", new []
+        {
+            new OleDbParameter("AreaId", OleDbType.Integer),
+            new OleDbParameter("Code", OleDbType.UnsignedTinyInt),
+            new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 63),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<BrigadePerson> BrigadePersons = new Table<BrigadePerson>("BrigadePersons", new []
+        {
+            new OleDbParameter("BrigadeId", OleDbType.Integer),
+            new OleDbParameter("PersonId", OleDbType.Integer),
+            new OleDbParameter("Begin", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate),
+        });
+
+        public Table<Warranty> Warranties = new Table<Warranty>("Warranties", new []
+        {
+            new OleDbParameter("Customer", OleDbType.VarWChar, sizeof(char) * 50),
+            new OleDbParameter("Order", OleDbType.SmallInt),
+            new OleDbParameter("Percent", OleDbType.Single),
+            new OleDbParameter("WarrantyDate", OleDbType.DBDate),
+            new OleDbParameter("AreaId", OleDbType.Integer),
+            new OleDbParameter("BrigadeId", OleDbType.Integer),
+        });
+
+        public Table<Position> Positions = new Table<Position>("Positions", new []
+        {
+            new OleDbParameter("WarrantyId", OleDbType.Integer),
+            new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 50),
+            new OleDbParameter("Draw", OleDbType.VarWChar, sizeof(char) * 50),
+            new OleDbParameter("Matherial", OleDbType.VarWChar, sizeof(char) * 50),
+            new OleDbParameter("Number", OleDbType.SmallInt),
+            new OleDbParameter("Mass", OleDbType.Single),
+            new OleDbParameter("Norm", OleDbType.Single),
+            new OleDbParameter("Price", OleDbType.Single),
+        });
+
+        public Table<Executor> Executors = new Table<Executor>("Executors", new[]
+        {
+            new OleDbParameter("WarrantyId", OleDbType.Integer),
+            new OleDbParameter("PersonId", OleDbType.Integer),
+            new OleDbParameter("ProfessionId", OleDbType.Integer),
+            new OleDbParameter("Rank", OleDbType.UnsignedTinyInt),
+        });
+
+        public Table<Labor> Labors = new Table<Labor>("Labors", new[]
+        {
+            new OleDbParameter("WarrantyId", OleDbType.Integer),
+            new OleDbParameter("LaborDate", OleDbType.DBDate),
+            new OleDbParameter("Hours", OleDbType.Single),
+        });
 
         public bool IsEmpty => Professions.IsEmpty &&
                                Persons.IsEmpty &&
@@ -453,10 +309,10 @@ namespace Project.Data
 
         public void Optimize()
         {
-            Areas.Optimize();
-            Brigades.Optimize();
-            Persons.Optimize();
-            Professions.Optimize();
+            //Areas.Optimize();
+            //Brigades.Optimize();
+            //Persons.Optimize();
+            //Professions.Optimize();
         }
     }
 }

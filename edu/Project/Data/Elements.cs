@@ -1,32 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 
 namespace Project.Data
 {
-    public interface ITableRow
+    public interface IIdentifiable
     {
         int Id { get; set; }
+        //void Update(T item);
+        //void Delete();
     }
 
-    public abstract class TableRow : ITableRow
+    public abstract class TableRow<T> : IIdentifiable where T : TableRow<T>
     {
         public int Id { get; set; }
+
+        public Table<T> Table { get; private set; }
+
+        public abstract void Update(T item);
+        public abstract void Delete();
     }
 
-    public interface IPeriodicTableRow<T> : ITableRow
+    public interface IOptimizableTableRow : IIdentifiable
+    {
+        bool IsUsed { get; }
+    }
+
+    public interface IPeriodicTableRow : IIdentifiable
     {
         DateTime Begin { get; }
         DateTime End { get; }
-        bool IsActive { get; }
-        bool IsUsed { get; }
-        T Clone();
-        void Update(T item);
-        void Delete();
+        //bool IsActive { get; }
+        //bool IsUsed { get; }
+        //T Clone();
+        //void Update(T item);
+        //void Delete();
     }
 
-    public abstract class PeriodicTableRow<T> : TableRow, IPeriodicTableRow<T> where T : PeriodicTableRow<T>
+    public abstract class PeriodicTableRow<T> : TableRow<T>, IPeriodicTableRow where T : PeriodicTableRow<T>
     {
         private DateTime _begin;
         private DateTime _end;
@@ -36,6 +49,8 @@ namespace Project.Data
             _begin = begin;
             _end = end;
         }
+
+        public abstract T Clone();
 
         public DateTime Begin
         {
@@ -65,16 +80,12 @@ namespace Project.Data
         }
 
         public bool IsActive => Begin.CompareTo(DateTime.Now) <= 0 && End.CompareTo(DateTime.Now) > 0;
-
-        public abstract bool IsUsed { get; }
-        public abstract T Clone();
-        public abstract void Update(T item);
-        public abstract void Delete();
-
     }
 
-    public class Person : PeriodicTableRow<Person>, IEquatable<Person>
+    public class Person : PeriodicTableRow<Person>, IOptimizableTableRow, IEquatable<Person>
     {
+
+
         public Person(IDataRecord record)
             : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
@@ -86,7 +97,7 @@ namespace Project.Data
         }
 
         public Person(short code, string firstName, string middleName, string lastName)
-            : this(code, firstName, middleName, lastName, DateTime.Now.Date, new DateTime(9000, 1, 1)) { }
+            : this(code, firstName, middleName, lastName, DateTime.Now.Date, new DateTime(9000, 1, 1)) {}
 
 
         public Person(short code, string firstName, string middleName, string lastName, DateTime begin, DateTime end)
@@ -104,49 +115,20 @@ namespace Project.Data
         public string MiddleName { get; }
         public string LastName { get; }
 
-        public BrigadePersons BrigadePersons
-        {
-            get
-            {
-                var brigadePersons = new BrigadePersons();
-                brigadePersons.Clear();
-                var items = Databases.Tables.BrigadePersons.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
-                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
-                return brigadePersons;
-            }
-        }
-        public Executors Executors
-        {
-            get
-            {
-                var executors = new Executors();
-                var items = Databases.Tables.Executors.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
-                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
-                return executors;
-            }
-        }
-        public PersonProfessions PersonProfessions
-        {
-            get
-            {
-                var personeProfessions = new PersonProfessions();
-                var items = Databases.Tables.PersonProfessions.Items.Where(r => r.Value.PersonId.Equals(Id)).ToArray();
-                foreach (var item in items) personeProfessions.Items.Add(item.Key, item.Value);
-                return personeProfessions;
-            }
-        }
+        public IEnumerable<BrigadePerson> BrigadePersons =>
+            Databases.Tables.BrigadePersons.Items.Values.Where(i => i.PersonId.Equals(Id));
 
-        public override bool IsUsed => !Executors.Count().Equals(0);
+        public IEnumerable<Executor> Executors =>
+            Databases.Tables.Executors.Items.Values.Where(i => i.PersonId.Equals(Id));
 
-        public override Person Clone()
-        {
-            return new Person(Code, FirstName, MiddleName, LastName, Begin, End);
-        }
+        public IEnumerable<PersonProfession> PersonProfessions =>
+            Databases.Tables.PersonProfessions.Items.Values.Where(i => i.PersonId.Equals(Id));
 
-        public override void Update(Person newItem)
-        {
-            Databases.Tables.Persons.Update(this, newItem);
-        }
+        public bool IsUsed => !Executors.Count().Equals(0);
+
+        public override Person Clone() => new Person(Code, FirstName, MiddleName, LastName, Begin, End);
+
+        public override void Update(Person item) => Databases.Tables.Persons.Update(this, item);
 
         public override void Delete()
         {
@@ -199,7 +181,7 @@ namespace Project.Data
         }
     }
 
-    public class Profession : PeriodicTableRow<Profession>, IEquatable<Profession>
+    public class Profession : PeriodicTableRow<Profession>, IOptimizableTableRow, IEquatable<Profession>
     {
         public Profession(IDataRecord record)
             : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
@@ -232,7 +214,6 @@ namespace Project.Data
             Rank6 = rank6;
         }
 
-
         public short Code { get; }
         public string Title { get; }
         public float Rank1 { get; }
@@ -242,29 +223,13 @@ namespace Project.Data
         public float Rank5 { get; }
         public float Rank6 { get; }
 
-        public PersonProfessions PersonProfessions
-        {
-            get
-            {
-                var personProfessions = new PersonProfessions();
-                var items = Databases.Tables.PersonProfessions.Items.Where(r => r.Value.ProfessionId.Equals(Id)).ToArray();
-                foreach (var item in items) personProfessions.Items.Add(item.Key, item.Value);
-                return personProfessions;
-            }
-        }
+        public IEnumerable<PersonProfession> PersonProfessions =>
+            Databases.Tables.PersonProfessions.Items.Values.Where(i => i.ProfessionId.Equals(Id));
 
-        public Executors Executors
-        {
-            get
-            {
-                var executors = new Executors();
-                var items = Databases.Tables.Executors.Items.Where(r => r.Value.ProfessionId.Equals(Id)).ToArray();
-                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
-                return executors;
-            }
-        }
+        public IEnumerable<Executor> Executors =>
+            Databases.Tables.Executors.Items.Values.Where(i => i.ProfessionId.Equals(Id));
 
-        public override bool IsUsed => !Executors.Count().Equals(0);
+        public bool IsUsed => !Executors.Count().Equals(0);
 
         public override Profession Clone()
         {
@@ -332,7 +297,7 @@ namespace Project.Data
         }
     }
 
-    public class Warranty : TableRow, IEquatable<Warranty>
+    public class Warranty : TableRow<Warranty>, IEquatable<Warranty>
     {
         public Warranty(IDataRecord record)
         {
@@ -363,45 +328,18 @@ namespace Project.Data
         public int AreaId { get; }
         public int BrigadeId { get; }
 
-        public Executors Executors
-        {
-            get
-            {
-                var executors = new Executors();
-                var items = Databases.Tables.Executors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
-                foreach (var item in items) executors.Items.Add(item.Key, item.Value);
-                return executors;
-            }
-        }
+        public IEnumerable<Executor> Executors =>
+            Databases.Tables.Executors.Items.Values.Where(i => i.WarrantyId.Equals(Id));
 
-        public Labors Labors
-        {
-            get
-            {
-                var labors = new Labors();
-                var items = Databases.Tables.Labors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
-                foreach (var item in items) labors.Items.Add(item.Key, item.Value);
-                return labors;
-            }
-        }
+        public IEnumerable<Labor> Labors =>
+            Databases.Tables.Labors.Items.Values.Where(i => i.WarrantyId.Equals(Id));
 
-        public Positions Positions
-        {
-            get
-            {
-                var positions = new Positions();
-                var items = Databases.Tables.Positions.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
-                foreach (var item in items) positions.Items.Add(item.Key, item.Value);
-                return positions;
-            }
-        }
+        public IEnumerable<Position> Positions =>
+            Databases.Tables.Positions.Items.Values.Where(i => i.WarrantyId.Equals(Id));
 
-        public void Update(Warranty newItem)
-        {
-            Databases.Tables.Warranties.Update(this, newItem);
-        }
+        public override void Update(Warranty newItem) => Databases.Tables.Warranties.Update(this, newItem);
 
-        public void Delete()
+        public override void Delete()
         {
             foreach (var position in Positions)
                 position.Delete();
@@ -431,6 +369,7 @@ namespace Project.Data
 
             return Equals((Warranty) obj);
         }
+
         public override int GetHashCode()
         {
             var hash =
@@ -445,9 +384,10 @@ namespace Project.Data
         }
     }
 
-    public class Area : PeriodicTableRow<Area>, IEquatable<Area>
+    public class Area : PeriodicTableRow<Area>, IOptimizableTableRow, IEquatable<Area>
     {
-        public Area(IDataRecord record) : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
+        public Area(IDataRecord record)
+            : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
             Id = Convert.ToInt32(record["Id"]);
             Code = Convert.ToByte(record["Code"]);
@@ -456,7 +396,8 @@ namespace Project.Data
 
         public Area(byte code, string title) : this(code, title, DateTime.Now.Date, new DateTime(9000, 1, 1)) { }
 
-        public Area(byte code, string title, DateTime begin, DateTime end) : base(begin, end)
+        public Area(byte code, string title, DateTime begin, DateTime end)
+            : base(begin, end)
         {
             Id = 0;
             Code = code;
@@ -466,41 +407,17 @@ namespace Project.Data
         public byte Code { get; }
         public string Title { get; }
 
-        public Brigades Brigades
-        {
-            get
-            {
-                var brigades = new Brigades();
-                var items = Databases.Tables.Brigades.Items
-                    .Where(r => r.Value.AreaId.Equals(Id))
-                    .ToArray();
-                foreach (var item in items) brigades.Items.Add(item.Key, item.Value);
-                return brigades;
-            }
-        }
+        public IEnumerable<Brigade> Brigades =>
+            Databases.Tables.Brigades.Items.Values.Where(i => i.AreaId.Equals(Id));
 
-        public Warranties Warranties
-        {
-            get
-            {
-                var warranties = new Warranties();
-                var items = Databases.Tables.Warranties.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
-                foreach (var item in items) warranties.Items.Add(item.Key, item.Value);
-                return warranties;
-            }
-        }
+        public IEnumerable<Warranty> Warranties =>
+            Databases.Tables.Warranties.Items.Values.Where(i => i.AreaId.Equals(Id));
 
-        public override bool IsUsed => !Warranties.Count().Equals(0);
+        public bool IsUsed => !Warranties.Count().Equals(0);
 
-        public override Area Clone()
-        {
-            return new Area(Code, Title, Begin, End);
-        }
+        public override Area Clone() => new Area(Code, Title, Begin, End);
 
-        public override void Update(Area newItem)
-        {
-            Databases.Tables.Areas.Update(this, newItem);
-        }
+        public override void Update(Area newItem) => Databases.Tables.Areas.Update(this, newItem);
 
         public override void Delete()
         {
@@ -544,7 +461,7 @@ namespace Project.Data
         }
     }
 
-    public class Position : TableRow, IEquatable<Position>
+    public class Position : TableRow<Position>, IEquatable<Position>
     {
         public Position(IDataRecord record)
         {
@@ -582,12 +499,12 @@ namespace Project.Data
         public float Price { get; }
 
 
-        public void Update(Position newItem)
+        public override void Update(Position newItem)
         {
             Databases.Tables.Positions.Update(this, newItem);
         }
 
-        public void Delete()
+        public override void Delete()
         {
             Databases.Tables.Positions.Delete(this);
         }
@@ -629,7 +546,7 @@ namespace Project.Data
         }
     }
 
-    public class Executor : TableRow, IEquatable<Executor>
+    public class Executor : TableRow<Executor>, IEquatable<Executor>
     {
         public Executor(IDataRecord record)
         {
@@ -639,6 +556,7 @@ namespace Project.Data
             ProfessionId = Convert.ToInt32(record["ProfessionId"]);
             Rank = Convert.ToByte(record["Rank"]);
         }
+
         public Executor(int warrantyId, int personId, int professionId, byte rank)
         {
             Id = 0;
@@ -657,23 +575,12 @@ namespace Project.Data
 
         public Profession Profession => Databases.Tables.Professions[ProfessionId];
 
-        public Labors Labors
-        {
-            get
-            {
-                var labors = new Labors();
-                var items = Databases.Tables.Labors.Items.Where(r => r.Value.WarrantyId.Equals(Id)).ToArray();
-                foreach (var item in items) labors.Items.Add(item.Key, item.Value);
-                return labors;
-            }
-        }
+        public IEnumerable<Labor> Labors =>
+            Databases.Tables.Labors.Items.Values.Where(i => i.WarrantyId.Equals(Id));
 
-        public void Update(Executor newItem)
-        {
-            Databases.Tables.Executors.Update(this, newItem);
-        }
+        public override void Update(Executor newItem) => Databases.Tables.Executors.Update(this, newItem);
 
-        public void Delete()
+        public override void Delete()
         {
             foreach (var labor in Labors)
                 labor.Delete();
@@ -711,7 +618,7 @@ namespace Project.Data
         }
     }
 
-    public class Labor : TableRow, IEquatable<Labor>
+    public class Labor : TableRow<Labor>, IEquatable<Labor>
     {
         public Labor(IDataRecord reader)
         {
@@ -720,6 +627,7 @@ namespace Project.Data
             LaborDate = Convert.ToDateTime(reader["LaborDate"]);
             Hours = Convert.ToSingle(reader["Hours"]);
         }
+
         public Labor(int warrantyId, DateTime laborDate, float hours)
         {
             Id = 0;
@@ -732,15 +640,9 @@ namespace Project.Data
         public DateTime LaborDate { get; }
         public float Hours { get; }
 
-        public void Update(Labor newItem)
-        {
-            Databases.Tables.Labors.Update(this, newItem);
-        }
+        public override void Update(Labor newItem) => Databases.Tables.Labors.Update(this, newItem as Labor);
 
-        public void Delete()
-        {
-            Databases.Tables.Labors.Delete(this);
-        }
+        public override void Delete() => Databases.Tables.Labors.Delete(this);
 
         public bool Equals(Labor other)
         {
@@ -771,7 +673,7 @@ namespace Project.Data
         }
     }
 
-    public class Brigade : PeriodicTableRow<Brigade>, IEquatable<Brigade>
+    public class Brigade : PeriodicTableRow<Brigade>, IOptimizableTableRow, IEquatable<Brigade>
     {
         public Brigade(IDataRecord record)
             : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
@@ -805,40 +707,17 @@ namespace Project.Data
         public string Title { get; }
         public Area Area => Databases.Tables.Areas[AreaId];
 
-        public BrigadePersons BrigadePersons
-        {
-            get
-            {
-                var brigadePersons = new BrigadePersons();
-                brigadePersons.Clear();
-                var items = Databases.Tables.BrigadePersons.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
-                foreach (var item in items) brigadePersons.Items.Add(item.Key, item.Value);
-                return brigadePersons;
-            }
-        }
+        public IEnumerable<BrigadePerson> BrigadePersons =>
+            Databases.Tables.BrigadePersons.Items.Values.Where(i => i.BrigadeId.Equals(Id));
 
-        public Warranties Warranties
-        {
-            get
-            {
-                var warranties = new Warranties();
-                var items = Databases.Tables.Warranties.Items.Where(r => r.Value.BrigadeId.Equals(Id)).ToArray();
-                foreach (var item in items) warranties.Items.Add(item.Key, item.Value);
-                return warranties;
-            }
-        }
+        public IEnumerable<Warranty> Warranties =>
+            Databases.Tables.Warranties.Items.Values.Where(i => i.BrigadeId.Equals(Id));
 
-        public override bool IsUsed => !Warranties.Count().Equals(0);
+        public bool IsUsed => !Warranties.Count().Equals(0);
 
-        public override Brigade Clone()
-        {
-            return new Brigade(AreaId, Code, Title, Begin, End);
-        }
+        public override Brigade Clone() => new Brigade(AreaId, Code, Title, Begin, End);
 
-        public override void Update(Brigade newItem)
-        {
-            Databases.Tables.Brigades.Update(this, newItem);
-        }
+        public override void Update(Brigade newItem) => Databases.Tables.Brigades.Update(this, newItem as Brigade);
 
         public override void Delete()
         {
@@ -886,14 +765,14 @@ namespace Project.Data
         }
     }
 
-    public class BrigadePerson : PeriodicTableRow<BrigadePerson>, IEquatable<BrigadePerson>
+    public class BrigadePerson : PeriodicTableRow<BrigadePerson>, IOptimizableTableRow, IEquatable<BrigadePerson>
     {
-        public BrigadePerson(OleDbDataReader reader)
-            : base(Convert.ToDateTime(reader["Begin"]), Convert.ToDateTime(reader["End"]))
+        public BrigadePerson(IDataRecord record)
+            : base(Convert.ToDateTime(record["Begin"]), Convert.ToDateTime(record["End"]))
         {
-            Id = Convert.ToInt32(reader["Id"]);
-            BrigadeId = Convert.ToInt32(reader["BrigadeId"]);
-            PersonId = Convert.ToInt32(reader["PersonId"]);
+            Id = Convert.ToInt32(record["Id"]);
+            BrigadeId = Convert.ToInt32(record["BrigadeId"]);
+            PersonId = Convert.ToInt32(record["PersonId"]);
         }
 
         public BrigadePerson(int brigadeId, int personId)
@@ -919,7 +798,7 @@ namespace Project.Data
 
         public Person Person => Databases.Tables.Persons[PersonId];
 
-        public override bool IsUsed => (!Brigade.Warranties.Count().Equals(0)) || (!Person.Executors.Count().Equals(0));
+        public bool IsUsed => (!Brigade.Warranties.Count().Equals(0)) || (!Person.Executors.Count().Equals(0));
 
         public override BrigadePerson Clone()
         {
@@ -973,7 +852,7 @@ namespace Project.Data
         }
     }
 
-    public class PersonProfession : PeriodicTableRow<PersonProfession>, IEquatable<PersonProfession>
+    public class PersonProfession : PeriodicTableRow<PersonProfession>, IOptimizableTableRow, IEquatable<PersonProfession>
     {
         public PersonProfession(IDataRecord reader)
             : base(Convert.ToDateTime(reader["Begin"]), Convert.ToDateTime(reader["End"]))
@@ -1010,7 +889,7 @@ namespace Project.Data
 
         public Profession Profession => Databases.Tables.Professions[ProfessionId];
 
-        public override bool IsUsed => Person.IsUsed;
+        public bool IsUsed => Person.IsUsed;
 
         public override PersonProfession Clone()
         {

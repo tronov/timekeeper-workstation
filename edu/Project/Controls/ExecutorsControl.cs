@@ -43,7 +43,7 @@ namespace Project.Controls
                     }
                     foreach (var deletionCode in deletionsCodes)
                     {
-                        deletions.AddRange(Databases.Tables.BrigadePersons.Active.Where(r => r.Person.Code == deletionCode).AsEnumerable());
+                        deletions.AddRange(Databases.Tables.BrigadePersons.Where(r => r.Person.Code == deletionCode).AsEnumerable());
                     }
                     fbp.ctrlBrigadePersons.Deletions = deletions;
                     fbp.ShowDialog();

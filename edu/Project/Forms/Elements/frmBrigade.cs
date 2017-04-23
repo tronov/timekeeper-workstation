@@ -71,7 +71,7 @@ namespace Project.Forms.Elements
                     (new ToolTip()).Show("Бригада с таким шифром уже существует на участке", this, this.mtbCode.Location, 2000);
                     return false;
                 }
-                else if (!this._Area.Brigades.Active.Where(r => r.Title.Equals(title)).Count().Equals(0))
+                else if (!this._Area.Brigades.Where(r => r.Title.Equals(title)).Count().Equals(0))
                 {
                     (new ToolTip()).Show("Бригада с таким названием уже существует на участке", this, this.mtbCode.Location, 2000);
                     return false;

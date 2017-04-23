@@ -31,12 +31,12 @@ namespace Project.Forms.Elements
                 (new ToolTip()).Show("Шифр 00 не допускается", this, this.mtbCode.Location, 2000);
                 return false;
             }
-            else if (!Databases.Tables.Areas.Active.Where(r => r.Code == code).Count().Equals(0))
+            else if (!Databases.Tables.Areas.Where(r => r.Code == code).Count().Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким шифром уже существует.", this, this.mtbCode.Location, 2000);
                 return false;
             }
-            else if (!Databases.Tables.Areas.Active.Where(r => r.Title.Equals(title)).Count().Equals(0))
+            else if (!Databases.Tables.Areas.Where(r => r.Title.Equals(title)).Count().Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким названием уже существует.", this, this.mtbCode.Location, 2000);
                 return false;

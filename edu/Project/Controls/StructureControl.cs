@@ -124,7 +124,7 @@ namespace Project.Controls
         {
             if (tvStructure.Nodes.Count != 0) tvStructure.Nodes.Clear();
 
-            var areas = Databases.Tables.Areas.Active;
+            var areas = Databases.Tables.Areas;
 
             foreach (var area in areas.OrderBy(a => a.Code))
             {

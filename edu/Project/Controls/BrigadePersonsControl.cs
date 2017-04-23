@@ -102,8 +102,8 @@ namespace Project.Controls
             {
                 ctrlPersons =
                 {
-                    Deletions = (from person in Databases.Tables.Persons.Active
-                        from brigadePerson in Databases.Tables.BrigadePersons.Active
+                    Deletions = (from person in Databases.Tables.Persons
+                        from brigadePerson in Databases.Tables.BrigadePersons
                         where person.Equals(brigadePerson.Person)
                         select person).ToList()
                 },
@@ -136,7 +136,7 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            dgvItems.DataSource = (from brigadePerson in Databases.Tables.BrigadePersons.Active.Except(Deletions.AsEnumerable())
+            dgvItems.DataSource = (from brigadePerson in Databases.Tables.BrigadePersons.Except(Deletions.AsEnumerable())
                                         where
                                         (brigadePerson.BrigadeId == BrigadeId) &&
                                         brigadePerson.Person.Code.ToString().Contains(GetFilter("PersonCode")) &&
