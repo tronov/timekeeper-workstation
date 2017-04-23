@@ -98,18 +98,18 @@ namespace Project
         public override void Init()
         {
             dgvItems.DataSource = (from personProfession in Databases.Tables.PersonProfessions
-                                        where
-                                        personProfession.PersonId.Equals(_personId) &&
-                                        personProfession.Profession.Code.ToString().Contains(this.GetFilter("ProfessionCode")) &&
-                                        personProfession.Profession.Title.ToUpper().Contains(this.GetFilter("ProfessionTitle").ToUpper()) &&
-                                        personProfession.Rank.ToString().Contains(this.GetFilter("Rank"))
-                                        select new
-                                        {
-                                            Id = personProfession.Id,
-                                            ProfessionCode = personProfession.Profession.Code,
-                                            ProfessionTitle = personProfession.Profession.Title,
-                                            Rank = personProfession.Rank
-                                        }).ToList();
+                where
+                personProfession.PersonId.Equals(_personId) &&
+                personProfession.Profession.Code.ToString().Contains(this.GetFilter("ProfessionCode")) &&
+                personProfession.Profession.Title.ToUpper().Contains(this.GetFilter("ProfessionTitle").ToUpper()) &&
+                personProfession.Rank.ToString().Contains(this.GetFilter("Rank"))
+                select new
+                {
+                    Id = personProfession.Id,
+                    ProfessionCode = personProfession.Profession.Code,
+                    ProfessionTitle = personProfession.Profession.Title,
+                    Rank = personProfession.Rank
+                }).ToList();
 
             foreach (DataGridViewColumn column in dgvItems.Columns)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 
@@ -16,14 +17,14 @@ namespace Project.Data
         public Table(string tableName, IEnumerable<OleDbParameter> parameters)
         {
             TableName = tableName;
-            Parameters.AddRange(parameters);
+            _parameters.AddRange(parameters);
         }
 
         protected internal Dictionary<int, T> Items = new Dictionary<int, T>();
 
         private readonly OleDbCommand _command = new OleDbCommand();
 
-        public List<OleDbParameter> Parameters = new List<OleDbParameter>();
+        private readonly List<OleDbParameter> _parameters = new List<OleDbParameter>();
 
         protected internal OleDbDataReader Reader;
 
@@ -69,7 +70,7 @@ namespace Project.Data
             string comParams = "", comVals = "";
             comParams += "([Id], ";
             comVals += "(?, ";
-            foreach (var parameter in Parameters)
+            foreach (var parameter in _parameters)
             {
                 comParams += $"[{parameter.ParameterName}], ";
                 comVals += "?, ";
@@ -80,7 +81,7 @@ namespace Project.Data
             comVals += ")";
 
             string comText = $"INSERT INTO {TableName} {comParams} VALUES {comVals};";
-            foreach (var parameter in Parameters)
+            foreach (var parameter in _parameters)
             {
                 parameter.Value = item.GetType().GetProperty(parameter.ParameterName).GetValue(item, null);
                 _command.Parameters.Add(parameter);
@@ -106,7 +107,7 @@ namespace Project.Data
 
             var comItems = "";
 
-            foreach (var parameter in Parameters)
+            foreach (var parameter in _parameters)
             {
                 comItems += $" [{parameter.ParameterName}] = ?, ";
                 parameter.Value = newItem.GetType().GetProperty(parameter.ParameterName).GetValue(newItem, null);
@@ -151,12 +152,16 @@ namespace Project.Data
         /// Для таблиц с периодом времени загружаются только актуальные строки.
         /// </summary>
         /// <param name="connection"></param>
-        public void Load(OleDbConnection connection)
+        public void Load(IDbConnection connection)
         {
-            _command.Connection = connection;
+            if (!connection.GetType().IsAssignableFrom(typeof(OleDbConnection)))
+            {
+                throw new NotSupportedException("Application did not support any DB provider but OleDb");
+            }
+            _command.Connection = connection as OleDbConnection;
             _command.CommandText = IsPeriodic ?
-                $"SELECT * FROM {TableName} WHERE [Begin] < Date() AND [End] > Date();" :
-                $"SELECT * FROM {TableName};";
+                $"SELECT * FROM [{TableName}] WHERE [Begin] < Date() AND ([End] > Date() OR [End] Is Null);" :
+                $"SELECT * FROM [{TableName}];";
             var reader = _command.ExecuteReader();
 
             if (reader == null) return;
@@ -279,7 +284,7 @@ namespace Project.Data
                                Executors.IsEmpty &&
                                Labors.IsEmpty;
 
-        internal void Load(OleDbConnection connection)
+        internal void Load(IDbConnection connection)
         {
             Professions.Load(connection);
             Persons.Load(connection);
