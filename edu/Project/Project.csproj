@@ -97,89 +97,89 @@
     <Compile Include="Data\Tables.cs" />
     <Compile Include="Data\Elements.cs">
     </Compile>
-    <Compile Include="Forms\frmAbout.cs">
+    <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmAbout.Designer.cs">
-      <DependentUpon>frmAbout.cs</DependentUpon>
+    <Compile Include="Forms\AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmArea.cs">
+    <Compile Include="Forms\Elements\AreaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmArea.Designer.cs">
-      <DependentUpon>frmArea.cs</DependentUpon>
+    <Compile Include="Forms\Elements\AreaForm.Designer.cs">
+      <DependentUpon>AreaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmBrigade.cs">
+    <Compile Include="Forms\Elements\BrigadeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmBrigade.Designer.cs">
-      <DependentUpon>frmBrigade.cs</DependentUpon>
+    <Compile Include="Forms\Elements\BrigadeForm.Designer.cs">
+      <DependentUpon>BrigadeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmTable.cs">
+    <Compile Include="Forms\Elements\TableForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmTable.Designer.cs">
-      <DependentUpon>frmTable.cs</DependentUpon>
+    <Compile Include="Forms\Elements\TableForm.Designer.cs">
+      <DependentUpon>TableForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmWarranty.cs">
+    <Compile Include="Forms\Elements\WarrantyForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmWarranty.Designer.cs">
-      <DependentUpon>frmWarranty.cs</DependentUpon>
+    <Compile Include="Forms\Elements\WarrantyForm.Designer.cs">
+      <DependentUpon>WarrantyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmSplash.cs">
+    <Compile Include="Forms\SplashForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmSplash.Designer.cs">
-      <DependentUpon>frmSplash.cs</DependentUpon>
+    <Compile Include="Forms\SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmBrigadePersons.cs">
+    <Compile Include="Forms\Tables\BrigadePersonsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmBrigadePersons.Designer.cs">
-      <DependentUpon>frmBrigadePersons.cs</DependentUpon>
+    <Compile Include="Forms\Tables\BrigadePersonsForm.Designer.cs">
+      <DependentUpon>BrigadePersonsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmPerson.cs">
+    <Compile Include="Forms\Elements\PersonForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmPerson.Designer.cs">
-      <DependentUpon>frmPerson.cs</DependentUpon>
+    <Compile Include="Forms\Elements\PersonForm.Designer.cs">
+      <DependentUpon>PersonForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmPersonProfession.cs">
+    <Compile Include="Forms\Elements\PersonProfessionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmPersonProfession.Designer.cs">
-      <DependentUpon>frmPersonProfession.cs</DependentUpon>
+    <Compile Include="Forms\Elements\PersonProfessionForm.Designer.cs">
+      <DependentUpon>PersonProfessionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmPersonProfessions.cs">
+    <Compile Include="Forms\Tables\PersonProfessionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmPersonProfessions.Designer.cs">
-      <DependentUpon>frmPersonProfessions.cs</DependentUpon>
+    <Compile Include="Forms\Tables\PersonProfessionsForm.Designer.cs">
+      <DependentUpon>PersonProfessionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmPersons.cs">
+    <Compile Include="Forms\Tables\PersonsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmPersons.Designer.cs">
-      <DependentUpon>frmPersons.cs</DependentUpon>
+    <Compile Include="Forms\Tables\PersonsForm.Designer.cs">
+      <DependentUpon>PersonsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Elements\frmProfession.cs">
+    <Compile Include="Forms\Elements\ProfessionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Elements\frmProfession.Designer.cs">
-      <DependentUpon>frmProfession.cs</DependentUpon>
+    <Compile Include="Forms\Elements\ProfessionForm.Designer.cs">
+      <DependentUpon>ProfessionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmProfessions.cs">
+    <Compile Include="Forms\Tables\ProfessionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmProfessions.Designer.cs">
-      <DependentUpon>frmProfessions.cs</DependentUpon>
+    <Compile Include="Forms\Tables\ProfessionsForm.Designer.cs">
+      <DependentUpon>ProfessionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmMain.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PersonProfessionsControl.cs">
       <SubType>UserControl</SubType>
@@ -205,17 +205,17 @@
     <Compile Include="Controls\ProfessionsControl.Designer.cs">
       <DependentUpon>ProfessionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmStructure.cs">
+    <Compile Include="Forms\Tables\StructureForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmStructure.Designer.cs">
-      <DependentUpon>frmStructure.cs</DependentUpon>
+    <Compile Include="Forms\Tables\StructureForm.Designer.cs">
+      <DependentUpon>StructureForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Tables\frmWarranties.cs">
+    <Compile Include="Forms\Tables\WarrantiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Tables\frmWarranties.Designer.cs">
-      <DependentUpon>frmWarranties.cs</DependentUpon>
+    <Compile Include="Forms\Tables\WarrantiesForm.Designer.cs">
+      <DependentUpon>WarrantiesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -235,72 +235,72 @@
       <DependentUpon>PositionsControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmArea.resx">
-      <DependentUpon>frmArea.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\AreaForm.resx">
+      <DependentUpon>AreaForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmAbout.resx">
-      <DependentUpon>frmAbout.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmBrigade.resx">
-      <DependentUpon>frmBrigade.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\BrigadeForm.resx">
+      <DependentUpon>BrigadeForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmTable.resx">
-      <DependentUpon>frmTable.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\TableForm.resx">
+      <DependentUpon>TableForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmWarranty.resx">
-      <DependentUpon>frmWarranty.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\WarrantyForm.resx">
+      <DependentUpon>WarrantyForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmSplash.resx">
-      <DependentUpon>frmSplash.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmBrigadePersons.resx">
-      <DependentUpon>frmBrigadePersons.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\BrigadePersonsForm.resx">
+      <DependentUpon>BrigadePersonsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmPerson.resx">
-      <DependentUpon>frmPerson.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\PersonForm.resx">
+      <DependentUpon>PersonForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmPersonProfession.resx">
-      <DependentUpon>frmPersonProfession.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\PersonProfessionForm.resx">
+      <DependentUpon>PersonProfessionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmPersonProfessions.resx">
-      <DependentUpon>frmPersonProfessions.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\PersonProfessionsForm.resx">
+      <DependentUpon>PersonProfessionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmPersons.resx">
-      <DependentUpon>frmPersons.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\PersonsForm.resx">
+      <DependentUpon>PersonsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Elements\frmProfession.resx">
-      <DependentUpon>frmProfession.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Elements\ProfessionForm.resx">
+      <DependentUpon>ProfessionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmProfessions.resx">
-      <DependentUpon>frmProfessions.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\ProfessionsForm.resx">
+      <DependentUpon>ProfessionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PersonsControl.resx">
       <DependentUpon>PersonsControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmStructure.resx">
-      <DependentUpon>frmStructure.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\StructureForm.resx">
+      <DependentUpon>StructureForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tables\frmWarranties.resx">
-      <DependentUpon>frmWarranties.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Tables\WarrantiesForm.resx">
+      <DependentUpon>WarrantiesForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

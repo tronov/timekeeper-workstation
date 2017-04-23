@@ -67,7 +67,7 @@ namespace Project
         {
             if (_personId == 0) return;
             var person = Databases.Tables.Persons[_personId];
-            var form = new frmPersonProfession(person);
+            var form = new PersonProfessionForm(person);
             form.ShowDialog(this);
             Init();
         }
@@ -77,7 +77,7 @@ namespace Project
         {
             if (CurrentId == 0) return;
             var personProfession = Databases.Tables.PersonProfessions[CurrentId];
-            var form = new frmPersonProfession(personProfession);
+            var form = new PersonProfessionForm(personProfession);
             form.ShowDialog(this);
             Init();
         }

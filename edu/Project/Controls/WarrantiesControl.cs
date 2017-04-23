@@ -92,7 +92,7 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            var form = new frmWarranty();
+            var form = new WarrantyForm();
             if (form.ShowDialog(this) == DialogResult.OK)
                 Init();
         }
@@ -103,7 +103,7 @@ namespace Project.Controls
             if (CurrentId == 0) return;
 
             var warranty = Databases.Tables.Warranties[CurrentId];
-            var form = new frmWarranty(warranty);
+            var form = new WarrantyForm(warranty);
             if (form.ShowDialog(this) == DialogResult.OK)
                 Init();
         }

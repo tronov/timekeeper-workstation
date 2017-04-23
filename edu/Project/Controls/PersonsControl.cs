@@ -75,7 +75,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            var form = new frmPerson();
+            var form = new PersonForm();
             form.ShowDialog(this);
             Init();
         }
@@ -86,7 +86,7 @@ namespace Project
             if (CurrentId == 0) return;
 
             var person = Databases.Tables.Persons[CurrentId];
-            var form = new frmPerson(person);
+            var form = new PersonForm(person);
             form.ShowDialog(this);
             Init();
         }

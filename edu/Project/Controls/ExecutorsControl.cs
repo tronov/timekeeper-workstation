@@ -30,7 +30,7 @@ namespace Project.Controls
             switch (column.Name)
             {
                 case "PersonCode":
-                    var fbp = new frmBrigadePersons();
+                    var fbp = new BrigadePersonsForm();
                     fbp.CatalogMode = CatalogMode.Select;
                     fbp.ctrlBrigadePersons.BrigadeId = BrigadeId;
 
@@ -62,7 +62,7 @@ namespace Project.Controls
                 case "ProfessionCode":
                     if (row.Cells["PersonCode"].Value != null)
                     {
-                        var ppf = new frmPersonProfessions();
+                        var ppf = new PersonProfessionsForm();
                         var p = (row.Cells["PersonCode"] as DataGridViewButtonCell).Tag as Person;
                         ppf.ctrlPersonProfessions.PersonId = p.Id;
                         ppf.ShowDialog();

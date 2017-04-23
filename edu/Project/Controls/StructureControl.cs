@@ -54,7 +54,7 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public void NewArea()
         {
-            var form = new frmArea();
+            var form = new AreaForm();
             form.ShowDialog(this);
             Init();
         }
@@ -65,7 +65,7 @@ namespace Project.Controls
             if (SelectedAreaId == 0) return;
 
             var area = Databases.Tables.Areas[SelectedAreaId];
-            var form = new frmArea(area);
+            var form = new AreaForm(area);
             form.ShowDialog(this);
             Init();
         }
@@ -90,7 +90,7 @@ namespace Project.Controls
             if (SelectedAreaId == 0) return;
 
             var area = Databases.Tables.Areas[SelectedAreaId];
-            var form = new frmBrigade(area);
+            var form = new BrigadeForm(area);
             form.ShowDialog(this);
             Init();
         }
@@ -101,7 +101,7 @@ namespace Project.Controls
             if (SelectedBrigadeId == 0) return;
 
             var brigade = Databases.Tables.Brigades[SelectedBrigadeId];
-            var form = new frmBrigade(brigade);
+            var form = new BrigadeForm(brigade);
             form.ShowDialog(this);
             Init();
         }
@@ -227,7 +227,7 @@ namespace Project.Controls
 
         private void bAreaNew_Click(object sender, EventArgs e)
         {
-            var form = new frmArea();
+            var form = new AreaForm();
             if (form.ShowDialog() == DialogResult.OK)
                 Init();
         }

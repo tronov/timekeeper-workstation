@@ -98,7 +98,7 @@ namespace Project.Controls
         public override void New()
         {
             if (BrigadeId == 0) return;
-            var form = new frmPersons
+            var form = new PersonsForm
             {
                 ctrlPersons =
                 {

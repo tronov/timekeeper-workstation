@@ -103,7 +103,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void New()
         {
-            var form = new frmProfession();
+            var form = new ProfessionForm();
             form.ShowDialog(this);
             Init();
         }
@@ -114,7 +114,7 @@ namespace Project
             if (CurrentId == 0) return;
 
             var profession = Databases.Tables.Professions[CurrentId];
-            var form = new frmProfession(profession);
+            var form = new ProfessionForm(profession);
             form.ShowDialog(this);
             Init();
         }
