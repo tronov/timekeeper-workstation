@@ -9,7 +9,7 @@ namespace Project.Controls
 {
     public partial class BrigadePersonsControl : TableControl
     {
-        private int _brigadeId = 0;
+        private int _brigadeId;
         private List<BrigadePerson> _deletions = new List<BrigadePerson>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -18,7 +18,7 @@ namespace Project.Controls
             get { return _brigadeId; }
             set
             {
-                this._brigadeId = value;
+                _brigadeId = value;
                 Init();
             }
         }

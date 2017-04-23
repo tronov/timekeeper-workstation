@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using Project.Forms.Elements;
 using Project.Forms.Tables;
@@ -72,7 +73,7 @@ namespace Project.Forms
         {
             var splash = new frmSplash();
             splash.Show();
-            System.Threading.Thread.Sleep(2000);
+            Thread.Sleep(2000);
             splash.Close();
             TopMost = true;
             TopMost = false;

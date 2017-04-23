@@ -1,11 +1,14 @@
-﻿namespace Project.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project.Forms
 {
     partial class frmMain
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -187,20 +190,20 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mainMenuExit;
-        private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripMenuItem справкаToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel status;
-        private System.Windows.Forms.ToolStripMenuItem видToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem miCatalogs;
-        private System.Windows.Forms.ToolStripMenuItem miProfessions;
-        private System.Windows.Forms.ToolStripMenuItem miDocuments;
-        private System.Windows.Forms.ToolStripMenuItem miWarranties;
-        private System.Windows.Forms.ToolStripMenuItem miTables;
-        private System.Windows.Forms.ToolStripMenuItem miPersons;
-        private System.Windows.Forms.ToolStripMenuItem miStructure;
-        private System.Windows.Forms.ToolStripMenuItem miAbout;
+        private MenuStrip menuStrip;
+        private ToolStripMenuItem файлToolStripMenuItem;
+        private ToolStripMenuItem mainMenuExit;
+        private StatusStrip statusStrip;
+        private ToolStripMenuItem справкаToolStripMenuItem;
+        private ToolStripStatusLabel status;
+        private ToolStripMenuItem видToolStripMenuItem;
+        private ToolStripMenuItem miCatalogs;
+        private ToolStripMenuItem miProfessions;
+        private ToolStripMenuItem miDocuments;
+        private ToolStripMenuItem miWarranties;
+        private ToolStripMenuItem miTables;
+        private ToolStripMenuItem miPersons;
+        private ToolStripMenuItem miStructure;
+        private ToolStripMenuItem miAbout;
     }
 }

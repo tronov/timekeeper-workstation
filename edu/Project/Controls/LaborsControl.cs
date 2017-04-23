@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Project.Controls
@@ -20,7 +21,7 @@ namespace Project.Controls
 
         private static void hours_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             var ctrl = sender as DataGridViewTextBoxEditingControl;
 

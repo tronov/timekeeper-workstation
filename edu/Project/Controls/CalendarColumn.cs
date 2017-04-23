@@ -33,9 +33,8 @@ namespace Project.Controls
     {
 
         public CalendarCell()
-         : base()
         {
-            this.Style.Format = "d";
+            Style.Format = "d";
         }
 
         public override void InitializeEditingControl(int rowIndex, object
@@ -75,25 +74,25 @@ namespace Project.Controls
     class CalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
     {
         DataGridView dataGridView;
-        private bool valueChanged = false;
+        private bool valueChanged;
         int rowIndex;
 
         public CalendarEditingControl()
         {
-            this.Format = DateTimePickerFormat.Short;
+            Format = DateTimePickerFormat.Short;
         }
 
         public object EditingControlFormattedValue
         {
             get
             {
-                return this.Value.ToShortDateString();
+                return Value.ToShortDateString();
             }
             set
             {
                 if (value is String)
                 {
-                    this.Value = DateTime.Parse((String)value);
+                    Value = DateTime.Parse((String)value);
                 }
             }
         }
@@ -107,9 +106,9 @@ namespace Project.Controls
         public void ApplyCellStyleToEditingControl(
          DataGridViewCellStyle dataGridViewCellStyle)
         {
-            this.Font = dataGridViewCellStyle.Font;
-            this.CalendarForeColor = dataGridViewCellStyle.ForeColor;
-            this.CalendarMonthBackground = dataGridViewCellStyle.BackColor;
+            Font = dataGridViewCellStyle.Font;
+            CalendarForeColor = dataGridViewCellStyle.ForeColor;
+            CalendarMonthBackground = dataGridViewCellStyle.BackColor;
         }
 
         public int EditingControlRowIndex
@@ -164,13 +163,13 @@ namespace Project.Controls
 
         public Cursor EditingPanelCursor
         {
-            get { return base.Cursor; }
+            get { return Cursor; }
         }
 
         protected override void OnValueChanged(EventArgs eventargs)
         {
             valueChanged = true;
-            this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
+            EditingControlDataGridView.NotifyCurrentCellDirty(true);
             base.OnValueChanged(eventargs);
         }
     }

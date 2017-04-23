@@ -113,7 +113,7 @@ namespace Project
         {
             if (CurrentId == 0) return;
 
-            var profession = Databases.Tables.Professions[this.CurrentId];
+            var profession = Databases.Tables.Professions[CurrentId];
             var form = new frmProfession(profession);
             form.ShowDialog(this);
             Init();
@@ -128,7 +128,7 @@ namespace Project
                 .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
                 .Equals(DialogResult.OK)) return;
 
-            var profession = Databases.Tables.Professions[this.CurrentId];
+            var profession = Databases.Tables.Professions[CurrentId];
             profession.Delete();
             Init();
         }

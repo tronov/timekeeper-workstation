@@ -1,11 +1,14 @@
-﻿namespace Project.Forms.Elements
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project.Forms.Elements
 {
     partial class frmTable
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -178,15 +181,15 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dgvTable;
-        private System.Windows.Forms.SplitContainer scMain;
-        private System.Windows.Forms.DateTimePicker dtpMonth;
-        private System.Windows.Forms.Label lFrom;
-        private System.Windows.Forms.Button bBrigade;
-        private System.Windows.Forms.Label lBrigade;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.ContextMenuStrip cmsSelect;
-        private System.Windows.Forms.ToolStripMenuItem miWarranties;
+        private DataGridView dgvTable;
+        private SplitContainer scMain;
+        private DateTimePicker dtpMonth;
+        private Label lFrom;
+        private Button bBrigade;
+        private Label lBrigade;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private ContextMenuStrip cmsSelect;
+        private ToolStripMenuItem miWarranties;
     }
 }

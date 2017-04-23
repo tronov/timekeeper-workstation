@@ -14,10 +14,10 @@ namespace Project.Controls
         private ContextMenuStrip _cmBrigade = new ContextMenuStrip();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedAreaId { get; private set; } = 0;
+        public int SelectedAreaId { get; private set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedBrigadeId { get; private set; } = 0;
+        public int SelectedBrigadeId { get; private set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CatalogMode CatalogMode
@@ -31,7 +31,7 @@ namespace Project.Controls
                     scMain.Panel2Collapsed = true;
                     Height = scMain.Panel1.Height;
                     _cmArea = new ContextMenuStrip();
-                    _cmBrigade = this.cmBrigadeSelect;
+                    _cmBrigade = cmBrigadeSelect;
 
                 }
                 if (value == CatalogMode.View)
@@ -79,7 +79,7 @@ namespace Project.Controls
                 .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
                 .Equals(DialogResult.OK)) return;
 
-            var area = Databases.Tables.Areas[this.SelectedAreaId];
+            var area = Databases.Tables.Areas[SelectedAreaId];
             area.Delete();
             Init();
         }

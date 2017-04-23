@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using Project.Data;
@@ -30,7 +31,7 @@ namespace Project.Controls
 
         private static void floatCell_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             var ctrl = (DataGridViewTextBoxEditingControl)sender;
 
@@ -94,8 +95,8 @@ namespace Project.Controls
                                    select position.Draw).ToList();
                         foreach (string str in strings) acsCollection.Add(str);
                         ctrl.AutoCompleteCustomSource = acsCollection;
-                        ctrl.KeyPress -= new KeyPressEventHandler(floatCell_KeyPress);
-                        ctrl.KeyPress -= new KeyPressEventHandler(intCell_KeyPress);
+                        ctrl.KeyPress -= floatCell_KeyPress;
+                        ctrl.KeyPress -= intCell_KeyPress;
                     }
                     break;
                 case "Matherial":

@@ -1,11 +1,15 @@
-﻿namespace Project.Forms.Tables
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using Project.Controls;
+
+namespace Project.Forms.Tables
 {
     partial class frmStructure
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -94,8 +98,8 @@
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer scMain;
-        public Project.Controls.StructureControl ctrlStructure;
-        public Project.Controls.BrigadePersonsControl ctrlBrigadePersons;
+        private SplitContainer scMain;
+        public StructureControl ctrlStructure;
+        public BrigadePersonsControl ctrlBrigadePersons;
     }
 }

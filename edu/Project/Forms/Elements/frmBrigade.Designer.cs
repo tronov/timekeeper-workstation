@@ -1,11 +1,14 @@
-﻿namespace Project.Forms.Elements
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project.Forms.Elements
 {
     partial class frmBrigade
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -116,11 +119,11 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lCode;
-        private System.Windows.Forms.Label lTitle;
-        private System.Windows.Forms.MaskedTextBox mtbCode;
-        private System.Windows.Forms.TextBox tbTitle;
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.Button bCancel;
+        private Label lCode;
+        private Label lTitle;
+        private MaskedTextBox mtbCode;
+        private TextBox tbTitle;
+        private Button bSave;
+        private Button bCancel;
     }
 }

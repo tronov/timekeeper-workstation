@@ -15,19 +15,19 @@ namespace Project
         public frmPersonProfession(Person person)
         {
             InitializeComponent();
-            this._Person = person;
+            _Person = person;
         }
 
         public frmPersonProfession(PersonProfession personProfession)
         {
             InitializeComponent();
-            this.Text = "Изменение квалификации сотрудника.";
-            this._PersonProfession = personProfession;
-            this._Person = personProfession.Person;
-            this.bProfessionCode.Text = personProfession.Profession.Code.ToString();
-            this.bProfessionCode.Tag = personProfession.Profession;
-            this.tbProfessionTitle.Text = personProfession.Profession.Title;
-            this.cbRank.Text = personProfession.Rank.ToString();
+            Text = "Изменение квалификации сотрудника.";
+            _PersonProfession = personProfession;
+            _Person = personProfession.Person;
+            bProfessionCode.Text = personProfession.Profession.Code.ToString();
+            bProfessionCode.Tag = personProfession.Profession;
+            tbProfessionTitle.Text = personProfession.Profession.Title;
+            cbRank.Text = personProfession.Rank.ToString();
         }
 
         private void bProfessionCode_Click(object sender, EventArgs e)
@@ -37,7 +37,7 @@ namespace Project
             f.professionsControl.CatalogMode = CatalogMode.Select;
 
             IEnumerable<Profession> ds = f.professionsControl.dgvItems.DataSource as IEnumerable<Profession>;
-            var nds = ds.Except(this._Person.PersonProfessions.Select(r => r.Profession)).ToList();
+            var nds = ds.Except(_Person.PersonProfessions.Select(r => r.Profession)).ToList();
             f.professionsControl.dgvItems.DataSource = nds;
             f.ShowDialog(this);
             if (f.professionsControl.CurrentId != 0)
@@ -53,23 +53,23 @@ namespace Project
         {
             if (Check())
             {
-                int PersonId = this._Person.Id;
-                int ProfessionId = (this.bProfessionCode.Tag as Profession).Id;
+                int PersonId = _Person.Id;
+                int ProfessionId = (bProfessionCode.Tag as Profession).Id;
                 byte Rank = Convert.ToByte(cbRank.Text);
                 PersonProfession personProfession = new PersonProfession(PersonId, ProfessionId, Rank);
 
-                if (this._PersonProfession == null)
+                if (_PersonProfession == null)
                     Databases.Tables.PersonProfessions.Insert(personProfession);
-                else this._PersonProfession.Update(personProfession);
+                else _PersonProfession.Update(personProfession);
 
-                this.Close();
+                Close();
             }
         }
 
         private bool Check()
         {
-            bool x1 = this.bProfessionCode.Text.Length.Equals(0) ? false : true;
-            bool x2 = this.cbRank.Text.Length.Equals(0) ? false : true;
+            bool x1 = bProfessionCode.Text.Length.Equals(0) ? false : true;
+            bool x2 = cbRank.Text.Length.Equals(0) ? false : true;
             return (x1 && x2);
         }
     }

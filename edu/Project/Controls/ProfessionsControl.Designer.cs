@@ -1,11 +1,14 @@
-﻿namespace Project
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project
 {
     partial class ProfessionsControl
     {
         /// <summary> 
         /// Требуется переменная конструктора.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Освободить все используемые ресурсы.
@@ -28,8 +31,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            components = new Container();
+            this.AutoScaleMode = AutoScaleMode.Font;
         }
 
         #endregion

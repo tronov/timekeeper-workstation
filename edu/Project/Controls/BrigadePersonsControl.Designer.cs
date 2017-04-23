@@ -1,11 +1,15 @@
-﻿namespace Project.Controls
+﻿using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Project.Controls
 {
     partial class BrigadePersonsControl
     {
         /// <summary> 
         /// Требуется переменная конструктора.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Освободить все используемые ресурсы.
@@ -36,28 +40,28 @@
             // 
             // gbFilter
             // 
-            this.gbFilter.Size = new System.Drawing.Size(350, 46);
+            this.gbFilter.Size = new Size(350, 46);
             // 
             // gbOperations
             // 
-            this.gbOperations.Size = new System.Drawing.Size(350, 50);
+            this.gbOperations.Size = new Size(350, 50);
             // 
             // scMain
             // 
-            this.scMain.Size = new System.Drawing.Size(350, 200);
+            this.scMain.Size = new Size(350, 200);
             this.scMain.SplitterDistance = 146;
             // 
             // gbItems
             // 
-            this.gbItems.Size = new System.Drawing.Size(350, 96);
+            this.gbItems.Size = new Size(350, 96);
             // 
             // BrigadePersonsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MinimumSize = new System.Drawing.Size(350, 200);
+            this.AutoScaleDimensions = new SizeF(6F, 13F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.MinimumSize = new Size(350, 200);
             this.Name = "BrigadePersonsControl";
-            this.Size = new System.Drawing.Size(350, 200);
+            this.Size = new Size(350, 200);
             this.gbOperations.ResumeLayout(false);
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);

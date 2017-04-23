@@ -13,7 +13,7 @@ namespace Project.Forms.Tables
         {
             get
             {
-                return this.ctrlPersons.SelectedId;
+                return ctrlPersons.SelectedId;
             }
         }
 
@@ -22,25 +22,25 @@ namespace Project.Forms.Tables
         {
             get
             {
-                return this._CatalogMode;
+                return _CatalogMode;
             }
             set
             {
-                this._CatalogMode = value;
-                this.ctrlPersons.CatalogMode = value;
-                this.scMain.Panel2Collapsed = value == CatalogMode.Select ? true : false;
+                _CatalogMode = value;
+                ctrlPersons.CatalogMode = value;
+                scMain.Panel2Collapsed = value == CatalogMode.Select ? true : false;
             }
         }
 
         public frmPersons()
         {
             InitializeComponent();
-            this.ctrlPersons.dgvItems.SelectionChanged += new EventHandler(personsControl_SelectionChanged);
+            ctrlPersons.dgvItems.SelectionChanged += personsControl_SelectionChanged;
         }
 
         private void personsControl_SelectionChanged(object sender, EventArgs e)
         {
-            this.ctrlPersonProfessions.PersonId = this.ctrlPersons.CurrentId;
+            ctrlPersonProfessions.PersonId = ctrlPersons.CurrentId;
         }
     }
 }

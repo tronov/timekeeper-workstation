@@ -19,12 +19,12 @@ namespace Project
         public frmPerson(Person item)
         {
             InitializeComponent();
-            this._Person = item;
-            this.Text = "Изменение данных об сотруднике.";
-            this.mtbCode.Text = item.Code.ToString("D4");
-            this.tbFirstName.Text = item.FirstName;
-            this.tbMiddleName.Text = item.MiddleName;
-            this.tbLastName.Text = item.LastName;
+            _Person = item;
+            Text = "Изменение данных об сотруднике.";
+            mtbCode.Text = item.Code.ToString("D4");
+            tbFirstName.Text = item.FirstName;
+            tbMiddleName.Text = item.MiddleName;
+            tbLastName.Text = item.LastName;
         }
 
         private bool Check()
@@ -62,7 +62,7 @@ namespace Project
                 {
                     for (int i = 0; i < c - 2; i++)
                     {
-                        string s = (string)mes[i] + ",";
+                        string s = mes[i] + ",";
                         mes[i] = s;
                     }
 
@@ -84,14 +84,14 @@ namespace Project
                 string middleName = tbMiddleName.Text.Trim();
                 string lastName = tbLastName.Text.Trim();
 
-                if (!Databases.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && this._Person == null)
+                if (!Databases.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && _Person == null)
                 {
 
                     (new ToolTip()).Show("Указанный табельный номер уже присвоен другому сотруднику.", this, bSave.Location, 2000);
                     mtbCode.Focus();
                     return false;
                 }
-                else return true;
+                return true;
             }
         }
 
@@ -126,18 +126,18 @@ namespace Project
                 string lastName = tbLastName.Text;
 
                 Person person = new Person(code, firstName, middleName, lastName);
-                if (this._Person == null) Databases.Tables.Persons.Insert(person);
-                else this._Person.Update(person);
+                if (_Person == null) Databases.Tables.Persons.Insert(person);
+                else _Person.Update(person);
 
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
         private void bCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

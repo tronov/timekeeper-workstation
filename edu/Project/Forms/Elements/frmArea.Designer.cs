@@ -1,11 +1,14 @@
-﻿namespace Project.Forms.Elements
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project.Forms.Elements
 {
     partial class frmArea
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -117,11 +120,11 @@
 
         #endregion
 
-        private System.Windows.Forms.Button bCancel;
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.TextBox tbTitle;
-        private System.Windows.Forms.MaskedTextBox mtbCode;
-        private System.Windows.Forms.Label lTitle;
-        private System.Windows.Forms.Label lCode;
+        private Button bCancel;
+        private Button bSave;
+        private TextBox tbTitle;
+        private MaskedTextBox mtbCode;
+        private Label lTitle;
+        private Label lCode;
     }
 }

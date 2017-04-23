@@ -85,7 +85,7 @@ namespace Project
         {
             if (CurrentId == 0) return;
 
-            var person = Databases.Tables.Persons[this.CurrentId];
+            var person = Databases.Tables.Persons[CurrentId];
             var form = new frmPerson(person);
             form.ShowDialog(this);
             Init();
@@ -94,7 +94,7 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId == 0) return;
+            if (CurrentId == 0) return;
 
             if (!MessageBox
                 .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)

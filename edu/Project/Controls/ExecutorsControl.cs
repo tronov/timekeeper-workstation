@@ -32,12 +32,12 @@ namespace Project.Controls
                 case "PersonCode":
                     var fbp = new frmBrigadePersons();
                     fbp.CatalogMode = CatalogMode.Select;
-                    fbp.ctrlBrigadePersons.BrigadeId = this.BrigadeId;
+                    fbp.ctrlBrigadePersons.BrigadeId = BrigadeId;
 
                     var deletions = new List<BrigadePerson>();
                     var deletionsCodes = new List<short>();
 
-                    foreach (DataGridViewRow r in this.dgvItems.Rows)
+                    foreach (DataGridViewRow r in dgvItems.Rows)
                     {
                         deletionsCodes.Add(Convert.ToInt16(r.Cells["PersonCode"].Value));
                     }

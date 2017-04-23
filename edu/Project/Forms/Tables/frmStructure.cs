@@ -10,14 +10,14 @@ namespace Project.Forms.Tables
         {
             set
             {
-                this.ctrlStructure.CatalogMode = value;
+                ctrlStructure.CatalogMode = value;
                 if (value == CatalogMode.Select)
                 {
-                    this.scMain.Panel2Collapsed = true;
+                    scMain.Panel2Collapsed = true;
                 }
                 if (value == CatalogMode.View)
                 {
-                    this.scMain.Panel2Collapsed = false;
+                    scMain.Panel2Collapsed = false;
                 }
             }
         }
@@ -25,12 +25,12 @@ namespace Project.Forms.Tables
         public frmStructure()
         {
             InitializeComponent();
-            this.ctrlStructure.tvStructure.AfterSelect += new TreeViewEventHandler(tvStructure_AfterSelect);
+            ctrlStructure.tvStructure.AfterSelect += tvStructure_AfterSelect;
         }
 
         void tvStructure_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            this.ctrlBrigadePersons.BrigadeId = this.ctrlStructure.SelectedBrigadeId;
+            ctrlBrigadePersons.BrigadeId = ctrlStructure.SelectedBrigadeId;
         }
     }
 }

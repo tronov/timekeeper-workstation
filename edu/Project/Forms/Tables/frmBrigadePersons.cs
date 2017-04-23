@@ -10,7 +10,7 @@ namespace Project.Forms.Tables
         {
             set
             {
-                this.ctrlBrigadePersons.CatalogMode = value;
+                ctrlBrigadePersons.CatalogMode = value;
             }
         }
 

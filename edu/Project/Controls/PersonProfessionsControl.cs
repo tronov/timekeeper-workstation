@@ -7,7 +7,7 @@ namespace Project
 {
     public partial class PersonProfessionsControl : TableControl
     {
-        private int _personId = 0;
+        private int _personId;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PersonId
@@ -75,8 +75,8 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Edit()
         {
-            if (this.CurrentId == 0) return;
-            var personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
+            if (CurrentId == 0) return;
+            var personProfession = Databases.Tables.PersonProfessions[CurrentId];
             var form = new frmPersonProfession(personProfession);
             form.ShowDialog(this);
             Init();
@@ -85,11 +85,11 @@ namespace Project
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Delete()
         {
-            if (this.CurrentId == 0) return;
+            if (CurrentId == 0) return;
             if (!MessageBox
                 .Show("Вы действительно хотите удалить запись?", "Удаление записи", MessageBoxButtons.OKCancel)
                 .Equals(DialogResult.OK)) return;
-            var personProfession = Databases.Tables.PersonProfessions[this.CurrentId];
+            var personProfession = Databases.Tables.PersonProfessions[CurrentId];
             personProfession.Delete();
             Init();
         }
@@ -100,15 +100,15 @@ namespace Project
             dgvItems.DataSource = (from personProfession in Databases.Tables.PersonProfessions
                 where
                 personProfession.PersonId.Equals(_personId) &&
-                personProfession.Profession.Code.ToString().Contains(this.GetFilter("ProfessionCode")) &&
-                personProfession.Profession.Title.ToUpper().Contains(this.GetFilter("ProfessionTitle").ToUpper()) &&
-                personProfession.Rank.ToString().Contains(this.GetFilter("Rank"))
+                personProfession.Profession.Code.ToString().Contains(GetFilter("ProfessionCode")) &&
+                personProfession.Profession.Title.ToUpper().Contains(GetFilter("ProfessionTitle").ToUpper()) &&
+                personProfession.Rank.ToString().Contains(GetFilter("Rank"))
                 select new
                 {
-                    Id = personProfession.Id,
+                    personProfession.Id,
                     ProfessionCode = personProfession.Profession.Code,
                     ProfessionTitle = personProfession.Profession.Title,
-                    Rank = personProfession.Rank
+                    personProfession.Rank
                 }).ToList();
 
             foreach (DataGridViewColumn column in dgvItems.Columns)

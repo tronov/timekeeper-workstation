@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.OleDb;
 using System.Linq;
 
 namespace Project.Data
@@ -640,7 +639,7 @@ namespace Project.Data
         public DateTime LaborDate { get; }
         public float Hours { get; }
 
-        public override void Update(Labor newItem) => Databases.Tables.Labors.Update(this, newItem as Labor);
+        public override void Update(Labor newItem) => Databases.Tables.Labors.Update(this, newItem);
 
         public override void Delete() => Databases.Tables.Labors.Delete(this);
 
@@ -717,7 +716,7 @@ namespace Project.Data
 
         public override Brigade Clone() => new Brigade(AreaId, Code, Title, Begin, End);
 
-        public override void Update(Brigade newItem) => Databases.Tables.Brigades.Update(this, newItem as Brigade);
+        public override void Update(Brigade newItem) => Databases.Tables.Brigades.Update(this, newItem);
 
         public override void Delete()
         {

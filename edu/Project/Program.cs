@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Project.Forms;
 
 namespace Project
 {
@@ -13,7 +14,7 @@ namespace Project
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Project.Forms.frmMain());
+            Application.Run(new frmMain());
         }
     }
 }

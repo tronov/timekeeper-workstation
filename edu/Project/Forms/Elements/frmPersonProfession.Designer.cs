@@ -1,11 +1,14 @@
-﻿namespace Project
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project
 {
     partial class frmPersonProfession
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -135,12 +138,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Button bProfessionCode;
-        private System.Windows.Forms.TextBox tbProfessionTitle;
-        private System.Windows.Forms.Label lProfession;
-        private System.Windows.Forms.Label lRank;
-        private System.Windows.Forms.ComboBox cbRank;
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.Button bCancel;
+        private Button bProfessionCode;
+        private TextBox tbProfessionTitle;
+        private Label lProfession;
+        private Label lRank;
+        private ComboBox cbRank;
+        private Button bSave;
+        private Button bCancel;
     }
 }

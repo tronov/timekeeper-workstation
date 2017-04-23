@@ -1,11 +1,14 @@
-﻿namespace Project
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project
 {
     partial class frmPerson
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -172,15 +175,15 @@
 
         #endregion
 
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.Button bCancel;
-        private System.Windows.Forms.MaskedTextBox mtbCode;
-        private System.Windows.Forms.TextBox tbFirstName;
-        private System.Windows.Forms.Label lCode;
-        private System.Windows.Forms.TextBox tbMiddleName;
-        private System.Windows.Forms.TextBox tbLastName;
-        private System.Windows.Forms.Label lFirstName;
-        private System.Windows.Forms.Label lMiddleName;
-        private System.Windows.Forms.Label lLastName;
+        private Button bSave;
+        private Button bCancel;
+        private MaskedTextBox mtbCode;
+        private TextBox tbFirstName;
+        private Label lCode;
+        private TextBox tbMiddleName;
+        private TextBox tbLastName;
+        private Label lFirstName;
+        private Label lMiddleName;
+        private Label lLastName;
     }
 }

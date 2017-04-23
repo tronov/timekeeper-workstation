@@ -16,8 +16,8 @@ namespace Project.Forms.Elements
         {
             get
             {
-                if (this._Warranty == null) return 0;
-                else return this._Warranty.Id;
+                if (_Warranty == null) return 0;
+                return _Warranty.Id;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Project.Forms.Elements
             {
                 float summMoney = 0F;
                 float chainTariff = 0F;
-                foreach (DataGridViewRow row in this.ctrlExecutors.dgvItems.Rows)
+                foreach (DataGridViewRow row in ctrlExecutors.dgvItems.Rows)
                 {
                     if (row.Cells["ProfessionCode"].Tag != null && row.Cells["Rank"].Value != null)
                     {
@@ -62,7 +62,7 @@ namespace Project.Forms.Elements
                         summMoney += personTariff;
                     }
                 }
-                chainTariff = (float)Math.Round((double)(summMoney / (this.ctrlExecutors.dgvItems.Rows.Count - 1)), 3);
+                chainTariff = (float)Math.Round(summMoney / (ctrlExecutors.dgvItems.Rows.Count - 1), 3);
                 return chainTariff;
             }
         }
@@ -72,13 +72,13 @@ namespace Project.Forms.Elements
             {
                 float summaryLaborTime = 0F;
                 float summaryNormTime = 0F;
-                foreach (DataGridViewRow row in this.ctrlLabors.dgvItems.Rows)
+                foreach (DataGridViewRow row in ctrlLabors.dgvItems.Rows)
                 {
                     if (row.Cells["Hours"].Value != null)
                         summaryLaborTime += Convert.ToSingle(row.Cells["Hours"].Value);
                 }
-                summaryLaborTime = summaryLaborTime * (this.ctrlExecutors.dgvItems.Rows.Count - 1);
-                foreach (DataGridViewRow row in this.ctrlPositions.dgvItems.Rows)
+                summaryLaborTime = summaryLaborTime * (ctrlExecutors.dgvItems.Rows.Count - 1);
+                foreach (DataGridViewRow row in ctrlPositions.dgvItems.Rows)
                 {
                     if (row.Cells["Number"].Value != null && row.Cells["Norm"].Value != null)
                         summaryNormTime +=
@@ -94,23 +94,23 @@ namespace Project.Forms.Elements
         public frmWarranty()
         {
             InitializeComponent();
-            this.ctrlExecutors.Enabled = false;
-            this.ctrlLabors.Enabled = false;
-            this.ctrlPositions.Enabled = false;
-            this.bSave.Enabled = false;
+            ctrlExecutors.Enabled = false;
+            ctrlLabors.Enabled = false;
+            ctrlPositions.Enabled = false;
+            bSave.Enabled = false;
             Sinc();
         }
 
         private void Sinc()
         {
-            this.ctrlExecutors.dgvItems.CellValueChanged += new DataGridViewCellEventHandler(Executors_CellValueChanged);
-            this.ctrlExecutors.dgvItems.UserAddedRow += new DataGridViewRowEventHandler(Executors_UserAddedRow);
-            this.ctrlExecutors.dgvItems.RowsRemoved += new DataGridViewRowsRemovedEventHandler(PriceNeeded);
-            this.ctrlLabors.dgvItems.CellValueChanged += new DataGridViewCellEventHandler(Labors_CellValueChanged);
-            this.ctrlLabors.dgvItems.UserAddedRow += new DataGridViewRowEventHandler(Labors_UserAddedRow);
-            this.ctrlLabors.dgvItems.RowsRemoved += new DataGridViewRowsRemovedEventHandler(PriceNeeded);
-            this.ctrlPositions.dgvItems.CellValueChanged += new DataGridViewCellEventHandler(Positions_CellValueChanged);
-            this.ctrlPositions.dgvItems.UserAddedRow += new DataGridViewRowEventHandler(Positions_UserAddedRow);
+            ctrlExecutors.dgvItems.CellValueChanged += Executors_CellValueChanged;
+            ctrlExecutors.dgvItems.UserAddedRow += Executors_UserAddedRow;
+            ctrlExecutors.dgvItems.RowsRemoved += PriceNeeded;
+            ctrlLabors.dgvItems.CellValueChanged += Labors_CellValueChanged;
+            ctrlLabors.dgvItems.UserAddedRow += Labors_UserAddedRow;
+            ctrlLabors.dgvItems.RowsRemoved += PriceNeeded;
+            ctrlPositions.dgvItems.CellValueChanged += Positions_CellValueChanged;
+            ctrlPositions.dgvItems.UserAddedRow += Positions_UserAddedRow;
         }
 
         void PriceNeeded(object sender, DataGridViewRowsRemovedEventArgs e)
@@ -120,32 +120,32 @@ namespace Project.Forms.Elements
 
         void CalculatePrice()
         {
-            foreach (DataGridViewRow row in this.ctrlPositions.dgvItems.Rows)
+            foreach (DataGridViewRow row in ctrlPositions.dgvItems.Rows)
             {
                 if (row.Cells["Norm"].Value != null)
                 {
                     float norm = Convert.ToSingle(row.Cells["Norm"].Value);
-                    row.Cells["Price"].Value = (float)Math.Round((double)norm * this._chainTariff, 3);
+                    row.Cells["Price"].Value = (float)Math.Round((double)norm * _chainTariff, 3);
                 }
             }
-            this.lPercentTitle.Visible = true;
-            this.lPercent.Text = String.Format("{0}%", this._percent);
+            lPercentTitle.Visible = true;
+            lPercent.Text = String.Format("{0}%", _percent);
         }
 
         public frmWarranty(Warranty warranty)
         {
             InitializeComponent();
-            this.Text = "Изменение наряда.";
-            this._Warranty = warranty;
+            Text = "Изменение наряда.";
+            _Warranty = warranty;
             List<Position> positions = warranty.Positions.ToList();
             List<Executor> executors = warranty.Executors.ToList();
             List<Labor> labors = warranty.Labors.ToList();
 
-            this.tbCustomer.Text = warranty.Customer;
-            this.mtbOrder.Text = warranty.Order.ToString("D4");
+            tbCustomer.Text = warranty.Customer;
+            mtbOrder.Text = warranty.Order.ToString("D4");
             Brigade brigade = Databases.Tables.Brigades[warranty.BrigadeId];
-            this.bBrigade.Tag = brigade;
-            this.bBrigade.Text = String.Format("{0} / {1}", brigade.Area.Code.ToString("D2"), brigade.Code.ToString("D2"));
+            bBrigade.Tag = brigade;
+            bBrigade.Text = String.Format("{0} / {1}", brigade.Area.Code.ToString("D2"), brigade.Code.ToString("D2"));
 
             foreach (Executor executor in executors)
             {
@@ -176,7 +176,7 @@ namespace Project.Forms.Elements
                 row.Cells.Add(ProfessionCode);
                 row.Cells.Add(Rank);
 
-                this.ctrlExecutors.dgvItems.Rows.Add(row);
+                ctrlExecutors.dgvItems.Rows.Add(row);
             }
             foreach (Labor labor in labors)
             {
@@ -193,11 +193,11 @@ namespace Project.Forms.Elements
                 row.Cells.Add(LaborId);
                 row.Cells.Add(LaborDate);
                 row.Cells.Add(Hours);
-                this.ctrlLabors.dgvItems.Rows.Add(row);
+                ctrlLabors.dgvItems.Rows.Add(row);
             }
             foreach (Position position in positions)
             {
-                this.ctrlPositions.dgvItems.Rows
+                ctrlPositions.dgvItems.Rows
                  .Add(position.Id, position.Title, position.Draw, position.Matherial, position.Number, position.Mass, position.Norm, position.Price);
             }
             Sinc();
@@ -217,13 +217,13 @@ namespace Project.Forms.Elements
                 if (bBrigade.Tag != null)
                     if (!(bBrigade.Tag as Brigade).Equals(brigade))
                     {
-                        this.ctrlExecutors.dgvItems.Rows.Clear();
-                        this.ctrlLabors.dgvItems.Rows.Clear();
+                        ctrlExecutors.dgvItems.Rows.Clear();
+                        ctrlLabors.dgvItems.Rows.Clear();
                     }
 
                 bBrigade.Tag = brigade;
-                this.ctrlExecutors.BrigadeId = brigade.Id;
-                this.ctrlExecutors.Enabled = true;
+                ctrlExecutors.BrigadeId = brigade.Id;
+                ctrlExecutors.Enabled = true;
             }
         }
 
@@ -231,31 +231,31 @@ namespace Project.Forms.Elements
         {
             if (Check())
             {
-                string customer = this.tbCustomer.Text;
-                short order = Convert.ToInt16(this.mtbOrder.Text);
+                string customer = tbCustomer.Text;
+                short order = Convert.ToInt16(mtbOrder.Text);
                 DateTime warrantyDate = DateTime.Now.Date;
-                int areaId = (this.bBrigade.Tag as Brigade).AreaId;
-                int brigadeId = (this.bBrigade.Tag as Brigade).Id;
-                float percent = this._percent;
+                int areaId = (bBrigade.Tag as Brigade).AreaId;
+                int brigadeId = (bBrigade.Tag as Brigade).Id;
+                float percent = _percent;
 
                 Warranty warranty = new Warranty(customer, order, percent, warrantyDate, areaId, brigadeId);
 
-                if (this._WarrantyId == 0)
+                if (_WarrantyId == 0)
                 {
                     Databases.Tables.Warranties.Insert(warranty);
-                    this._Warranty = warranty;
+                    _Warranty = warranty;
                 }
                 else
                 {
-                    if (!warranty.Equals(this._Warranty))
-                        this._Warranty.Update(warranty);
+                    if (!warranty.Equals(_Warranty))
+                        _Warranty.Update(warranty);
                 }
 
                 List<Executor> executors = new List<Executor>();
                 List<Labor> labors = new List<Labor>();
                 List<Position> positions = new List<Position>();
 
-                foreach (DataGridViewRow executorsRow in this.ctrlExecutors.dgvItems.Rows)
+                foreach (DataGridViewRow executorsRow in ctrlExecutors.dgvItems.Rows)
                 {
                     if (executorsRow.Cells["ExecutorId"].Value != null)
                     {
@@ -264,7 +264,7 @@ namespace Project.Forms.Elements
                         int professionId = (executorsRow.Cells["ProfessionCode"].Tag as PersonProfession).ProfessionId;
                         byte rank = Convert.ToByte(executorsRow.Cells["Rank"].Value);
 
-                        Executor executor = new Executor(this._WarrantyId, personId, professionId, rank);
+                        Executor executor = new Executor(_WarrantyId, personId, professionId, rank);
 
                         if (executorId < 0)
                         {
@@ -279,7 +279,7 @@ namespace Project.Forms.Elements
                     }
                 }
 
-                foreach (DataGridViewRow laborsRow in this.ctrlLabors.dgvItems.Rows)
+                foreach (DataGridViewRow laborsRow in ctrlLabors.dgvItems.Rows)
                 {
                     if (laborsRow.Cells["LaborId"].Value != null)
                     {
@@ -287,7 +287,7 @@ namespace Project.Forms.Elements
                         DateTime laborDate = Convert.ToDateTime(laborsRow.Cells["LaborDate"].Value).Date;
                         float hours = Convert.ToSingle(laborsRow.Cells["Hours"].Value);
 
-                        Labor labor = new Labor(this._WarrantyId, laborDate, hours);
+                        Labor labor = new Labor(_WarrantyId, laborDate, hours);
 
                         if (laborId < 0)
                         {
@@ -303,7 +303,7 @@ namespace Project.Forms.Elements
 
                 }
 
-                foreach (DataGridViewRow positionsRow in this.ctrlPositions.dgvItems.Rows)
+                foreach (DataGridViewRow positionsRow in ctrlPositions.dgvItems.Rows)
                 {
                     if (positionsRow.Cells["Id"].Value != null)
                     {
@@ -316,7 +316,7 @@ namespace Project.Forms.Elements
                         float norm = Convert.ToSingle(positionsRow.Cells["Norm"].Value);
                         float price = Convert.ToSingle(positionsRow.Cells["Price"].Value);
 
-                        Position position = new Position(this._WarrantyId, title, draw, matherial, number, mass, norm, price);
+                        Position position = new Position(_WarrantyId, title, draw, matherial, number, mass, norm, price);
 
                         if (positionId < 0)
                         {
@@ -332,29 +332,29 @@ namespace Project.Forms.Elements
                     }
                 }
 
-                if (this._Warranty != null)
+                if (_Warranty != null)
                 {
-                    foreach (Executor executor in this._Warranty.Executors.ToList().Except(executors.AsEnumerable()))
+                    foreach (Executor executor in _Warranty.Executors.ToList().Except(executors.AsEnumerable()))
                         executor.Delete();
 
-                    foreach (Position position in this._Warranty.Positions.ToList().Except(positions.AsEnumerable()))
+                    foreach (Position position in _Warranty.Positions.ToList().Except(positions.AsEnumerable()))
                         position.Delete();
                 }
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
         private bool Check()
         {
-            if (this.tbCustomer.Text.Length == 0)
+            if (tbCustomer.Text.Length == 0)
             {
-                (new ToolTip()).Show("Необходимо указать заказчика", this, this.tbCustomer.Location, 2000);
+                (new ToolTip()).Show("Необходимо указать заказчика", this, tbCustomer.Location, 2000);
                 return false;
             }
-            if (this.mtbOrder.Text.Length == 0)
+            if (mtbOrder.Text.Length == 0)
             {
-                (new ToolTip()).Show("Необходимо указать номер заказа", this, this.mtbOrder.Location, 2000);
+                (new ToolTip()).Show("Необходимо указать номер заказа", this, mtbOrder.Location, 2000);
                 return false;
             }
             return true;
@@ -363,7 +363,7 @@ namespace Project.Forms.Elements
         void Executors_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
             CalculatePrice();
-            this.ctrlLabors.Enabled = true;
+            ctrlLabors.Enabled = true;
         }
 
         void Executors_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -382,8 +382,8 @@ namespace Project.Forms.Elements
                 }
                 if (row.Cells["ExecutorId"].Value == null)
                 {
-                    row.Cells["ExecutorId"].Value = this._newExecutorId;
-                    this._newExecutorId--;
+                    row.Cells["ExecutorId"].Value = _newExecutorId;
+                    _newExecutorId--;
                 }
             }
         }
@@ -391,7 +391,7 @@ namespace Project.Forms.Elements
         void Labors_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
             CalculatePrice();
-            this.ctrlPositions.Enabled = true;
+            ctrlPositions.Enabled = true;
         }
 
         void Labors_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -403,8 +403,8 @@ namespace Project.Forms.Elements
 
                 if (row.Cells["LaborId"].Value == null)
                 {
-                    row.Cells["LaborId"].Value = this._newLaborId;
-                    this._newLaborId--;
+                    row.Cells["LaborId"].Value = _newLaborId;
+                    _newLaborId--;
                 }
             }
         }
@@ -412,7 +412,7 @@ namespace Project.Forms.Elements
         void Positions_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
             CalculatePrice();
-            this.bSave.Enabled = true;
+            bSave.Enabled = true;
         }
 
         void Positions_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -426,8 +426,8 @@ namespace Project.Forms.Elements
                 DataGridViewCell cell = grid[e.ColumnIndex, e.RowIndex];
                 if (row.Cells["Id"].Value == null)
                 {
-                    row.Cells["Id"].Value = this._newPositionId;
-                    this._newPositionId--;
+                    row.Cells["Id"].Value = _newPositionId;
+                    _newPositionId--;
                 }
             }
         }

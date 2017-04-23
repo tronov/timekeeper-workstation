@@ -1,11 +1,14 @@
-﻿namespace Project.Forms.Tables
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project.Forms.Tables
 {
     partial class frmPersons
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -125,10 +128,10 @@
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tpProfessions;
+        private TabControl tabControl;
+        private TabPage tpProfessions;
         public PersonsControl ctrlPersons;
         private PersonProfessionsControl ctrlPersonProfessions;
-        public System.Windows.Forms.SplitContainer scMain;
+        public SplitContainer scMain;
     }
 }

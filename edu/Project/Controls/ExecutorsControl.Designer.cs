@@ -1,11 +1,15 @@
-﻿namespace Project.Controls
+﻿using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Project.Controls
 {
     partial class ExecutorsControl
     {
         /// <summary> 
         /// Требуется переменная конструктора.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Освободить все используемые ресурсы.
@@ -28,27 +32,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dgvItems = new System.Windows.Forms.DataGridView();
-            this.ExecutorId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PersonCode = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.PersonLastName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PersonFirstName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PersonMiddleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ProfessionCode = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Rank = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
+            this.dgvItems = new DataGridView();
+            this.ExecutorId = new DataGridViewTextBoxColumn();
+            this.PersonCode = new DataGridViewButtonColumn();
+            this.PersonLastName = new DataGridViewTextBoxColumn();
+            this.PersonFirstName = new DataGridViewTextBoxColumn();
+            this.PersonMiddleName = new DataGridViewTextBoxColumn();
+            this.ProfessionCode = new DataGridViewButtonColumn();
+            this.Rank = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
+            ((ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvItems
             // 
-            this.dgvItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvItems.Columns.AddRange(new DataGridViewColumn[] {
             this.ExecutorId,
             this.PersonCode,
             this.PersonLastName,
@@ -56,16 +60,16 @@
             this.PersonMiddleName,
             this.ProfessionCode,
             this.Rank});
-            this.dgvItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvItems.Location = new System.Drawing.Point(0, 0);
+            this.dgvItems.Dock = DockStyle.Fill;
+            this.dgvItems.Location = new Point(0, 0);
             this.dgvItems.MultiSelect = false;
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.RowHeadersWidth = 30;
-            this.dgvItems.Size = new System.Drawing.Size(568, 212);
+            this.dgvItems.Size = new Size(568, 212);
             this.dgvItems.TabIndex = 4;
-            this.dgvItems.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvItems_RowValidating);
-            this.dgvItems.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvItems_EditingControlShowing);
-            this.dgvItems.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvExecutors_CellContentClick);
+            this.dgvItems.RowValidating += new DataGridViewCellCancelEventHandler(this.dgvItems_RowValidating);
+            this.dgvItems.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(this.dgvItems_EditingControlShowing);
+            this.dgvItems.CellContentClick += new DataGridViewCellEventHandler(this.dgvExecutors_CellContentClick);
             // 
             // ExecutorId
             // 
@@ -80,8 +84,8 @@
             this.PersonCode.HeaderText = "Таб. №";
             this.PersonCode.MinimumWidth = 70;
             this.PersonCode.Name = "PersonCode";
-            this.PersonCode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.PersonCode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.PersonCode.Resizable = DataGridViewTriState.True;
+            this.PersonCode.SortMode = DataGridViewColumnSortMode.Automatic;
             this.PersonCode.Width = 70;
             // 
             // PersonLastName
@@ -100,7 +104,7 @@
             // 
             // PersonMiddleName
             // 
-            this.PersonMiddleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.PersonMiddleName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.PersonMiddleName.HeaderText = "Отчество";
             this.PersonMiddleName.MinimumWidth = 120;
             this.PersonMiddleName.Name = "PersonMiddleName";
@@ -111,8 +115,8 @@
             this.ProfessionCode.HeaderText = "Шифр профессии";
             this.ProfessionCode.MinimumWidth = 80;
             this.ProfessionCode.Name = "ProfessionCode";
-            this.ProfessionCode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ProfessionCode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ProfessionCode.Resizable = DataGridViewTriState.True;
+            this.ProfessionCode.SortMode = DataGridViewColumnSortMode.Automatic;
             this.ProfessionCode.Width = 80;
             // 
             // Rank
@@ -146,7 +150,7 @@
             // 
             // dataGridViewTextBoxColumn4
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn4.HeaderText = "Отчество";
             this.dataGridViewTextBoxColumn4.MinimumWidth = 120;
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
@@ -154,7 +158,7 @@
             // 
             // dataGridViewTextBoxColumn5
             // 
-            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn5.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.dataGridViewTextBoxColumn5.HeaderText = "Разряд";
             this.dataGridViewTextBoxColumn5.MinimumWidth = 65;
             this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
@@ -169,31 +173,31 @@
             // 
             // ExecutorsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(6F, 13F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Controls.Add(this.dgvItems);
             this.Name = "ExecutorsControl";
-            this.Size = new System.Drawing.Size(568, 212);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
+            this.Size = new Size(568, 212);
+            ((ISupportInitialize)(this.dgvItems)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        public System.Windows.Forms.DataGridView dgvItems;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ExecutorId;
-        private System.Windows.Forms.DataGridViewButtonColumn PersonCode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PersonLastName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PersonFirstName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PersonMiddleName;
-        private System.Windows.Forms.DataGridViewButtonColumn ProfessionCode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Rank;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        public DataGridView dgvItems;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private DataGridViewTextBoxColumn ExecutorId;
+        private DataGridViewButtonColumn PersonCode;
+        private DataGridViewTextBoxColumn PersonLastName;
+        private DataGridViewTextBoxColumn PersonFirstName;
+        private DataGridViewTextBoxColumn PersonMiddleName;
+        private DataGridViewButtonColumn ProfessionCode;
+        private DataGridViewTextBoxColumn Rank;
     }
 }

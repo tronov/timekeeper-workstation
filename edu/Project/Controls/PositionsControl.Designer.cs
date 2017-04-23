@@ -1,11 +1,15 @@
-﻿namespace Project.Controls
+﻿using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Project.Controls
 {
     partial class PositionsControl
     {
         /// <summary> 
         /// Требуется переменная конструктора.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Освободить все используемые ресурсы.
@@ -28,22 +32,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dgvItems = new System.Windows.Forms.DataGridView();
-            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Draw = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Matherial = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mass = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Norm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
+            this.dgvItems = new DataGridView();
+            this.Id = new DataGridViewTextBoxColumn();
+            this.Title = new DataGridViewTextBoxColumn();
+            this.Draw = new DataGridViewTextBoxColumn();
+            this.Matherial = new DataGridViewTextBoxColumn();
+            this.Number = new DataGridViewTextBoxColumn();
+            this.Mass = new DataGridViewTextBoxColumn();
+            this.Norm = new DataGridViewTextBoxColumn();
+            this.Price = new DataGridViewTextBoxColumn();
+            ((ISupportInitialize)(this.dgvItems)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvItems
             // 
-            this.dgvItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvItems.Columns.AddRange(new DataGridViewColumn[] {
             this.Id,
             this.Title,
             this.Draw,
@@ -52,15 +56,15 @@
             this.Mass,
             this.Norm,
             this.Price});
-            this.dgvItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvItems.Location = new System.Drawing.Point(0, 0);
+            this.dgvItems.Dock = DockStyle.Fill;
+            this.dgvItems.Location = new Point(0, 0);
             this.dgvItems.MultiSelect = false;
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.RowHeadersWidth = 30;
-            this.dgvItems.Size = new System.Drawing.Size(745, 289);
+            this.dgvItems.Size = new Size(745, 289);
             this.dgvItems.TabIndex = 0;
-            this.dgvItems.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvItems_RowValidating);
-            this.dgvItems.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvItems_EditingControlShowing);
+            this.dgvItems.RowValidating += new DataGridViewCellCancelEventHandler(this.dgvItems_RowValidating);
+            this.dgvItems.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(this.dgvItems_EditingControlShowing);
             // 
             // Id
             // 
@@ -73,7 +77,7 @@
             // 
             // Title
             // 
-            this.Title.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Title.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.Title.DataPropertyName = "Title";
             this.Title.HeaderText = "Наименование";
             this.Title.MinimumWidth = 100;
@@ -128,26 +132,26 @@
             // 
             // PositionsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(6F, 13F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Controls.Add(this.dgvItems);
             this.Name = "PositionsControl";
-            this.Size = new System.Drawing.Size(745, 289);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
+            this.Size = new Size(745, 289);
+            ((ISupportInitialize)(this.dgvItems)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        public System.Windows.Forms.DataGridView dgvItems;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Title;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Draw;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Matherial;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Number;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Mass;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Norm;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Price;
+        public DataGridView dgvItems;
+        private DataGridViewTextBoxColumn Id;
+        private DataGridViewTextBoxColumn Title;
+        private DataGridViewTextBoxColumn Draw;
+        private DataGridViewTextBoxColumn Matherial;
+        private DataGridViewTextBoxColumn Number;
+        private DataGridViewTextBoxColumn Mass;
+        private DataGridViewTextBoxColumn Norm;
+        private DataGridViewTextBoxColumn Price;
     }
 }

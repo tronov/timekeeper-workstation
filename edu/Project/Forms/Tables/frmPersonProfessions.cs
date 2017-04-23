@@ -8,13 +8,13 @@ namespace Project.Forms.Tables
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedId
         {
-            get { return this.ctrlPersonProfessions.SelectedId; }
+            get { return ctrlPersonProfessions.SelectedId; }
         }
 
         public frmPersonProfessions()
         {
             InitializeComponent();
-            this.ctrlPersonProfessions.CatalogMode = CatalogMode.Select;
+            ctrlPersonProfessions.CatalogMode = CatalogMode.Select;
         }
     }
 }

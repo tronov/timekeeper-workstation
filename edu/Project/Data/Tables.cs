@@ -189,7 +189,7 @@ namespace Project.Data
             new OleDbParameter("Rank5", OleDbType.Single),
             new OleDbParameter("Rank6", OleDbType.Single),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<Person> Persons = new Table<Person>("Persons", new[]
@@ -199,7 +199,7 @@ namespace Project.Data
             new OleDbParameter("MiddleName", OleDbType.VarWChar, sizeof(char) * 31),
             new OleDbParameter("LastName", OleDbType.VarWChar, sizeof(char) * 31),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<PersonProfession> PersonProfessions = new Table<PersonProfession>("PersonProfessions", new[]
@@ -208,7 +208,7 @@ namespace Project.Data
             new OleDbParameter("ProfessionId", OleDbType.Integer),
             new OleDbParameter("Rank", OleDbType.UnsignedTinyInt),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<Area> Areas = new Table<Area>("Areas", new []
@@ -216,7 +216,7 @@ namespace Project.Data
             new OleDbParameter("Code", OleDbType.SmallInt),
             new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 50),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<Brigade> Brigades = new Table<Brigade>("Brigades", new []
@@ -225,7 +225,7 @@ namespace Project.Data
             new OleDbParameter("Code", OleDbType.UnsignedTinyInt),
             new OleDbParameter("Title", OleDbType.VarWChar, sizeof(char) * 63),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<BrigadePerson> BrigadePersons = new Table<BrigadePerson>("BrigadePersons", new []
@@ -233,7 +233,7 @@ namespace Project.Data
             new OleDbParameter("BrigadeId", OleDbType.Integer),
             new OleDbParameter("PersonId", OleDbType.Integer),
             new OleDbParameter("Begin", OleDbType.DBDate),
-            new OleDbParameter("End", OleDbType.DBDate),
+            new OleDbParameter("End", OleDbType.DBDate)
         });
 
         public Table<Warranty> Warranties = new Table<Warranty>("Warranties", new []
@@ -243,7 +243,7 @@ namespace Project.Data
             new OleDbParameter("Percent", OleDbType.Single),
             new OleDbParameter("WarrantyDate", OleDbType.DBDate),
             new OleDbParameter("AreaId", OleDbType.Integer),
-            new OleDbParameter("BrigadeId", OleDbType.Integer),
+            new OleDbParameter("BrigadeId", OleDbType.Integer)
         });
 
         public Table<Position> Positions = new Table<Position>("Positions", new []
@@ -255,7 +255,7 @@ namespace Project.Data
             new OleDbParameter("Number", OleDbType.SmallInt),
             new OleDbParameter("Mass", OleDbType.Single),
             new OleDbParameter("Norm", OleDbType.Single),
-            new OleDbParameter("Price", OleDbType.Single),
+            new OleDbParameter("Price", OleDbType.Single)
         });
 
         public Table<Executor> Executors = new Table<Executor>("Executors", new[]
@@ -263,14 +263,14 @@ namespace Project.Data
             new OleDbParameter("WarrantyId", OleDbType.Integer),
             new OleDbParameter("PersonId", OleDbType.Integer),
             new OleDbParameter("ProfessionId", OleDbType.Integer),
-            new OleDbParameter("Rank", OleDbType.UnsignedTinyInt),
+            new OleDbParameter("Rank", OleDbType.UnsignedTinyInt)
         });
 
         public Table<Labor> Labors = new Table<Labor>("Labors", new[]
         {
             new OleDbParameter("WarrantyId", OleDbType.Integer),
             new OleDbParameter("LaborDate", OleDbType.DBDate),
-            new OleDbParameter("Hours", OleDbType.Single),
+            new OleDbParameter("Hours", OleDbType.Single)
         });
 
         public bool IsEmpty => Professions.IsEmpty &&

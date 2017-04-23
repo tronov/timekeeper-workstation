@@ -1,11 +1,15 @@
-﻿namespace Project.Forms.Elements
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using Project.Controls;
+
+namespace Project.Forms.Elements
 {
     partial class frmWarranty
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -269,23 +273,23 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lCustomer;
-        private System.Windows.Forms.TextBox tbCustomer;
-        private System.Windows.Forms.Label lOrder;
-        private System.Windows.Forms.MaskedTextBox mtbOrder;
-        private System.Windows.Forms.Label lBrigade;
-        private System.Windows.Forms.Button bBrigade;
-        private System.Windows.Forms.Panel pWarranty;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.Button bCancel;
-        private System.Windows.Forms.GroupBox gbPositions;
-        public Project.Controls.PositionsControl ctrlPositions;
-        private System.Windows.Forms.GroupBox gbExecutors;
-        public System.Windows.Forms.SplitContainer scMain;
-        private Project.Controls.ExecutorsControl ctrlExecutors;
-        public Project.Controls.LaborsControl ctrlLabors;
-        private System.Windows.Forms.Label lPercentTitle;
-        private System.Windows.Forms.Label lPercent;
+        private Label lCustomer;
+        private TextBox tbCustomer;
+        private Label lOrder;
+        private MaskedTextBox mtbOrder;
+        private Label lBrigade;
+        private Button bBrigade;
+        private Panel pWarranty;
+        private Panel panel1;
+        private Button bSave;
+        private Button bCancel;
+        private GroupBox gbPositions;
+        public PositionsControl ctrlPositions;
+        private GroupBox gbExecutors;
+        public SplitContainer scMain;
+        private ExecutorsControl ctrlExecutors;
+        public LaborsControl ctrlLabors;
+        private Label lPercentTitle;
+        private Label lPercent;
     }
 }

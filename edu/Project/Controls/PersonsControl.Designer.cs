@@ -1,11 +1,15 @@
-﻿namespace Project
+﻿using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Project
 {
     partial class PersonsControl
     {
         /// <summary> 
         /// Требуется переменная конструктора.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Освободить все используемые ресурсы.
@@ -39,8 +43,8 @@
             // 
             // PersonsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(8F, 16F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Name = "PersonsControl";
             this.gbOperations.ResumeLayout(false);
             this.scMain.Panel1.ResumeLayout(false);

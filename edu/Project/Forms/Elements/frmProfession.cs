@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Forms;
 using Project.Data;
 
@@ -10,12 +11,12 @@ namespace Project
         private Profession _Profession;
         private string _Code
         {
-            get { return this.mtbCode.Text; }
+            get { return mtbCode.Text; }
         }
 
         private string _Title
         {
-            get { return this.tbTitle.Text.Trim(); }
+            get { return tbTitle.Text.Trim(); }
         }
 
         public frmProfession()
@@ -26,63 +27,63 @@ namespace Project
         public frmProfession(Profession item)
         {
             InitializeComponent();
-            this.Text = "Изменение данных о профессии.";
-            this._Profession = item;
-            this.mtbCode.Text = item.Code.ToString("D3");
-            this.tbTitle.Text = item.Title;
-            this.tbRank1.Text = item.Rank1.ToString();
-            this.tbRank2.Text = item.Rank2.ToString();
-            this.tbRank3.Text = item.Rank3.ToString();
-            this.tbRank4.Text = item.Rank4.ToString();
-            this.tbRank5.Text = item.Rank5.ToString();
-            this.tbRank6.Text = item.Rank6.ToString();
+            Text = "Изменение данных о профессии.";
+            _Profession = item;
+            mtbCode.Text = item.Code.ToString("D3");
+            tbTitle.Text = item.Title;
+            tbRank1.Text = item.Rank1.ToString();
+            tbRank2.Text = item.Rank2.ToString();
+            tbRank3.Text = item.Rank3.ToString();
+            tbRank4.Text = item.Rank4.ToString();
+            tbRank5.Text = item.Rank5.ToString();
+            tbRank6.Text = item.Rank6.ToString();
         }
 
         private bool Check()
         {
-            if (this._Code.Length == 0)
+            if (_Code.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать код профессии.", this, mtbCode.Location, 2000);
                 mtbCode.Focus();
                 return false;
             }
-            if (this._Title.Length == 0)
+            if (_Title.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать название профессии.", this, tbTitle.Location, 2000);
                 tbTitle.Focus();
                 return false;
             }
-            if (this.tbRank1.Text.Length == 0)
+            if (tbRank1.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 1 разряда.", this, tbRank1.Location, 2000);
                 tbRank1.Focus();
                 return false;
             }
-            if (this.tbRank2.Text.Length == 0)
+            if (tbRank2.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 2 разряда.", this, tbRank2.Location, 2000);
                 tbRank2.Focus();
                 return false;
             }
-            if (this.tbRank3.Text.Length == 0)
+            if (tbRank3.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 3 разряда.", this, tbRank3.Location, 2000);
                 tbRank3.Focus();
                 return false;
             }
-            if (this.tbRank4.Text.Length == 0)
+            if (tbRank4.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 4 разряда.", this, tbRank4.Location, 2000);
                 tbRank4.Focus();
                 return false;
             }
-            if (this.tbRank5.Text.Length == 0)
+            if (tbRank5.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 5 разряда.", this, tbRank5.Location, 2000);
                 tbRank5.Focus();
                 return false;
             }
-            if (this.tbRank6.Text.Length == 0)
+            if (tbRank6.Text.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать тариф 6 разряда.", this, tbRank6.Location, 2000);
                 tbRank6.Focus();
@@ -96,26 +97,26 @@ namespace Project
             if (Check())
             {
                 Profession profession = new Profession(
-                 Convert.ToInt16(this._Code),
-                 this._Title,
-                 Convert.ToSingle(this.tbRank1.Text),
-                 Convert.ToSingle(this.tbRank2.Text),
-                 Convert.ToSingle(this.tbRank3.Text),
-                 Convert.ToSingle(this.tbRank4.Text),
-                 Convert.ToSingle(this.tbRank5.Text),
-                 Convert.ToSingle(this.tbRank6.Text)
+                 Convert.ToInt16(_Code),
+                 _Title,
+                 Convert.ToSingle(tbRank1.Text),
+                 Convert.ToSingle(tbRank2.Text),
+                 Convert.ToSingle(tbRank3.Text),
+                 Convert.ToSingle(tbRank4.Text),
+                 Convert.ToSingle(tbRank5.Text),
+                 Convert.ToSingle(tbRank6.Text)
                  );
-                if (this._Profession == null)
+                if (_Profession == null)
                     Databases.Tables.Professions.Insert(profession);
-                else this._Profession.Update(profession);
+                else _Profession.Update(profession);
 
-                this.Close();
+                Close();
             }
         }
 
         private void bCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void mtbCode_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
@@ -141,7 +142,7 @@ namespace Project
 
         private void tbRank_KeyPress(object sender, KeyPressEventArgs e)
         {
-            string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            string separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             TextBox ctrl = (TextBox)sender;
 

@@ -1,11 +1,14 @@
-﻿namespace Project
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Project
 {
     partial class frmProfession
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -271,24 +274,24 @@
 
         #endregion
 
-        private System.Windows.Forms.MaskedTextBox mtbCode;
-        private System.Windows.Forms.Label lCode;
-        private System.Windows.Forms.Label lTitle;
-        private System.Windows.Forms.TextBox tbTitle;
-        private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.Button bCancel;
-        private System.Windows.Forms.Label lRank1;
-        private System.Windows.Forms.TextBox tbRank1;
-        private System.Windows.Forms.TextBox tbRank2;
-        private System.Windows.Forms.Label lRank2;
-        private System.Windows.Forms.TextBox tbRank3;
-        private System.Windows.Forms.Label lRank3;
-        private System.Windows.Forms.TextBox tbRank4;
-        private System.Windows.Forms.Label lRank4;
-        private System.Windows.Forms.TextBox tbRank5;
-        private System.Windows.Forms.Label lRank5;
-        private System.Windows.Forms.TextBox tbRank6;
-        private System.Windows.Forms.Label lRank6;
-        private System.Windows.Forms.GroupBox gbTariff;
+        private MaskedTextBox mtbCode;
+        private Label lCode;
+        private Label lTitle;
+        private TextBox tbTitle;
+        private Button bSave;
+        private Button bCancel;
+        private Label lRank1;
+        private TextBox tbRank1;
+        private TextBox tbRank2;
+        private Label lRank2;
+        private TextBox tbRank3;
+        private Label lRank3;
+        private TextBox tbRank4;
+        private Label lRank4;
+        private TextBox tbRank5;
+        private Label lRank5;
+        private TextBox tbRank6;
+        private Label lRank6;
+        private GroupBox gbTariff;
     }
 }
