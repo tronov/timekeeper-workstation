@@ -111,7 +111,7 @@ namespace Project
             this.bCancel.Text = "Отмена";
             this.bCancel.UseVisualStyleBackColor = true;
             // 
-            // frmPersonProfession
+            // PersonProfessionForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,7 +127,7 @@ namespace Project
             this.Controls.Add(this.bProfessionCode);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "frmPersonProfession";
+            this.Name = "PersonProfessionForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Новая квалификация сотрудника";

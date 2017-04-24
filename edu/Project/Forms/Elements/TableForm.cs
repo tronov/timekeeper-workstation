@@ -34,19 +34,19 @@ namespace Project.Forms.Elements
             PersonCode.HeaderText = "Таб. №";
             dgvTable.Columns.Add(PersonCode);
 
-            DataGridViewColumn SummaryHours = new DataGridViewTextBoxColumn();
-            SummaryHours.Name = "SummaryHours";
-            SummaryHours.Width = 70;
-            SummaryHours.HeaderText = "Всего часов";
-            SummaryHours.Tag = DateTime.Now;
-            dgvTable.Columns.Add(SummaryHours);
+            DataGridViewColumn summaryHours = new DataGridViewTextBoxColumn();
+            summaryHours.Name = "SummaryHours";
+            summaryHours.Width = 70;
+            summaryHours.HeaderText = "Всего часов";
+            summaryHours.Tag = DateTime.Now;
+            dgvTable.Columns.Add(summaryHours);
 
-            DataGridViewColumn SummaryMoney = new DataGridViewTextBoxColumn();
-            SummaryMoney.Name = "SummaryMoney";
-            SummaryMoney.Width = 70;
-            SummaryMoney.HeaderText = "Всего к оплате";
-            SummaryMoney.Tag = DateTime.Now;
-            dgvTable.Columns.Add(SummaryMoney);
+            DataGridViewColumn summaryMoney = new DataGridViewTextBoxColumn();
+            summaryMoney.Name = "SummaryMoney";
+            summaryMoney.Width = 70;
+            summaryMoney.HeaderText = "Всего к оплате";
+            summaryMoney.Tag = DateTime.Now;
+            dgvTable.Columns.Add(summaryMoney);
 
             int days = DateTime.DaysInMonth(dtpMonth.Value.Year, dtpMonth.Value.Month);
 

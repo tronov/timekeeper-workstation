@@ -144,7 +144,7 @@ namespace Project
             this.lLastName.TabIndex = 8;
             this.lLastName.Text = "Фамилия";
             // 
-            // frmPerson
+            // PersonForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,7 +164,7 @@ namespace Project
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.Name = "frmPerson";
+            this.Name = "PersonForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Новый сотрудник";

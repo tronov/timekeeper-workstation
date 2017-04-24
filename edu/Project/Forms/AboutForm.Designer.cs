@@ -152,7 +152,7 @@ namespace Project.Forms
             this.okButton.TabIndex = 24;
             this.okButton.Text = "&ОК";
             // 
-            // frmAbout
+            // AboutForm
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new SizeF(6F, 13F);
@@ -162,7 +162,7 @@ namespace Project.Forms
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmAbout";
+            this.Name = "AboutForm";
             this.Padding = new Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

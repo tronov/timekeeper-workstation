@@ -7,15 +7,15 @@ namespace Project.Forms.Elements
 {
     public partial class BrigadeForm : Form
     {
-        private Area _Area;
-        private Brigade _Brigade;
+        private Area _area;
+        private Brigade _brigade;
 
         public BrigadeForm(Brigade brigade)
         {
             InitializeComponent();
             Text = "Изменение данных о бригаде.";
-            _Area = brigade.Area;
-            _Brigade = brigade;
+            _area = brigade.Area;
+            _brigade = brigade;
             mtbCode.Text = brigade.Code.ToString("D2");
             tbTitle.Text = brigade.Title;
         }
@@ -23,18 +23,18 @@ namespace Project.Forms.Elements
         public BrigadeForm(Area area)
         {
             InitializeComponent();
-            _Area = area;
+            _area = area;
         }
 
         private void bSave_Click(object sender, EventArgs e)
         {
             if (Check())
             {
-                Brigade brigade = new Brigade(_Area.Id, Convert.ToByte(mtbCode.Text), tbTitle.Text);
-                if (_Brigade == null)
+                Brigade brigade = new Brigade(_area.Id, Convert.ToByte(mtbCode.Text), tbTitle.Text);
+                if (_brigade == null)
                     Databases.Tables.Brigades.Insert(brigade);
                 else
-                    _Brigade.Update(brigade);
+                    _brigade.Update(brigade);
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -64,12 +64,12 @@ namespace Project.Forms.Elements
                 (new ToolTip()).Show("Шифр 00 не допускается", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!_Area.Brigades.Where(r => r.Code == code && r.IsActive).Count().Equals(0))
+            if (!_area.Brigades.Where(r => r.Code == code && r.IsActive).Count().Equals(0))
             {
                 (new ToolTip()).Show("Бригада с таким шифром уже существует на участке", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!_Area.Brigades.Where(r => r.Title.Equals(title)).Count().Equals(0))
+            if (!_area.Brigades.Where(r => r.Title.Equals(title)).Count().Equals(0))
             {
                 (new ToolTip()).Show("Бригада с таким названием уже существует на участке", this, mtbCode.Location, 2000);
                 return false;

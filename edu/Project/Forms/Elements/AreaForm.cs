@@ -7,7 +7,7 @@ namespace Project.Forms.Elements
 {
     public partial class AreaForm : Form
     {
-        private Area _Area;
+        private Area _area;
 
         public AreaForm()
         {
@@ -18,7 +18,7 @@ namespace Project.Forms.Elements
         {
             InitializeComponent();
             Text = "Изменение данных об участке.";
-            _Area = area;
+            _area = area;
             mtbCode.Text = area.Code.ToString("D2");
             tbTitle.Text = area.Title;
         }
@@ -50,8 +50,8 @@ namespace Project.Forms.Elements
             if (Check())
             {
                 Area area = new Area(Convert.ToByte(mtbCode.Text), tbTitle.Text.Trim());
-                if (_Area == null) Databases.Tables.Areas.Insert(area);
-                else _Area.Update(area);
+                if (_area == null) Databases.Tables.Areas.Insert(area);
+                else _area.Update(area);
                 DialogResult = DialogResult.OK;
                 Close();
             }

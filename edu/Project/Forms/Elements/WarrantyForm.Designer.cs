@@ -241,7 +241,7 @@ namespace Project.Forms.Elements
             this.ctrlPositions.Size = new System.Drawing.Size(842, 224);
             this.ctrlPositions.TabIndex = 8;
             // 
-            // frmWarranty
+            // WarrantyForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,7 +254,7 @@ namespace Project.Forms.Elements
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 600);
-            this.Name = "frmWarranty";
+            this.Name = "WarrantyForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Новый наряд";

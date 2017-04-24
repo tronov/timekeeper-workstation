@@ -43,13 +43,13 @@ namespace Project.Forms.Tables
             this.ctrlPersonProfessions.Size = new System.Drawing.Size(524, 267);
             this.ctrlPersonProfessions.TabIndex = 0;
             // 
-            // frmPersonProfessions
+            // PersonProfessionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(532, 275);
             this.Controls.Add(this.ctrlPersonProfessions);
-            this.Name = "frmPersonProfessions";
+            this.Name = "PersonProfessionsForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Выбор вида оплаты";

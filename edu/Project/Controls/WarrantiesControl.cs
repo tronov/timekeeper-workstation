@@ -10,14 +10,14 @@ namespace Project.Controls
     public partial class WarrantiesControl : TableControl
     {
 
-        private List<Warranty> _Includes;
+        private List<Warranty> _includes;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Warranty> Includes
         {
             set
             {
-                _Includes = value;
+                _includes = value;
                 Init();
             }
         }
@@ -125,9 +125,9 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override void Init()
         {
-            var Source = _Includes ?? Databases.Tables.Warranties.ToList();
+            var source = _includes ?? Databases.Tables.Warranties.ToList();
 
-            dgvItems.DataSource = (from warranty in Source
+            dgvItems.DataSource = (from warranty in source
                                         where
                                         warranty.Customer.ToUpper().Contains(GetFilter("Customer").ToUpper()) &&
                                         warranty.Order.ToString().Contains(GetFilter("Order")) &&

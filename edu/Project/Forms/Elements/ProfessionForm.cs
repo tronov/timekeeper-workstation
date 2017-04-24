@@ -8,13 +8,13 @@ namespace Project
 {
     public partial class ProfessionForm : Form
     {
-        private Profession _Profession;
-        private string _Code
+        private Profession _profession;
+        private string Code
         {
             get { return mtbCode.Text; }
         }
 
-        private string _Title
+        private string Title
         {
             get { return tbTitle.Text.Trim(); }
         }
@@ -28,7 +28,7 @@ namespace Project
         {
             InitializeComponent();
             Text = "Изменение данных о профессии.";
-            _Profession = item;
+            _profession = item;
             mtbCode.Text = item.Code.ToString("D3");
             tbTitle.Text = item.Title;
             tbRank1.Text = item.Rank1.ToString();
@@ -41,13 +41,13 @@ namespace Project
 
         private bool Check()
         {
-            if (_Code.Length == 0)
+            if (Code.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать код профессии.", this, mtbCode.Location, 2000);
                 mtbCode.Focus();
                 return false;
             }
-            if (_Title.Length == 0)
+            if (Title.Length == 0)
             {
                 (new ToolTip()).Show("Необходимо указать название профессии.", this, tbTitle.Location, 2000);
                 tbTitle.Focus();
@@ -97,8 +97,8 @@ namespace Project
             if (Check())
             {
                 Profession profession = new Profession(
-                 Convert.ToInt16(_Code),
-                 _Title,
+                 Convert.ToInt16(Code),
+                 Title,
                  Convert.ToSingle(tbRank1.Text),
                  Convert.ToSingle(tbRank2.Text),
                  Convert.ToSingle(tbRank3.Text),
@@ -106,9 +106,9 @@ namespace Project
                  Convert.ToSingle(tbRank5.Text),
                  Convert.ToSingle(tbRank6.Text)
                  );
-                if (_Profession == null)
+                if (_profession == null)
                     Databases.Tables.Professions.Insert(profession);
-                else _Profession.Update(profession);
+                else _profession.Update(profession);
 
                 Close();
             }

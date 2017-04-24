@@ -44,13 +44,13 @@ namespace Project.Forms.Tables
             this.professionsControl.Size = new System.Drawing.Size(658, 529);
             this.professionsControl.TabIndex = 0;
             // 
-            // frmProfessions
+            // ProfessionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(666, 537);
             this.Controls.Add(this.professionsControl);
-            this.Name = "frmProfessions";
+            this.Name = "ProfessionsForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.Text = "Справочник профессий";
             this.ResumeLayout(false);

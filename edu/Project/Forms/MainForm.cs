@@ -33,41 +33,19 @@ namespace Project.Forms
             else MdiChildren[frmId].Focus();
         }
 
-        private void mainMenuExit_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void mainMenuExit_Click(object sender, EventArgs e) => Close();
 
-        private void miProfessions_Click(object sender, EventArgs e)
-        {
-            ShowChild(typeof(ProfessionsForm));
-        }
+        private void miProfessions_Click(object sender, EventArgs e) => ShowChild(typeof(ProfessionsForm));
 
-        private void miPersons_Click(object sender, EventArgs e)
-        {
-            ShowChild(typeof(PersonsForm));
-        }
+        private void miPersons_Click(object sender, EventArgs e) => ShowChild(typeof(PersonsForm));
 
-        private void miStructure_Click(object sender, EventArgs e)
-        {
-            ShowChild(typeof(StructureForm));
-        }
+        private void miStructure_Click(object sender, EventArgs e) => ShowChild(typeof(StructureForm));
 
-        private void miWarranties_Click(object sender, EventArgs e)
-        {
-            ShowChild(typeof(WarrantiesForm));
-        }
+        private void miWarranties_Click(object sender, EventArgs e) => ShowChild(typeof(WarrantiesForm));
 
-        private void miTables_Click(object sender, EventArgs e)
-        {
-            ShowChild(typeof(TableForm));
-        }
+        private void miTables_Click(object sender, EventArgs e) => ShowChild(typeof(TableForm));
 
-        private void miAbout_Click(object sender, EventArgs e)
-        {
-            var form = new AboutForm();
-            form.ShowDialog(this);
-        }
+        private void miAbout_Click(object sender, EventArgs e) => new AboutForm().ShowDialog(this);
 
         private void frmMain_Load(object sender, EventArgs e)
         {

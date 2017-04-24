@@ -80,13 +80,13 @@ namespace Project.Forms.Tables
             this.ctrlBrigadePersons.Size = new System.Drawing.Size(668, 291);
             this.ctrlBrigadePersons.TabIndex = 1;
             // 
-            // frmStructure
+            // StructureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 606);
             this.Controls.Add(this.scMain);
-            this.Name = "frmStructure";
+            this.Name = "StructureForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Структура организации";
             this.scMain.Panel1.ResumeLayout(false);

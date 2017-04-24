@@ -14,12 +14,12 @@ namespace Project
             InitializeComponent();
         }
 
-        private Person _Person;
+        private Person _person;
 
         public PersonForm(Person item)
         {
             InitializeComponent();
-            _Person = item;
+            _person = item;
             Text = "Изменение данных об сотруднике.";
             mtbCode.Text = item.Code.ToString("D4");
             tbFirstName.Text = item.FirstName;
@@ -84,7 +84,7 @@ namespace Project
                 string middleName = tbMiddleName.Text.Trim();
                 string lastName = tbLastName.Text.Trim();
 
-                if (!Databases.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && _Person == null)
+                if (!Databases.Tables.Persons.Count(r => r.Code.Equals(code)).Equals(0) && _person == null)
                 {
 
                     (new ToolTip()).Show("Указанный табельный номер уже присвоен другому сотруднику.", this, bSave.Location, 2000);
@@ -126,8 +126,8 @@ namespace Project
                 string lastName = tbLastName.Text;
 
                 Person person = new Person(code, firstName, middleName, lastName);
-                if (_Person == null) Databases.Tables.Persons.Insert(person);
-                else _Person.Update(person);
+                if (_person == null) Databases.Tables.Persons.Insert(person);
+                else _person.Update(person);
 
                 DialogResult = DialogResult.OK;
                 Close();

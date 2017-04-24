@@ -73,9 +73,9 @@ namespace Project.Controls
 
     class CalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
     {
-        DataGridView dataGridView;
-        private bool valueChanged;
-        int rowIndex;
+        DataGridView _dataGridView;
+        private bool _valueChanged;
+        int _rowIndex;
 
         public CalendarEditingControl()
         {
@@ -115,11 +115,11 @@ namespace Project.Controls
         {
             get
             {
-                return rowIndex;
+                return _rowIndex;
             }
             set
             {
-                rowIndex = value;
+                _rowIndex = value;
             }
         }
 
@@ -151,14 +151,14 @@ namespace Project.Controls
 
         public DataGridView EditingControlDataGridView
         {
-            get { return dataGridView; }
-            set { dataGridView = value; }
+            get { return _dataGridView; }
+            set { _dataGridView = value; }
         }
 
         public bool EditingControlValueChanged
         {
-            get { return valueChanged; }
-            set { valueChanged = value; }
+            get { return _valueChanged; }
+            set { _valueChanged = value; }
         }
 
         public Cursor EditingPanelCursor
@@ -168,7 +168,7 @@ namespace Project.Controls
 
         protected override void OnValueChanged(EventArgs eventargs)
         {
-            valueChanged = true;
+            _valueChanged = true;
             EditingControlDataGridView.NotifyCurrentCellDirty(true);
             base.OnValueChanged(eventargs);
         }

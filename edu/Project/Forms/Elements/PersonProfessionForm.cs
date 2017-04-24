@@ -9,21 +9,21 @@ namespace Project
 {
     public partial class PersonProfessionForm : Form
     {
-        private Person _Person;
-        private PersonProfession _PersonProfession;
+        private Person _person;
+        private PersonProfession _personProfession;
 
         public PersonProfessionForm(Person person)
         {
             InitializeComponent();
-            _Person = person;
+            _person = person;
         }
 
         public PersonProfessionForm(PersonProfession personProfession)
         {
             InitializeComponent();
             Text = "Изменение квалификации сотрудника.";
-            _PersonProfession = personProfession;
-            _Person = personProfession.Person;
+            _personProfession = personProfession;
+            _person = personProfession.Person;
             bProfessionCode.Text = personProfession.Profession.Code.ToString();
             bProfessionCode.Tag = personProfession.Profession;
             tbProfessionTitle.Text = personProfession.Profession.Title;
@@ -37,7 +37,7 @@ namespace Project
             f.professionsControl.CatalogMode = CatalogMode.Select;
 
             IEnumerable<Profession> ds = f.professionsControl.dgvItems.DataSource as IEnumerable<Profession>;
-            var nds = ds.Except(_Person.PersonProfessions.Select(r => r.Profession)).ToList();
+            var nds = ds.Except(_person.PersonProfessions.Select(r => r.Profession)).ToList();
             f.professionsControl.dgvItems.DataSource = nds;
             f.ShowDialog(this);
             if (f.professionsControl.CurrentId != 0)
@@ -53,14 +53,14 @@ namespace Project
         {
             if (Check())
             {
-                int PersonId = _Person.Id;
-                int ProfessionId = (bProfessionCode.Tag as Profession).Id;
-                byte Rank = Convert.ToByte(cbRank.Text);
-                PersonProfession personProfession = new PersonProfession(PersonId, ProfessionId, Rank);
+                int personId = _person.Id;
+                int professionId = (bProfessionCode.Tag as Profession).Id;
+                byte rank = Convert.ToByte(cbRank.Text);
+                PersonProfession personProfession = new PersonProfession(personId, professionId, rank);
 
-                if (_PersonProfession == null)
+                if (_personProfession == null)
                     Databases.Tables.PersonProfessions.Insert(personProfession);
-                else _PersonProfession.Update(personProfession);
+                else _personProfession.Update(personProfession);
 
                 Close();
             }

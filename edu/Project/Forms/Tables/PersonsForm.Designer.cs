@@ -108,13 +108,13 @@ namespace Project.Forms.Tables
             this.ctrlPersonProfessions.Size = new System.Drawing.Size(634, 259);
             this.ctrlPersonProfessions.TabIndex = 0;
             // 
-            // frmPersons
+            // PersonsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(654, 633);
             this.Controls.Add(this.scMain);
-            this.Name = "frmPersons";
+            this.Name = "PersonsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Справочник сотрудников";
             this.scMain.Panel1.ResumeLayout(false);

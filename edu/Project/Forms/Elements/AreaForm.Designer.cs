@@ -94,7 +94,7 @@ namespace Project.Forms.Elements
             this.lCode.TabIndex = 6;
             this.lCode.Text = "Шифр";
             // 
-            // frmArea
+            // AreaForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,7 +109,7 @@ namespace Project.Forms.Elements
             this.Controls.Add(this.lCode);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "frmArea";
+            this.Name = "AreaForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Новый участок";

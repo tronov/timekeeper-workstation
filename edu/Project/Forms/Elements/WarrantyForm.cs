@@ -10,21 +10,21 @@ namespace Project.Forms.Elements
 {
     public partial class WarrantyForm : Form
     {
-        private Warranty _Warranty;
+        private Warranty _warranty;
 
-        private int _WarrantyId
+        private int WarrantyId
         {
             get
             {
-                if (_Warranty == null) return 0;
-                return _Warranty.Id;
+                if (_warranty == null) return 0;
+                return _warranty.Id;
             }
         }
 
         private int _newExecutorId = -1;
         private int _newLaborId = -1;
         private int _newPositionId = -1;
-        private float _chainTariff
+        private float ChainTariff
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Project.Forms.Elements
                 return chainTariff;
             }
         }
-        private float _percent
+        private float Percent
         {
             get
             {
@@ -125,18 +125,18 @@ namespace Project.Forms.Elements
                 if (row.Cells["Norm"].Value != null)
                 {
                     float norm = Convert.ToSingle(row.Cells["Norm"].Value);
-                    row.Cells["Price"].Value = (float)Math.Round((double)norm * _chainTariff, 3);
+                    row.Cells["Price"].Value = (float)Math.Round((double)norm * ChainTariff, 3);
                 }
             }
             lPercentTitle.Visible = true;
-            lPercent.Text = String.Format("{0}%", _percent);
+            lPercent.Text = String.Format("{0}%", Percent);
         }
 
         public WarrantyForm(Warranty warranty)
         {
             InitializeComponent();
             Text = "Изменение наряда.";
-            _Warranty = warranty;
+            _warranty = warranty;
             List<Position> positions = warranty.Positions.ToList();
             List<Executor> executors = warranty.Executors.ToList();
             List<Labor> labors = warranty.Labors.ToList();
@@ -150,31 +150,31 @@ namespace Project.Forms.Elements
             foreach (Executor executor in executors)
             {
                 DataGridViewRow row = new DataGridViewRow();
-                DataGridViewCell ExecutorId = new DataGridViewTextBoxCell();
-                DataGridViewCell PersonCode = new DataGridViewButtonCell();
-                DataGridViewCell PersonLastName = new DataGridViewTextBoxCell();
-                DataGridViewCell PersonFirstName = new DataGridViewTextBoxCell();
-                DataGridViewCell PersonMiddleName = new DataGridViewTextBoxCell();
-                DataGridViewCell ProfessionCode = new DataGridViewButtonCell();
-                DataGridViewCell Rank = new DataGridViewTextBoxCell();
+                DataGridViewCell executorId = new DataGridViewTextBoxCell();
+                DataGridViewCell personCode = new DataGridViewButtonCell();
+                DataGridViewCell personLastName = new DataGridViewTextBoxCell();
+                DataGridViewCell personFirstName = new DataGridViewTextBoxCell();
+                DataGridViewCell personMiddleName = new DataGridViewTextBoxCell();
+                DataGridViewCell professionCode = new DataGridViewButtonCell();
+                DataGridViewCell rank = new DataGridViewTextBoxCell();
 
-                ExecutorId.Value = executor.Id;
-                PersonCode.Value = executor.Person.Code;
-                PersonCode.Tag = executor.Person;
-                PersonLastName.Value = executor.Person.LastName;
-                PersonFirstName.Value = executor.Person.FirstName;
-                PersonMiddleName.Value = executor.Person.MiddleName;
-                ProfessionCode.Tag = Databases.Tables.PersonProfessions.First(r => r.Profession.Code == executor.Profession.Code);
-                ProfessionCode.Value = executor.Profession.Code;
-                Rank.Value = executor.Rank;
+                executorId.Value = executor.Id;
+                personCode.Value = executor.Person.Code;
+                personCode.Tag = executor.Person;
+                personLastName.Value = executor.Person.LastName;
+                personFirstName.Value = executor.Person.FirstName;
+                personMiddleName.Value = executor.Person.MiddleName;
+                professionCode.Tag = Databases.Tables.PersonProfessions.First(r => r.Profession.Code == executor.Profession.Code);
+                professionCode.Value = executor.Profession.Code;
+                rank.Value = executor.Rank;
 
-                row.Cells.Add(ExecutorId);
-                row.Cells.Add(PersonCode);
-                row.Cells.Add(PersonLastName);
-                row.Cells.Add(PersonFirstName);
-                row.Cells.Add(PersonMiddleName);
-                row.Cells.Add(ProfessionCode);
-                row.Cells.Add(Rank);
+                row.Cells.Add(executorId);
+                row.Cells.Add(personCode);
+                row.Cells.Add(personLastName);
+                row.Cells.Add(personFirstName);
+                row.Cells.Add(personMiddleName);
+                row.Cells.Add(professionCode);
+                row.Cells.Add(rank);
 
                 ctrlExecutors.dgvItems.Rows.Add(row);
             }
@@ -182,17 +182,17 @@ namespace Project.Forms.Elements
             {
                 DataGridViewRow row = new DataGridViewRow();
 
-                DataGridViewCell LaborId = new DataGridViewTextBoxCell();
-                DataGridViewCell LaborDate = new CalendarCell();
-                DataGridViewCell Hours = new DataGridViewTextBoxCell();
+                DataGridViewCell laborId = new DataGridViewTextBoxCell();
+                DataGridViewCell laborDate = new CalendarCell();
+                DataGridViewCell hours = new DataGridViewTextBoxCell();
 
-                LaborId.Value = labor.Id;
-                LaborDate.Value = labor.LaborDate;
-                Hours.Value = labor.Hours;
+                laborId.Value = labor.Id;
+                laborDate.Value = labor.LaborDate;
+                hours.Value = labor.Hours;
 
-                row.Cells.Add(LaborId);
-                row.Cells.Add(LaborDate);
-                row.Cells.Add(Hours);
+                row.Cells.Add(laborId);
+                row.Cells.Add(laborDate);
+                row.Cells.Add(hours);
                 ctrlLabors.dgvItems.Rows.Add(row);
             }
             foreach (Position position in positions)
@@ -236,19 +236,19 @@ namespace Project.Forms.Elements
                 DateTime warrantyDate = DateTime.Now.Date;
                 int areaId = (bBrigade.Tag as Brigade).AreaId;
                 int brigadeId = (bBrigade.Tag as Brigade).Id;
-                float percent = _percent;
+                float percent = Percent;
 
                 Warranty warranty = new Warranty(customer, order, percent, warrantyDate, areaId, brigadeId);
 
-                if (_WarrantyId == 0)
+                if (WarrantyId == 0)
                 {
                     Databases.Tables.Warranties.Insert(warranty);
-                    _Warranty = warranty;
+                    _warranty = warranty;
                 }
                 else
                 {
-                    if (!warranty.Equals(_Warranty))
-                        _Warranty.Update(warranty);
+                    if (!warranty.Equals(_warranty))
+                        _warranty.Update(warranty);
                 }
 
                 List<Executor> executors = new List<Executor>();
@@ -264,7 +264,7 @@ namespace Project.Forms.Elements
                         int professionId = (executorsRow.Cells["ProfessionCode"].Tag as PersonProfession).ProfessionId;
                         byte rank = Convert.ToByte(executorsRow.Cells["Rank"].Value);
 
-                        Executor executor = new Executor(_WarrantyId, personId, professionId, rank);
+                        Executor executor = new Executor(WarrantyId, personId, professionId, rank);
 
                         if (executorId < 0)
                         {
@@ -287,7 +287,7 @@ namespace Project.Forms.Elements
                         DateTime laborDate = Convert.ToDateTime(laborsRow.Cells["LaborDate"].Value).Date;
                         float hours = Convert.ToSingle(laborsRow.Cells["Hours"].Value);
 
-                        Labor labor = new Labor(_WarrantyId, laborDate, hours);
+                        Labor labor = new Labor(WarrantyId, laborDate, hours);
 
                         if (laborId < 0)
                         {
@@ -316,7 +316,7 @@ namespace Project.Forms.Elements
                         float norm = Convert.ToSingle(positionsRow.Cells["Norm"].Value);
                         float price = Convert.ToSingle(positionsRow.Cells["Price"].Value);
 
-                        Position position = new Position(_WarrantyId, title, draw, matherial, number, mass, norm, price);
+                        Position position = new Position(WarrantyId, title, draw, matherial, number, mass, norm, price);
 
                         if (positionId < 0)
                         {
@@ -332,12 +332,12 @@ namespace Project.Forms.Elements
                     }
                 }
 
-                if (_Warranty != null)
+                if (_warranty != null)
                 {
-                    foreach (Executor executor in _Warranty.Executors.ToList().Except(executors.AsEnumerable()))
+                    foreach (Executor executor in _warranty.Executors.ToList().Except(executors.AsEnumerable()))
                         executor.Delete();
 
-                    foreach (Position position in _Warranty.Positions.ToList().Except(positions.AsEnumerable()))
+                    foreach (Position position in _warranty.Positions.ToList().Except(positions.AsEnumerable()))
                         position.Delete();
                 }
                 DialogResult = DialogResult.OK;

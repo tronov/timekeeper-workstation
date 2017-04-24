@@ -44,13 +44,13 @@ namespace Project.Forms.Tables
             this.ctrlWarranties.Size = new System.Drawing.Size(576, 354);
             this.ctrlWarranties.TabIndex = 0;
             // 
-            // frmWarranties
+            // WarrantiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 362);
             this.Controls.Add(this.ctrlWarranties);
-            this.Name = "frmWarranties";
+            this.Name = "WarrantiesForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.Text = "Справочник нарядов";
             this.ResumeLayout(false);

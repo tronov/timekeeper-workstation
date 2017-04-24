@@ -10,9 +10,9 @@ namespace Project.Data
 {
     public static class Databases
     {
-        private static readonly DirectoryInfo _dataDirectory = new DirectoryInfo(@".\Data");
+        private static readonly DirectoryInfo DataDirectory = new DirectoryInfo(@".\Data");
 
-        private static readonly OleDbConnectionStringBuilder _connectionStringBuilder =
+        private static readonly OleDbConnectionStringBuilder ConnectionStringBuilder =
          new OleDbConnectionStringBuilder("Provider=Microsoft.Jet.OLEDB.4.0;");
 
         public static bool IsEmpty => Tables.IsEmpty;
@@ -35,10 +35,10 @@ namespace Project.Data
             Clear();
 
             // Сжатие базы данных
-            var tempPath = Path.Combine(_dataDirectory.FullName, "temp.mdb");
-            _connectionStringBuilder.DataSource = tempPath;
+            var tempPath = Path.Combine(DataDirectory.FullName, "temp.mdb");
+            ConnectionStringBuilder.DataSource = tempPath;
             var jet = new JetEngine();
-            jet.CompactDatabase(Connection.ConnectionString, _connectionStringBuilder.ConnectionString);
+            jet.CompactDatabase(Connection.ConnectionString, ConnectionStringBuilder.ConnectionString);
             File.Delete(Connection.DataSource);
             File.Copy(tempPath, Connection.DataSource);
             File.Delete(tempPath);
@@ -54,15 +54,15 @@ namespace Project.Data
         {
             // Проверить существование директории данных
             // Если не существует - создать
-            if (!_dataDirectory.Exists)
+            if (!DataDirectory.Exists)
             {
-                _dataDirectory.Create();
+                DataDirectory.Create();
             }
 
             var currentYear = DateTime.Now.Year;
 
             // Получить список путей к каждому из *.mdb файлов в каталоге данных
-            var files = _dataDirectory.GetFiles("*.mdb");
+            var files = DataDirectory.GetFiles("*.mdb");
 
             var reg = new Regex(@"^\d\d\d\d.mdb$");
 
@@ -80,32 +80,32 @@ namespace Project.Data
                 var maxYear = AvailableDatabases.Select(r => Convert.ToInt32(r)).Max();
                 if (maxYear != currentYear)
                 {
-                    var ifPath = Path.Combine(_dataDirectory.FullName, maxYear + ".mdb");
-                    var ofPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
+                    var ifPath = Path.Combine(DataDirectory.FullName, maxYear + ".mdb");
+                    var ofPath = Path.Combine(DataDirectory.FullName, currentYear + ".mdb");
 
                     File.Copy(ifPath, ofPath);
                     AvailableDatabases.Add(currentYear.ToString());
-                    _connectionStringBuilder.DataSource = ofPath;
-                    Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
+                    ConnectionStringBuilder.DataSource = ofPath;
+                    Connection.ConnectionString = ConnectionStringBuilder.ConnectionString;
 
                     ClearDocs();
                     Optimize();
                 }
                 else
                 {
-                    var fPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
-                    _connectionStringBuilder.DataSource = fPath;
-                    Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
+                    var fPath = Path.Combine(DataDirectory.FullName, currentYear + ".mdb");
+                    ConnectionStringBuilder.DataSource = fPath;
+                    Connection.ConnectionString = ConnectionStringBuilder.ConnectionString;
                 }
             }
             else
             {
-                var ifPath = Path.Combine(_dataDirectory.FullName, "template.mdb");
-                var ofPath = Path.Combine(_dataDirectory.FullName, currentYear + ".mdb");
+                var ifPath = Path.Combine(DataDirectory.FullName, "template.mdb");
+                var ofPath = Path.Combine(DataDirectory.FullName, currentYear + ".mdb");
                 File.Copy(ifPath, ofPath);
                 AvailableDatabases.Add(currentYear.ToString());
-                _connectionStringBuilder.DataSource = ofPath;
-                Connection.ConnectionString = _connectionStringBuilder.ConnectionString;
+                ConnectionStringBuilder.DataSource = ofPath;
+                Connection.ConnectionString = ConnectionStringBuilder.ConnectionString;
             }
 
         }

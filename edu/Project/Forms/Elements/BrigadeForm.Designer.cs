@@ -94,7 +94,7 @@ namespace Project.Forms.Elements
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
-            // frmBrigade
+            // BrigadeForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,9 +109,9 @@ namespace Project.Forms.Elements
             this.Controls.Add(this.lCode);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "frmBrigade";
+            this.Name = "BrigadeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "frmBrigade";
+            this.Text = "Бригада";
             this.ResumeLayout(false);
             this.PerformLayout();
 

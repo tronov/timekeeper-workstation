@@ -244,7 +244,7 @@ namespace Project
             this.gbTariff.TabStop = false;
             this.gbTariff.Text = "Тариф";
             // 
-            // frmProfession
+            // ProfessionForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -261,7 +261,7 @@ namespace Project
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "frmProfession";
+            this.Name = "ProfessionForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Новая профессия";

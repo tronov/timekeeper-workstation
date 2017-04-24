@@ -45,16 +45,16 @@ namespace Project.Forms.Tables
             this.ctrlBrigadePersons.Size = new System.Drawing.Size(585, 287);
             this.ctrlBrigadePersons.TabIndex = 0;
             // 
-            // frmBrigadePersons
+            // BrigadePersonsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(593, 295);
             this.Controls.Add(this.ctrlBrigadePersons);
-            this.Name = "frmBrigadePersons";
+            this.Name = "BrigadePersonsForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "frmBrigadePersons";
+            this.Text = "Работники бригады";
             this.ResumeLayout(false);
 
         }

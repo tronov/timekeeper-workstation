@@ -9,7 +9,7 @@ namespace Project.Controls
 {
     public partial class StructureControl : UserControl
     {
-        private CatalogMode _CatalogMode;
+        private CatalogMode _catalogMode;
         private ContextMenuStrip _cmArea = new ContextMenuStrip();
         private ContextMenuStrip _cmBrigade = new ContextMenuStrip();
 
@@ -22,10 +22,10 @@ namespace Project.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CatalogMode CatalogMode
         {
-            get { return _CatalogMode; }
+            get { return _catalogMode; }
             set
             {
-                _CatalogMode = value;
+                _catalogMode = value;
                 if (value == CatalogMode.Select)
                 {
                     scMain.Panel2Collapsed = true;

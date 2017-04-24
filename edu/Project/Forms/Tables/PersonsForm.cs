@@ -6,7 +6,7 @@ namespace Project.Forms.Tables
 {
     public partial class PersonsForm : Form
     {
-        private CatalogMode _CatalogMode = CatalogMode.View;
+        private CatalogMode _catalogMode = CatalogMode.View;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedPersonId
@@ -22,11 +22,11 @@ namespace Project.Forms.Tables
         {
             get
             {
-                return _CatalogMode;
+                return _catalogMode;
             }
             set
             {
-                _CatalogMode = value;
+                _catalogMode = value;
                 ctrlPersons.CatalogMode = value;
                 scMain.Panel2Collapsed = value == CatalogMode.Select ? true : false;
             }
