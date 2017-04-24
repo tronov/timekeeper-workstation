@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
@@ -110,7 +111,7 @@ namespace Project.Data
 
         }
 
-        private static void Load(OleDbConnection connection)
+        private static void Load(IDbConnection connection)
         {
             Connection.Open();
             Tables.Load(connection);
