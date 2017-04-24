@@ -9,8 +9,8 @@ namespace Project
 {
     public partial class PersonProfessionForm : Form
     {
-        private Person _person;
-        private PersonProfession _personProfession;
+        private readonly Person _person;
+        private readonly PersonProfession _personProfession;
 
         public PersonProfessionForm(Person person)
         {
@@ -32,44 +32,38 @@ namespace Project
 
         private void bProfessionCode_Click(object sender, EventArgs e)
         {
-            ProfessionsForm f = new ProfessionsForm();
+            var f = new ProfessionsForm {professionsControl = {CatalogMode = CatalogMode.Select}};
 
-            f.professionsControl.CatalogMode = CatalogMode.Select;
-
-            IEnumerable<Profession> ds = f.professionsControl.dgvItems.DataSource as IEnumerable<Profession>;
+            var ds = f.professionsControl.dgvItems.DataSource as IEnumerable<Profession>;
             var nds = ds.Except(_person.PersonProfessions.Select(r => r.Profession)).ToList();
             f.professionsControl.dgvItems.DataSource = nds;
             f.ShowDialog(this);
-            if (f.professionsControl.CurrentId != 0)
-            {
-                Profession p = Databases.Tables.Professions[f.professionsControl.CurrentId];
-                bProfessionCode.Text = p.Code.ToString();
-                bProfessionCode.Tag = p;
-                tbProfessionTitle.Text = p.Title;
-            }
+            if (f.professionsControl.CurrentId == 0) return;
+            var p = Databases.Tables.Professions[f.professionsControl.CurrentId];
+            bProfessionCode.Text = p.Code.ToString();
+            bProfessionCode.Tag = p;
+            tbProfessionTitle.Text = p.Title;
         }
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            if (Check())
-            {
-                int personId = _person.Id;
-                int professionId = (bProfessionCode.Tag as Profession).Id;
-                byte rank = Convert.ToByte(cbRank.Text);
-                PersonProfession personProfession = new PersonProfession(personId, professionId, rank);
+            if (!Check()) return;
+            var personId = _person.Id;
+            var professionId = (bProfessionCode.Tag as Profession).Id;
+            var rank = Convert.ToByte(cbRank.Text);
+            var personProfession = new PersonProfession(personId, professionId, rank);
 
-                if (_personProfession == null)
-                    Databases.Tables.PersonProfessions.Insert(personProfession);
-                else _personProfession.Update(personProfession);
+            if (_personProfession == null)
+                Databases.Tables.PersonProfessions.Insert(personProfession);
+            else _personProfession.Update(personProfession);
 
-                Close();
-            }
+            Close();
         }
 
         private bool Check()
         {
-            bool x1 = bProfessionCode.Text.Length.Equals(0) ? false : true;
-            bool x2 = cbRank.Text.Length.Equals(0) ? false : true;
+            var x1 = !bProfessionCode.Text.Length.Equals(0);
+            var x2 = !cbRank.Text.Length.Equals(0);
             return (x1 && x2);
         }
     }

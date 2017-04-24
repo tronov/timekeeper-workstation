@@ -13,22 +13,22 @@ namespace Project.Data
         private static readonly DirectoryInfo DataDirectory = new DirectoryInfo(@".\Data");
 
         private static readonly OleDbConnectionStringBuilder ConnectionStringBuilder =
-         new OleDbConnectionStringBuilder("Provider=Microsoft.Jet.OLEDB.4.0;");
+            new OleDbConnectionStringBuilder("Provider=Microsoft.Jet.OLEDB.4.0;");
 
         public static bool IsEmpty => Tables.IsEmpty;
 
-        public static Tables Tables = new Tables();
+        public static readonly Tables Tables = new Tables();
 
-        internal static OleDbConnection Connection = new OleDbConnection();
+        internal static readonly OleDbConnection Connection = new OleDbConnection();
 
-        public static List<string> AvailableDatabases { get; } = new List<string>();
+        private static List<string> AvailableDatabases { get; } = new List<string>();
 
         /// <summary>
         /// Оптимизирует базу данных текущего года
         /// посредством удаления устаревших данных
         /// и последующего сжатия файла базы данных.
         /// </summary>
-        public static void Optimize()
+        private static void Optimize()
         {
             Load(Connection);
             Tables.Optimize();
@@ -117,7 +117,7 @@ namespace Project.Data
             Connection.Close();
         }
 
-        public static void Clear()
+        private static void Clear()
         {
             Tables.Clear();
         }

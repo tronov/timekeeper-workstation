@@ -7,8 +7,8 @@ namespace Project.Forms.Elements
 {
     public partial class BrigadeForm : Form
     {
-        private Area _area;
-        private Brigade _brigade;
+        private readonly Area _area;
+        private readonly Brigade _brigade;
 
         public BrigadeForm(Brigade brigade)
         {
@@ -28,16 +28,14 @@ namespace Project.Forms.Elements
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            if (Check())
-            {
-                Brigade brigade = new Brigade(_area.Id, Convert.ToByte(mtbCode.Text), tbTitle.Text);
-                if (_brigade == null)
-                    Databases.Tables.Brigades.Insert(brigade);
-                else
-                    _brigade.Update(brigade);
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            if (!Check()) return;
+            var brigade = new Brigade(_area.Id, Convert.ToByte(mtbCode.Text), tbTitle.Text);
+            if (_brigade == null)
+                Databases.Tables.Brigades.Insert(brigade);
+            else
+                _brigade.Update(brigade);
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private bool Check()
@@ -64,12 +62,12 @@ namespace Project.Forms.Elements
                 (new ToolTip()).Show("Шифр 00 не допускается", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!_area.Brigades.Where(r => r.Code == code && r.IsActive).Count().Equals(0))
+            if (!_area.Brigades.Count(r => r.Code == code && r.IsActive).Equals(0))
             {
                 (new ToolTip()).Show("Бригада с таким шифром уже существует на участке", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!_area.Brigades.Where(r => r.Title.Equals(title)).Count().Equals(0))
+            if (!_area.Brigades.Count(r => r.Title.Equals(title)).Equals(0))
             {
                 (new ToolTip()).Show("Бригада с таким названием уже существует на участке", this, mtbCode.Location, 2000);
                 return false;

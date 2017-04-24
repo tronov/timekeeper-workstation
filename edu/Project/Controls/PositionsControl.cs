@@ -44,7 +44,7 @@ namespace Project.Controls
 
             if (e.KeyChar == '.' || e.KeyChar == ',')
             {
-                if (!ctrl.Text.Contains(separator) && !(ctrl.Text.Length == 0))
+                if (!ctrl.Text.Contains(separator) && ctrl.Text.Length != 0)
                 {
                     ctrl.Text += separator;
                     ctrl.SelectionStart = ctrl.Text.Length;

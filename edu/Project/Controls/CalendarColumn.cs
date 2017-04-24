@@ -71,11 +71,10 @@ namespace Project.Controls
         }
     }
 
-    class CalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
+    internal class CalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
     {
-        DataGridView _dataGridView;
+        private DataGridView _dataGridView;
         private bool _valueChanged;
-        int _rowIndex;
 
         public CalendarEditingControl()
         {
@@ -90,9 +89,9 @@ namespace Project.Controls
             }
             set
             {
-                if (value is String)
+                if (value is string)
                 {
-                    Value = DateTime.Parse((String)value);
+                    Value = DateTime.Parse((string)value);
                 }
             }
         }
@@ -111,17 +110,7 @@ namespace Project.Controls
             CalendarMonthBackground = dataGridViewCellStyle.BackColor;
         }
 
-        public int EditingControlRowIndex
-        {
-            get
-            {
-                return _rowIndex;
-            }
-            set
-            {
-                _rowIndex = value;
-            }
-        }
+        public int EditingControlRowIndex { get; set; }
 
         public bool EditingControlWantsInputKey(
          Keys key, bool dataGridViewWantsInputKey)

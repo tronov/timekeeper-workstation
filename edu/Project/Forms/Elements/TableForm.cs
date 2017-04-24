@@ -15,7 +15,7 @@ namespace Project.Forms.Elements
             InitializeComponent();
         }
 
-        void Calculate()
+        private void Calculate()
         {
             dgvTable.Columns.Clear();
 
@@ -199,7 +199,7 @@ namespace Project.Forms.Elements
 
         private void miWarranties_Click(object sender, EventArgs e)
         {
-            WarrantiesForm form = new WarrantiesForm();
+            var form = new WarrantiesForm();
             form.ctrlWarranties.scMain.Panel2Collapsed = true;
             form.ctrlWarranties.Includes = dgvTable.SelectedCells[0].Tag as List<Warranty>;
             form.ShowDialog();

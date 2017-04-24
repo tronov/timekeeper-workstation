@@ -14,7 +14,7 @@ namespace Project
             InitializeComponent();
         }
 
-        private Person _person;
+        private readonly Person _person;
 
         public PersonForm(Person item)
         {
@@ -29,12 +29,12 @@ namespace Project
 
         private bool Check()
         {
-            bool x0 = mtbCode.Text.Length != 0 ? true : false;    // codeIsSet?
-            bool x1 = tbFirstName.Text.Trim().Length != 0 ? true : false;  // firstNameIsSet?
-            bool x2 = tbMiddleName.Text.Trim().Length != 0 ? true : false; // middleNameIsSet?
-            bool x3 = tbLastName.Text.Trim().Length != 0 ? true : false;   // lastNameIsSet?
+            var x0 = mtbCode.Text.Length != 0;
+            var x1 = tbFirstName.Text.Trim().Length != 0;
+            var x2 = tbMiddleName.Text.Trim().Length != 0;
+            var x3 = tbLastName.Text.Trim().Length != 0;
 
-            bool f1 = x0 && x1 && x2 && x3;        // Form is valid?
+            bool f1 = x0 && x1 && x2 && x3;
 
             if (!f1)
             {
@@ -118,20 +118,18 @@ namespace Project
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            if (Check())
-            {
-                short code = Convert.ToInt16(mtbCode.Text);
-                string firstName = tbFirstName.Text;
-                string middleName = tbMiddleName.Text;
-                string lastName = tbLastName.Text;
+            if (!Check()) return;
+            var code = Convert.ToInt16(mtbCode.Text);
+            var firstName = tbFirstName.Text;
+            var middleName = tbMiddleName.Text;
+            var lastName = tbLastName.Text;
 
-                Person person = new Person(code, firstName, middleName, lastName);
-                if (_person == null) Databases.Tables.Persons.Insert(person);
-                else _person.Update(person);
+            var person = new Person(code, firstName, middleName, lastName);
+            if (_person == null) Databases.Tables.Persons.Insert(person);
+            else _person.Update(person);
 
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void bCancel_Click(object sender, EventArgs e)

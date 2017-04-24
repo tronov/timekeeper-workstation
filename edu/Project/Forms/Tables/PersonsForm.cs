@@ -28,7 +28,7 @@ namespace Project.Forms.Tables
             {
                 _catalogMode = value;
                 ctrlPersons.CatalogMode = value;
-                scMain.Panel2Collapsed = value == CatalogMode.Select ? true : false;
+                scMain.Panel2Collapsed = value == CatalogMode.Select;
             }
         }
 

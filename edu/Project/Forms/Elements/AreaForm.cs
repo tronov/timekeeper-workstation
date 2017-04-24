@@ -7,7 +7,7 @@ namespace Project.Forms.Elements
 {
     public partial class AreaForm : Form
     {
-        private Area _area;
+        private readonly Area _area;
 
         public AreaForm()
         {
@@ -32,12 +32,12 @@ namespace Project.Forms.Elements
                 (new ToolTip()).Show("Шифр 00 не допускается", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!Databases.Tables.Areas.Where(r => r.Code == code).Count().Equals(0))
+            if (!Databases.Tables.Areas.Count(r => r.Code == code).Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким шифром уже существует.", this, mtbCode.Location, 2000);
                 return false;
             }
-            if (!Databases.Tables.Areas.Where(r => r.Title.Equals(title)).Count().Equals(0))
+            if (!Databases.Tables.Areas.Count(r => r.Title.Equals(title)).Equals(0))
             {
                 (new ToolTip()).Show("Участок с таким названием уже существует.", this, mtbCode.Location, 2000);
                 return false;
@@ -47,14 +47,12 @@ namespace Project.Forms.Elements
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            if (Check())
-            {
-                Area area = new Area(Convert.ToByte(mtbCode.Text), tbTitle.Text.Trim());
-                if (_area == null) Databases.Tables.Areas.Insert(area);
-                else _area.Update(area);
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            if (!Check()) return;
+            var area = new Area(Convert.ToByte(mtbCode.Text), tbTitle.Text.Trim());
+            if (_area == null) Databases.Tables.Areas.Insert(area);
+            else _area.Update(area);
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void bCancel_Click(object sender, EventArgs e)
